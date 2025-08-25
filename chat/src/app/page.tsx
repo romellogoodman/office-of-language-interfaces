@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { Hourglass } from 'lucide-react';
 import ChatMessage from '@/components/ChatMessage';
 import ChatInput from '@/components/ChatInput';
 import SettingsModal from '@/components/SettingsModal';
+import SearchParamsHandler from '@/components/SearchParamsHandler';
 import { useApiKey } from '@/hooks/useApiKey';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -22,20 +22,15 @@ export default function Home() {
   const [prefilledMessage, setPrefilledMessage] = useState<string>('');
   const { apiKey, setApiKey, hasApiKey } = useApiKey();
   const { theme, setTheme } = useTheme();
-  const searchParams = useSearchParams();
-
-  // Handle URL parameter for prefilled prompts
-  useEffect(() => {
-    const prompt = searchParams.get('prompt');
-    if (prompt) {
-      setPrefilledMessage(decodeURIComponent(prompt));
-    }
-  }, [searchParams]);
 
   // Scroll to bottom when new messages are added
   useEffect(() => {
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   }, [messages]);
+
+  const handlePrefilledMessage = (message: string) => {
+    setPrefilledMessage(message);
+  };
 
   const regenerateFromMessage = async (messageIndex: number) => {
     const messagesToResubmit = messages.slice(0, messageIndex + 1);
@@ -139,44 +134,47 @@ export default function Home() {
   };
 
   return (
-    <div className="chat-container">
-      <div className="chat-messages">
-        {messages.map((message, index) => (
-          <ChatMessage
-            key={message.id}
-            message={message.text}
-            isUser={message.isUser}
-            onRefresh={!message.isUser ? () => regenerateFromMessage(index - 1) : undefined}
-          />
-        ))}
-        {isLoading && (
-          <div className="chat-message chat-message--assistant">
-            <div className="chat-message__avatar">
-              <Hourglass size={16} />
-            </div>
-            <div className="chat-message__wrapper">
-              <div className="chat-message__content">
-                Generating...
+    <>
+      <SearchParamsHandler onPrefilledMessage={handlePrefilledMessage} />
+      <div className="chat-container">
+        <div className="chat-messages">
+          {messages.map((message, index) => (
+            <ChatMessage
+              key={message.id}
+              message={message.text}
+              isUser={message.isUser}
+              onRefresh={!message.isUser ? () => regenerateFromMessage(index - 1) : undefined}
+            />
+          ))}
+          {isLoading && (
+            <div className="chat-message chat-message--assistant">
+              <div className="chat-message__avatar">
+                <Hourglass size={16} />
+              </div>
+              <div className="chat-message__wrapper">
+                <div className="chat-message__content">
+                  Generating...
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+        <ChatInput 
+          onSendMessage={handleSendMessage} 
+          isLoading={isLoading} 
+          hasMessages={messages.length > 0} 
+          onSettingsClick={() => setIsSettingsOpen(true)}
+          prefilledMessage={prefilledMessage}
+          onMessageChange={() => setPrefilledMessage('')}
+        />
+        <SettingsModal 
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          onApiKeyUpdate={setApiKey}
+          theme={theme}
+          onThemeUpdate={setTheme}
+        />
       </div>
-      <ChatInput 
-        onSendMessage={handleSendMessage} 
-        isLoading={isLoading} 
-        hasMessages={messages.length > 0} 
-        onSettingsClick={() => setIsSettingsOpen(true)}
-        prefilledMessage={prefilledMessage}
-        onMessageChange={() => setPrefilledMessage('')}
-      />
-      <SettingsModal 
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        onApiKeyUpdate={setApiKey}
-        theme={theme}
-        onThemeUpdate={setTheme}
-      />
-    </div>
+    </>
   );
 }
