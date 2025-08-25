@@ -14,7 +14,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <header>
+          <p><a href="/">Oli - Open-source Language Interfaces</a></p>
+        </header>
+        <main>
+          {children}
+        </main>
       </body>
     </html>
   );
