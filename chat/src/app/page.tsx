@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Hourglass } from 'lucide-react';
 import ChatMessage from '@/components/ChatMessage';
 import ChatInput from '@/components/ChatInput';
@@ -18,8 +19,18 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [prefilledMessage, setPrefilledMessage] = useState<string>('');
   const { apiKey, setApiKey, hasApiKey } = useApiKey();
   const { theme, setTheme } = useTheme();
+  const searchParams = useSearchParams();
+
+  // Handle URL parameter for prefilled prompts
+  useEffect(() => {
+    const prompt = searchParams.get('prompt');
+    if (prompt) {
+      setPrefilledMessage(decodeURIComponent(prompt));
+    }
+  }, [searchParams]);
 
   // Scroll to bottom when new messages are added
   useEffect(() => {
@@ -156,6 +167,8 @@ export default function Home() {
         isLoading={isLoading} 
         hasMessages={messages.length > 0} 
         onSettingsClick={() => setIsSettingsOpen(true)}
+        prefilledMessage={prefilledMessage}
+        onMessageChange={() => setPrefilledMessage('')}
       />
       <SettingsModal 
         isOpen={isSettingsOpen}

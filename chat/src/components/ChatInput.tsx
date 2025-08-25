@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Settings, SendHorizontal } from "lucide-react";
 
 interface ChatInputProps {
@@ -6,6 +6,8 @@ interface ChatInputProps {
   isLoading: boolean;
   hasMessages?: boolean;
   onSettingsClick: () => void;
+  prefilledMessage?: string;
+  onMessageChange?: () => void;
 }
 
 export default function ChatInput({
@@ -13,8 +15,25 @@ export default function ChatInput({
   isLoading,
   hasMessages = false,
   onSettingsClick,
+  prefilledMessage = '',
+  onMessageChange,
 }: ChatInputProps) {
   const [message, setMessage] = useState("");
+
+  // Handle prefilled message
+  useEffect(() => {
+    if (prefilledMessage && !message) {
+      setMessage(prefilledMessage);
+      // Adjust textarea height for prefilled content
+      setTimeout(() => {
+        const textarea = document.querySelector('.chat-input__field') as HTMLTextAreaElement;
+        if (textarea) {
+          adjustHeight(textarea);
+          textarea.focus();
+        }
+      }, 0);
+    }
+  }, [prefilledMessage, message]);
 
   const adjustHeight = (textarea: HTMLTextAreaElement) => {
     textarea.style.height = 'auto';
@@ -66,6 +85,9 @@ export default function ChatInput({
             onChange={(e) => {
               setMessage(e.target.value);
               adjustHeight(e.target);
+              if (onMessageChange) {
+                onMessageChange();
+              }
             }}
             onKeyDown={handleKeyDown}
             placeholder={hasMessages ? "Reply..." : "Lets chat..."}
