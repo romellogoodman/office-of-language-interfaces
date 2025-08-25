@@ -1,9 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Hourglass } from 'lucide-react';
 import ChatMessage from '@/components/ChatMessage';
 import ChatInput from '@/components/ChatInput';
+import SettingsModal from '@/components/SettingsModal';
+import { useApiKey } from '@/hooks/useApiKey';
+import { useTheme } from '@/hooks/useTheme';
 
 interface Message {
   id: string;
@@ -14,12 +17,24 @@ interface Message {
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { apiKey, setApiKey, hasApiKey } = useApiKey();
+  const { theme, setTheme } = useTheme();
+
+  // Scroll to bottom when new messages are added
+  useEffect(() => {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }, [messages]);
 
   const regenerateFromMessage = async (messageIndex: number) => {
     const messagesToResubmit = messages.slice(0, messageIndex + 1);
     const lastUserMessage = messagesToResubmit.filter(m => m.isUser).pop();
     
     if (!lastUserMessage) return;
+    if (!hasApiKey) {
+      setIsSettingsOpen(true);
+      return;
+    }
 
     // Remove messages after this point
     setMessages(messagesToResubmit);
@@ -31,7 +46,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: lastUserMessage.text }),
+        body: JSON.stringify({ message: lastUserMessage.text, apiKey }),
       });
 
       if (!response.ok) {
@@ -60,7 +75,12 @@ export default function Home() {
     }
   };
 
-  const handleSendMessage = async (message: string) => {
+  const handleSendMessage = async (message: string): Promise<boolean> => {
+    if (!hasApiKey) {
+      setIsSettingsOpen(true);
+      return false;
+    }
+
     const userMessage: Message = {
       id: Date.now().toString(),
       text: message,
@@ -76,7 +96,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, apiKey }),
       });
 
       if (!response.ok) {
@@ -103,6 +123,8 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
+    
+    return true;
   };
 
   return (
@@ -129,7 +151,19 @@ export default function Home() {
           </div>
         )}
       </div>
-      <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} hasMessages={messages.length > 0} />
+      <ChatInput 
+        onSendMessage={handleSendMessage} 
+        isLoading={isLoading} 
+        hasMessages={messages.length > 0} 
+        onSettingsClick={() => setIsSettingsOpen(true)}
+      />
+      <SettingsModal 
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        onApiKeyUpdate={setApiKey}
+        theme={theme}
+        onThemeUpdate={setTheme}
+      />
     </div>
   );
 }

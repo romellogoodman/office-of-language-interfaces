@@ -3,13 +3,17 @@ import { sendMessage } from '@/lib/claude';
 
 export async function POST(request: NextRequest) {
   try {
-    const { message } = await request.json();
+    const { message, apiKey } = await request.json();
 
     if (!message) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
-    const response = await sendMessage(message);
+    if (!apiKey) {
+      return NextResponse.json({ error: 'API key is required' }, { status: 400 });
+    }
+
+    const response = await sendMessage(message, apiKey);
 
     return NextResponse.json({ response });
   } catch (error) {

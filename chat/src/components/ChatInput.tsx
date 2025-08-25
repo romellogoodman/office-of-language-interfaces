@@ -1,16 +1,18 @@
 import { useState } from "react";
-import { /* Settings, */ SendHorizontal } from "lucide-react";
+import { Settings, SendHorizontal } from "lucide-react";
 
 interface ChatInputProps {
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string) => Promise<boolean>;
   isLoading: boolean;
   hasMessages?: boolean;
+  onSettingsClick: () => void;
 }
 
 export default function ChatInput({
   onSendMessage,
   isLoading,
   hasMessages = false,
+  onSettingsClick,
 }: ChatInputProps) {
   const [message, setMessage] = useState("");
 
@@ -19,17 +21,32 @@ export default function ChatInput({
     textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (message.trim() && !isLoading) {
-      onSendMessage(message.trim());
+      const messageToSend = message.trim();
+      
+      // Clear input immediately for better UX
       setMessage("");
-      // Reset textarea height after sending
+      // Reset textarea height immediately
       setTimeout(() => {
         const textarea = document.querySelector('.chat-input__field') as HTMLTextAreaElement;
         if (textarea) {
           textarea.style.height = 'auto';
         }
       }, 0);
+      
+      const success = await onSendMessage(messageToSend);
+      if (!success) {
+        // If failed (no API key), restore the message
+        setMessage(messageToSend);
+        setTimeout(() => {
+          const textarea = document.querySelector('.chat-input__field') as HTMLTextAreaElement;
+          if (textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+          }
+        }, 0);
+      }
     }
   };
 
@@ -59,9 +76,9 @@ export default function ChatInput({
         </div>
         <div className="chat-input__buttons">
           <div className="chat-input__buttons-right">
-            {/* <button className="chat-input__button" disabled>
+            <button className="chat-input__button" onClick={onSettingsClick}>
               <Settings size={16} />
-            </button> */}
+            </button>
             <button
               onClick={handleSubmit}
               className="chat-input__button chat-input__button--primary"
