@@ -1,0 +1,27 @@
+{
+  "name": "blink",
+  "version": "1.0.0",
+  "description": "An open-source command line coding agent.",
+  "main": "dist/cli.js",
+  "bin": {
+    "blink": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "tsx src/cli.tsx",
+    "dev": "tsx src/cli.tsx",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.11",
+    "ink": "^6.2.2",
+    "react": "^19.1.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
