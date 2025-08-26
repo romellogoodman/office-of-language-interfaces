@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import "./modern-reset.scss";
 import "./globals.scss";
+import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "Oli - Open-source Language Interfaces",
@@ -14,12 +16,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <header>
-          <p><a href="/">Oli - Open-source Language Interfaces</a></p>
-        </header>
-        <main>
-          {children}
-        </main>
+        <Header />
+        <main>{children}</main>
       </body>
     </html>
   );

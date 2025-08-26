@@ -1,39 +1,50 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import Link from 'next/link';
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Oli",
+};
 
 interface Post {
   slug: string;
   title: string;
   publishedAt: string;
   summary: string;
+  draft: boolean;
 }
 
 function getAllPosts(): Post[] {
-  const postsDirectory = path.join(process.cwd(), 'content/research');
-  
+  const postsDirectory = path.join(process.cwd(), "content/research");
+
   if (!fs.existsSync(postsDirectory)) {
     return [];
   }
-  
+
   const filenames = fs.readdirSync(postsDirectory);
   const posts = filenames
-    .filter(name => name.endsWith('.mdx'))
-    .map(name => {
+    .filter((name) => name.endsWith(".mdx"))
+    .map((name) => {
       const filePath = path.join(postsDirectory, name);
-      const fileContents = fs.readFileSync(filePath, 'utf8');
+      const fileContents = fs.readFileSync(filePath, "utf8");
       const { data } = matter(fileContents);
-      
+
       return {
-        slug: data.slug || name.replace(/\.mdx$/, ''),
+        slug: data.slug || name.replace(/\.mdx$/, ""),
         title: data.title,
         publishedAt: data.publishedAt,
         summary: data.summary,
+        draft: data.draft || false,
       };
     })
-    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-    
+    .filter((post) => !post.draft)
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    );
+
   return posts;
 }
 
@@ -41,50 +52,67 @@ export default function Home() {
   const posts = getAllPosts();
 
   return (
-    <div>
-      <p>Open Language Interface (Oli) is a research project from <a href="https://www.romellogoodman.com/" target="_blank" rel="noopener noreferrer">Romello Goodman</a>.</p>
-      
-      <p>It is a set of open-source tools for talking to your computer. Each tool is free and available to the public to read, copy and maintain.</p>
-      
-      <p>Open interfaces, open knowledge.</p>
-      
-      <section>
-        <h2>Tools</h2>
-        <ul>
-          <li>
-            <h3>Chat</h3>
-            <p>Web interface for LLM conversations</p>
-          </li>
-          <li>
-            <h3>Website</h3>
-            <p>Marketing and documentation site</p>
-          </li>
-        </ul>
-      </section>
-      
-      <section>
-        <h2>Research</h2>
+    <div className="main-content">
+      <div className="homepage-intro">
+        <p>
+          Oli is a research project exploring the different ways to design
+          software that responds to language. All of our research is{" "}
+          <a
+            href="https://github.com/romellogoodman/oli"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            open-source
+          </a>{" "}
+          and freely available. Led by{" "}
+          <a
+            href="https://romellogoodman.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Romello Goodman
+          </a>
+          .
+        </p>
+
+        {/* <p>
+          Led by{" "}
+          <a
+            href="https://romellogoodman.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Romello Goodman
+          </a>
+          .
+        </p> */}
+      </div>
+
+      <div className="posts-list">
         {posts.length > 0 ? (
-          <ul>
-            {posts.map(post => (
-              <li key={post.slug}>
-                <Link href={`/research/${post.slug}`}>
-                  <h3>{post.title}</h3>
+          <div>
+            {posts.map((post) => (
+              <div key={post.slug} className="post-item">
+                <Link href={`/research/${post.slug}`} className="post-link">
+                  <h3 className="post-title">{post.title}</h3>
+                  <p className="post-meta">
+                    <time dateTime={post.publishedAt} className="post-date">
+                      {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </time>
+                    {post.summary}
+                  </p>
                 </Link>
-                <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                  <time dateTime={post.publishedAt}>
-                    {new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                  </time>
-                  <span>•</span>
-                  <span>{post.summary}</span>
-                </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
           <p>No research posts available.</p>
         )}
-      </section>
+      </div>
     </div>
   );
 }

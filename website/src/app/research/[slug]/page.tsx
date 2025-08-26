@@ -3,13 +3,14 @@ import fs from 'fs';
 import path from 'path';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import matter from 'gray-matter';
+import { Metadata } from 'next';
 
 interface Params {
   slug: string;
 }
 
 interface Props {
-  params: Params;
+  params: Promise<Params>;
 }
 
 function getPostBySlug(slug: string) {
@@ -18,6 +19,11 @@ function getPostBySlug(slug: string) {
     const fullPath = path.join(postsDirectory, `${slug}.mdx`);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
+    
+    // Don't return draft posts
+    if (data.draft) {
+      return null;
+    }
     
     return {
       frontmatter: data,
@@ -28,24 +34,42 @@ function getPostBySlug(slug: string) {
   }
 }
 
-export default function ResearchPost({ params }: Props) {
-  const post = getPostBySlug(params.slug);
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
+  
+  if (!post) {
+    return {
+      title: "Post Not Found | Oli",
+    };
+  }
+
+  return {
+    title: `${post.frontmatter.title} | Oli`,
+  };
+}
+
+export default async function ResearchPost({ params }: Props) {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
 
   if (!post) {
     notFound();
   }
 
   return (
-    <article>
-      <header>
-        <h1>{post.frontmatter.title}</h1>
-        <time dateTime={post.frontmatter.publishedAt}>
-          {new Date(post.frontmatter.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-        </time>
-      </header>
-      <main>
-        <MDXRemote source={post.content} />
-      </main>
-    </article>
+    <div className="research-content">
+      <article>
+        <header>
+          <h1>{post.frontmatter.title}</h1>
+          <time dateTime={post.frontmatter.publishedAt}>
+            {new Date(post.frontmatter.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+          </time>
+        </header>
+        <main>
+          <MDXRemote source={post.content} />
+        </main>
+      </article>
+    </div>
   );
 }

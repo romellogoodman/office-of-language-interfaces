@@ -1,5 +1,221 @@
+:root {
+  --max-content-width: 800px;
+  --bg-color: #212121;
+  --primary-color: #b0afed;
+  --text-color: #ffffff;
+
+  /* Fonts */
+  --font-heading: "Public Sans", sans-serif;
+  --font-body: Georgia, serif;
+
+  /* Font Size */
+  --font-size-00: 0.5rem;
+  --font-size-0: 0.75rem;
+  --font-size-1: 1rem;
+  --font-size-2: 1.1rem;
+  --font-size-3: 1.25rem;
+  --font-size-4: 1.5rem;
+  --font-size-5: 2rem;
+  --font-size-6: 2.5rem;
+  --font-size-7: 3rem;
+  --font-size-8: 3.5rem;
+  --font-size-fluid-0: clamp(0.75rem, 2vw, 1rem);
+  --font-size-fluid-1: clamp(1rem, 4vw, 1.5rem);
+  --font-size-fluid-2: clamp(1.5rem, 6vw, 2.5rem);
+  --font-size-fluid-3: clamp(2rem, 9vw, 3.5rem);
+
+  /* Sizing */
+  --size-000: -8px;
+  --size-00: -4px;
+  --size-01: 4px;
+  --size-02: 8px;
+  --size-03: 16px;
+  --size-04: 20px;
+  --size-05: 24px;
+  --size-06: 28px;
+  --size-07: 32px;
+  --size-08: 48px;
+  --size-09: 64px;
+  --size-10: 80px;
+  --size-11: 120px;
+  --size-12: 160px;
+  --size-13: 240px;
+  --size-14: 320px;
+  --size-15: 480px;
+
+  /* Font Sizes - Display (Headlines) */
+  --font-size-display-s: var(--font-size-5); /* 2rem */
+  --font-size-display-m: var(--font-size-6); /* 2.5rem */
+  --font-size-display-l: var(--font-size-7); /* 3rem */
+
+  /* Font Sizes - Paragraph (Body) */
+  --font-size-paragraph-s: var(--font-size-2); /* 1.1rem */
+  --font-size-paragraph-m: var(--font-size-3); /* 1.25rem */
+  --font-size-paragraph-l: var(--font-size-4); /* 1.5rem */
+
+  /* Font Sizes - Detail (Supporting) */
+  --font-size-detail-s: var(--font-size-0); /* 0.75rem */
+  --font-size-detail-m: var(--font-size-1); /* 1rem */
+  --font-size-detail-l: var(--font-size-2); /* 1.1rem */
+
+  /* Spacing - Stack (Vertical) */
+  --space-stack-xs: var(--size-02); /* 8px */
+  --space-stack-s: var(--size-05); /* 24px */
+  --space-stack-m: var(--size-07); /* 32px */
+  --space-stack-l: var(--size-08); /* 48px */
+  --space-stack-xl: var(--size-10); /* 80px */
+}
+
+/* Breakpoints */
+$breakpoints: (
+  xs: 320px,
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+  2xl: 1536px,
+);
+
 body {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
+  font-family: var(--font-body);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Links */
+a {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: var(--space-stack-s);
+}
+
+h1 {
+  font-size: var(--font-size-display-l);
+  margin-bottom: var(--space-stack-l);
+}
+
+h2 {
+  font-size: var(--font-size-display-m);
+  margin-bottom: var(--space-stack-s);
+}
+
+h3 {
+  font-size: var(--font-size-display-s);
+  margin-bottom: var(--space-stack-s);
+}
+
+h4 {
+  font-size: var(--font-size-paragraph-l);
+  margin-bottom: var(--space-stack-s);
+}
+
+h5 {
+  font-size: var(--font-size-paragraph-m);
+  margin-bottom: var(--space-stack-s);
+}
+
+h6 {
+  font-size: var(--font-size-paragraph-s);
+  margin-bottom: var(--space-stack-s);
+}
+
+p {
+  font-size: var(--font-size-paragraph-m);
+  line-height: 1.6;
+  margin-bottom: var(--space-stack-s);
+}
+
+time {
+  font-size: var(--font-size-detail-m);
+}
+
+/* Layout Components */
+.header-content {
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content p {
+  margin: 0;
+}
+
+.header-content a {
+  color: var(--primary-color);
+}
+
+.main-content {
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* Homepage */
+.homepage-intro {
+  margin-bottom: var(--space-stack-xl);
+}
+
+.posts-list {
+  /* Container for all posts */
+}
+
+.post-item {
+  margin-bottom: var(--space-stack-l);
+}
+
+.post-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.post-title {
+  margin: 0 0 var(--space-stack-xs) 0;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--font-size-paragraph-l);
+  transition: text-decoration 0.2s ease;
+}
+
+.post-link:hover .post-title {
+  text-decoration: underline;
+}
+
+.post-meta {
+  margin: 0;
+  font-size: var(--font-size-paragraph-s);
+  line-height: 1.6;
+}
+
+.post-date {
+  color: #999;
+  font-size: var(--font-size-detail-m);
+  margin-right: var(--size-03);
+}
+
+/* Research Pages */
+.research-content {
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  padding: 40px 20px;
 }
