@@ -6,4 +6,8 @@ Open-source Language Interfaces
 
 - **Blink** - Command line coding agent
 - **Chat** - Web interface for LLM conversations
-- **Website** - Rearch and documentation website
+- **Website** - Research and documentation website
+
+## Author
+
+Created by [Romello Goodman](https://romellogoodman.com)
