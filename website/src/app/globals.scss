@@ -1,3 +1,18 @@
+@use "sass:map";
+
+/**
+ * Mixin for min-width media queries
+ */
+@mixin minWidth($breakpoint) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media (min-width: map.get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @error "Unknown breakpoint: #{$breakpoint}. Available breakpoints are: #{map.keys($breakpoints)}";
+  }
+}
+
 :root {
   --max-content-width: 800px;
   --bg-color: #212121;
@@ -154,15 +169,43 @@ time {
   padding: 20px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: var(--space-stack-xs);
+  color: var(--primary-color);
+  font-weight: 600;
+
+  a {
+    text-decoration: none;
+  }
+
+  @include minWidth(md) {
+    flex-direction: row;
+    gap: 0;
+  }
 }
 
 .header-content p {
   margin: 0;
 }
 
-.header-content a {
-  color: var(--primary-color);
+.header-logo {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-paragraph-m);
+  font-weight: 600;
+}
+
+.header-links {
+  display: flex;
+  gap: var(--space-stack-s);
+
+  @include minWidth(md) {
+    gap: var(--space-stack-m);
+  }
+
+  p {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-paragraph-s);
+  }
 }
 
 .main-content {

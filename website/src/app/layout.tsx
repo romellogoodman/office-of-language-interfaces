@@ -4,8 +4,8 @@ import "./globals.scss";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "Oli - Open-source Language Interfaces",
-  description: "Open-source Language Interfaces",
+  title: "Oli - Open Language Interfaces",
+  description: "Open Language Interfaces",
 };
 
 export default function RootLayout({

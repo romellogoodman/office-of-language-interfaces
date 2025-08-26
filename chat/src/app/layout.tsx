@@ -3,7 +3,7 @@ import "./globals.scss";
 
 export const metadata: Metadata = {
   title: "Chat | Oli",
-  description: "Open-source Language Interfaces - Chat",
+  description: "Open Language Interfaces - Chat",
 };
 
 export default function RootLayout({
@@ -13,9 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

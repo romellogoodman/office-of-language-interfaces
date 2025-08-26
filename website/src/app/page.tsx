@@ -55,8 +55,8 @@ export default function Home() {
     <div className="main-content">
       <div className="homepage-intro">
         <p>
-          Oli is a research project exploring the different ways to design
-          software that responds to language. All of our research is{" "}
+          Oli is a research project exploring how to design software that
+          responds to language. All of our research is{" "}
           <a
             href="https://github.com/romellogoodman/oli"
             target="_blank"

@@ -1,6 +1,6 @@
-# Opensource Language Interfaces (Oli)
+# Open Language Interfaces (Oli)
 
-Oli is a research project exploring the different ways to design software that responds to language. All of our research is open-source and freely available. Open-source, open knowledge.
+Oli is a research project exploring the different ways to design software that responds to language. All of our research is open-source and freely available.
 
 ## Tools
 
