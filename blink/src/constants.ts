@@ -12,7 +12,7 @@ export const COMMANDS: Command[] = [
   },
   {
     name: "/command",
-    description: "Generate a custom command using AI",
+    description: "Generate custom commands",
     usage: "/command <name> <description>"
   },
   {
@@ -22,27 +22,27 @@ export const COMMANDS: Command[] = [
   },
   {
     name: "/init",
-    description: "Initialize AGENTS.md file in current directory",
+    description: "Create AGENTS.md",
     usage: "/init"
   },
   {
     name: "/login",
-    description: "Login with your Anthropic API key",
+    description: "Login with Anthropic API key",
     usage: "/login <api-key>",
   },
   {
     name: "/logout",
-    description: "Sign out from your account",
+    description: "Sign out",
     usage: "/logout",
   },
   {
     name: "/model",
-    description: "View or change the AI model",
+    description: "View and change model",
     usage: "/model [name]",
   },
   {
     name: "/permissions",
-    description: "Manage tool permissions (list/allow/block/reset)",
+    description: "Manage tool permissions",
     usage: "/permissions [list | allow <tool> | block <tool> | reset]"
   },
 ];

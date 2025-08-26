@@ -193,6 +193,60 @@ export class ToolRegistry {
         }
       }
     });
+
+    // todo_write tool
+    this.register({
+      name: 'todo_write',
+      description: 'Create and manage a structured task list for tracking progress',
+      input_schema: {
+        type: 'object',
+        properties: {
+          todos: {
+            type: 'array',
+            description: 'Array of todo items',
+            items: {
+              type: 'object',
+              properties: {
+                content: {
+                  type: 'string',
+                  description: 'The task description (imperative form)'
+                },
+                status: {
+                  type: 'string',
+                  enum: ['pending', 'in_progress', 'completed'],
+                  description: 'Current task status'
+                },
+                activeForm: {
+                  type: 'string',
+                  description: 'Present continuous form of the task'
+                }
+              },
+              required: ['content', 'status', 'activeForm']
+            }
+          }
+        },
+        required: ['todos']
+      },
+      category: 'edit',
+      requiresApproval: false,
+      streaming: false,
+      execute: async (input: { todos: Array<{ content: string; status: string; activeForm: string }> }) => {
+        const todoSummary = input.todos.map((todo, index) => {
+          const statusIcon = {
+            pending: '⏳',
+            in_progress: '🔄',
+            completed: '✅'
+          }[todo.status] || '❓';
+          return `${index + 1}. ${statusIcon} ${todo.content}`;
+        }).join('\n');
+        
+        const inProgress = input.todos.filter(t => t.status === 'in_progress');
+        const completed = input.todos.filter(t => t.status === 'completed');
+        const pending = input.todos.filter(t => t.status === 'pending');
+        
+        return `Task list updated:\n${todoSummary}\n\nStatus: ${completed.length} completed, ${inProgress.length} in progress, ${pending.length} pending`;
+      }
+    });
   }
 
   register(tool: ToolDefinition & ToolMetadata & { execute: (input: any) => Promise<string> }): void {

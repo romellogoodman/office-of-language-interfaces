@@ -85,28 +85,28 @@ Generate ONLY the JavaScript code, no explanation:`;
       ];
 
       const response = await this.client.sendMessage(tempMessages, [], this.currentModel);
-      
+
       if (!response.content) {
         return 'Failed to generate command script.';
       }
 
       // Create the commands directory if it doesn't exist
       await this.commandManager.createCommandsDirectory();
-      
+
       // Save the generated command
       const fs = await import('fs/promises');
       const path = await import('path');
-      
+
       const commandsDir = path.join(process.cwd(), '.agent/commands');
       const filePath = path.join(commandsDir, `${name}.js`);
-      
+
       await fs.writeFile(filePath, response.content, 'utf-8');
-      
+
       // Reload commands to include the new one
       await this.loadCustomCommands();
-      
+
       return `Generated custom command '${name}' and saved to .agent/commands/${name}.js\n\nGenerated code:\n\`\`\`javascript\n${response.content}\n\`\`\`\n\nYou can now use /${name} in your commands!`;
-      
+
     } catch (error: any) {
       return `Failed to generate command: ${error.message}`;
     }
@@ -114,22 +114,33 @@ Generate ONLY the JavaScript code, no explanation:`;
 
   private async getSystemPrompt(): Promise<string> {
     const mode = this.config.mode;
-    
-    // Load AGENTS.md instructions if available
-    const agentsInstructions = await this.agentsManager.getSystemInstructions();
-    
-    const basePrompt = `You are Blink, an AI coding assistant. You help users with software engineering tasks.
+
+    // Load base system prompt from file
+    let basePrompt: string;
+    try {
+      const fs = await import('fs/promises');
+      const path = await import('path');
+      const promptPath = path.join(import.meta.dirname, 'SYSTEM_PROMPT.md');
+      basePrompt = await fs.readFile(promptPath, 'utf-8');
+    } catch (error) {
+      // Fallback to inline prompt if file not found
+      basePrompt = `You are Blink, an AI coding assistant. You help users with software engineering tasks.
 
 IMPORTANT GUIDELINES:
 - Always use tools to interact with the file system and execute commands
 - Be concise and direct in your responses
 - Ask for clarification when tasks are unclear
-- Follow best practices for code and file operations
+- Follow best practices for code and file operations`;
+    }
+
+    // Add available tools section
+    const toolsSection = `
 
 AVAILABLE TOOLS:
 ${this.tools.getToolDefinitions().map(tool => `- ${tool.name}: ${tool.description}`).join('\n')}`;
 
-    // Add AGENTS.md instructions if available
+    // Load AGENTS.md instructions if available
+    const agentsInstructions = await this.agentsManager.getSystemInstructions();
     const agentsSection = agentsInstructions ? `
 
 PROJECT-SPECIFIC INSTRUCTIONS:
@@ -137,18 +148,21 @@ ${agentsInstructions}` : '';
 
     const modeSpecificPrompt = {
       regular: `
+
 REGULAR MODE:
 - Interactive assistance with user confirmation for potentially destructive operations
 - Explain your actions and ask for permission when needed
 - Focus on helping the user understand what you're doing`,
 
       autopilot: `
+
 AUTOPILOT MODE:
 - Execute tasks autonomously without asking for permission
 - Still explain what you're doing but proceed automatically
 - Use your best judgment for file operations and commands`,
 
       planning: `
+
 PLANNING MODE:
 - Focus on discussion and planning without executing tools
 - Create detailed plans and implementation strategies
@@ -156,7 +170,7 @@ PLANNING MODE:
 - Do not execute any file operations or commands in this mode`
     };
 
-    return basePrompt + agentsSection + '\n' + modeSpecificPrompt[mode];
+    return basePrompt + toolsSection + agentsSection + modeSpecificPrompt[mode];
   }
 
   async isAuthenticated(): Promise<boolean> {
@@ -196,21 +210,22 @@ PLANNING MODE:
 
       // Execute any requested tools  
       if (response.toolCalls.length > 0 && this.config.mode !== 'planning') {
-        // Debug: log tool calls
-        console.log(`DEBUG: ${response.toolCalls.length} tool calls requested:`, response.toolCalls);
-        const toolResults: string[] = [];
+        // Store initial response to return
+        const initialResponse = response.content || '';
         
+        const toolResults: string[] = [];
+
         for (const toolCall of response.toolCalls) {
           // Add tool call to conversation transcript
           const toolCallMessage = `🔧 ${toolCall.name}(${Object.entries(toolCall.input).map(([k, v]) => `${k}: "${v}"`).join(', ')})`;
           this.addToConversation(toolCallMessage);
-          
+
           const toolResult = await this.executeTool(toolCall.name, toolCall.input);
           toolResults.push(`${toolCall.name}: ${toolResult}`);
-          
+
           // Add tool result to conversation transcript
           this.addToConversation(`✅ ${toolResult}`);
-          
+
           // Add tool result to messages for AI context
           this.messages.push({
             role: 'user',
@@ -223,10 +238,10 @@ PLANNING MODE:
         if (finalResponse.content) {
           this.messages.push({ role: 'assistant', content: finalResponse.content });
           this.contextManager.addMessage(finalResponse.content);
-          return finalResponse.content;
+          return initialResponse ? `${initialResponse}\n\n${finalResponse.content}` : finalResponse.content;
         } else {
-          // If no final response, return tool results directly
-          return `Tools executed:\n${toolResults.join('\n')}\n\n(No additional AI response)`;
+          // Return initial response if available, otherwise show tools executed
+          return initialResponse || `Tools executed successfully:\n${toolResults.map(result => `✅ ${result}`).join('\n')}`;
         }
       }
 
@@ -242,11 +257,11 @@ PLANNING MODE:
   private async executeTool(toolName: string, input: any): Promise<string> {
     // Check permissions first
     const permission = await this.permissionManager.checkPermission(toolName);
-    
+
     if (permission === 'deny') {
       return `Tool ${toolName} is blocked by permissions. Use /permissions to manage tool permissions.`;
     }
-    
+
     if (permission === 'ask' && this.config.mode === 'regular') {
       // Auto-approve first use and save permission for this project
       await this.permissionManager.setPermission(toolName, 'always');
@@ -299,11 +314,11 @@ PLANNING MODE:
         } else {
           const modelName = args.join(' ');
           // Try to find model by display name or actual name
-          const model = this.models.getAvailableModels().find(m => 
-            m.name === modelName || m.displayName === modelName || 
+          const model = this.models.getAvailableModels().find(m =>
+            m.name === modelName || m.displayName === modelName ||
             modelName === (this.models.getAvailableModels().indexOf(m) + 1).toString()
           );
-          
+
           if (model) {
             this.currentModel = model.name;
             return `Model changed to: ${model.displayName}`;
@@ -328,10 +343,10 @@ PLANNING MODE:
         if (args.length < 2) {
           return 'Usage: /command <name> <description>\nExample: /command deploy "Deploy the current project to production"';
         }
-        
+
         const commandName = args[0];
         const commandDescription = args.slice(1).join(' ');
-        
+
         try {
           return await this.generateCustomCommand(commandName, commandDescription);
         } catch (error: any) {
@@ -341,42 +356,37 @@ PLANNING MODE:
       case '/permissions':
         if (args.length === 0 || args[0] === 'list') {
           return this.permissionManager.getPermissionSummary();
-          
+
         } else if (args[0] === 'allow' && args.length > 1) {
           const toolName = args[1];
           await this.permissionManager.setPermission(toolName, 'always');
           return `Tool '${toolName}' is now always allowed for this project.`;
-          
+
         } else if (args[0] === 'block' && args.length > 1) {
           const toolName = args[1];
           await this.permissionManager.setPermission(toolName, 'never');
           return `Tool '${toolName}' is now blocked for this project.`;
-          
+
         } else if (args[0] === 'reset') {
           // Reset all permissions to defaults
           const permissions = new PermissionManager();
           this.permissionManager = permissions;
           return 'All permissions reset to defaults.';
-          
+
         } else {
           return 'Usage: /permissions [list | allow <tool> | block <tool> | reset]';
         }
 
       case '/help':
         const customCommands = this.commandManager.getCustomCommands();
-        const customCommandsText = customCommands.length > 0 
+        const customCommandsText = customCommands.length > 0
           ? `\n\nCustom Commands:\n${customCommands.map(cmd => `${cmd.usage} - ${cmd.description}`).join('\n')}`
           : '\n💡 Use /command <name> <description> to generate custom commands';
 
+        const builtinCommandsText = COMMANDS.map(cmd => `${cmd.usage} - ${cmd.description}`).join('\n');
+
         return `Available commands:
-/clear - Clear conversation history
-/command <name> <description> - Generate a custom command using AI
-/help - Show this help message
-/init - Initialize AGENTS.md file in current directory
-/login <api-key> - Login with Anthropic API key
-/logout - Logout from current account
-/model [name] - View or change the current model
-/permissions - Manage tool permissions (list/allow/block/reset)${customCommandsText}
+${builtinCommandsText}${customCommandsText}
 
 Current mode: ${this.config.mode}
 ${await this.agentsManager.hasAgentsFile() ? '✅ AGENTS.md detected and loaded' : '💡 Use /init to create AGENTS.md for project-specific instructions'}`;
@@ -419,15 +429,15 @@ ${await this.agentsManager.hasAgentsFile() ? '✅ AGENTS.md detected and loaded'
 
   getAllCommands(): Array<{ name: string; description: string; usage: string }> {
     const builtinCommands = COMMANDS;
-    
+
     const customCommands = this.commandManager.getCustomCommands().map(cmd => ({
       name: cmd.name,
       description: cmd.description,
       usage: cmd.usage
     }));
-    
+
     const allCommands = [...builtinCommands, ...customCommands];
-    
+
     // Sort alphabetically by command name
     return allCommands.sort((a, b) => a.name.localeCompare(b.name));
   }
