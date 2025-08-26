@@ -3,6 +3,10 @@ import { ToolRegistry } from './tools.js';
 import { AuthManager } from './auth.js';
 import { ModelManager } from './models.js';
 import { AgentsManager } from './agents.js';
+import { ContextManager } from './context.js';
+import { CommandManager } from './commands.js';
+import { PermissionManager } from './permissions.js';
+import { COMMANDS } from './constants.js';
 
 export interface AgentConfig {
   mode: 'regular' | 'autopilot' | 'planning';
@@ -15,9 +19,13 @@ export class Agent {
   private auth: AuthManager;
   private models: ModelManager;
   private agentsManager: AgentsManager;
+  private contextManager: ContextManager;
+  private commandManager: CommandManager;
+  private permissionManager: PermissionManager;
   private messages: Message[] = [];
   private config: AgentConfig;
   private currentModel: string;
+  private conversationCallback?: (message: string) => void;
 
   constructor(config: AgentConfig = { mode: 'regular' }) {
     this.client = new AnthropicClient();
@@ -25,9 +33,13 @@ export class Agent {
     this.auth = new AuthManager();
     this.models = new ModelManager();
     this.agentsManager = new AgentsManager();
+    this.contextManager = new ContextManager();
+    this.commandManager = new CommandManager();
+    this.permissionManager = new PermissionManager();
     this.config = config;
     this.currentModel = this.models.getDefaultModel().name;
     this.initializeSystemPrompt();
+    this.loadCustomCommands();
   }
 
   private async initializeSystemPrompt(): Promise<void> {
@@ -35,6 +47,69 @@ export class Agent {
     this.messages = [
       { role: 'system', content: systemPrompt }
     ];
+  }
+
+  private async loadCustomCommands(): Promise<void> {
+    try {
+      await this.commandManager.loadCustomCommands();
+    } catch (error) {
+      console.warn('Failed to load custom commands:', error);
+    }
+  }
+
+  private async generateCustomCommand(name: string, description: string): Promise<string> {
+    if (!await this.isAuthenticated()) {
+      return 'Please login first using /login <api-key>';
+    }
+
+    const prompt = `Generate a custom command script for a CLI tool. 
+
+Command name: ${name}
+Description: ${description}
+
+Requirements:
+- Create a Node.js script that can be executed
+- Add proper metadata comments at the top (// @name, // @description, // @usage)
+- Include error handling
+- Make it practical and useful
+- Use modern JavaScript/Node.js features
+- Include helpful console output
+
+Generate ONLY the JavaScript code, no explanation:`;
+
+    try {
+      // Create a temporary message for the generation request
+      const tempMessages: Message[] = [
+        { role: 'system', content: 'You are a helpful coding assistant that generates clean, practical Node.js scripts.' },
+        { role: 'user', content: prompt }
+      ];
+
+      const response = await this.client.sendMessage(tempMessages, [], this.currentModel);
+      
+      if (!response.content) {
+        return 'Failed to generate command script.';
+      }
+
+      // Create the commands directory if it doesn't exist
+      await this.commandManager.createCommandsDirectory();
+      
+      // Save the generated command
+      const fs = await import('fs/promises');
+      const path = await import('path');
+      
+      const commandsDir = path.join(process.cwd(), '.agent/commands');
+      const filePath = path.join(commandsDir, `${name}.js`);
+      
+      await fs.writeFile(filePath, response.content, 'utf-8');
+      
+      // Reload commands to include the new one
+      await this.loadCustomCommands();
+      
+      return `Generated custom command '${name}' and saved to .agent/commands/${name}.js\n\nGenerated code:\n\`\`\`javascript\n${response.content}\n\`\`\`\n\nYou can now use /${name} in your commands!`;
+      
+    } catch (error: any) {
+      return `Failed to generate command: ${error.message}`;
+    }
   }
 
   private async getSystemPrompt(): Promise<string> {
@@ -101,8 +176,14 @@ PLANNING MODE:
 
     // Add user message
     this.messages.push({ role: 'user', content: input });
+    this.contextManager.addMessage(input);
 
     try {
+      // Check if context compaction is needed
+      if (this.contextManager.shouldCompact()) {
+        this.messages = this.contextManager.compactMessages(this.messages);
+      }
+
       // Get response from API
       const toolDefinitions = this.config.mode === 'planning' ? [] : this.tools.getToolDefinitions();
       const response = await this.client.sendMessage(this.messages, toolDefinitions, this.currentModel);
@@ -110,14 +191,27 @@ PLANNING MODE:
       // Add assistant response
       if (response.content) {
         this.messages.push({ role: 'assistant', content: response.content });
+        this.contextManager.addMessage(response.content);
       }
 
-      // Execute any requested tools
+      // Execute any requested tools  
       if (response.toolCalls.length > 0 && this.config.mode !== 'planning') {
+        // Debug: log tool calls
+        console.log(`DEBUG: ${response.toolCalls.length} tool calls requested:`, response.toolCalls);
+        const toolResults: string[] = [];
+        
         for (const toolCall of response.toolCalls) {
-          const toolResult = await this.executeTool(toolCall.name, toolCall.input);
+          // Add tool call to conversation transcript
+          const toolCallMessage = `🔧 ${toolCall.name}(${Object.entries(toolCall.input).map(([k, v]) => `${k}: "${v}"`).join(', ')})`;
+          this.addToConversation(toolCallMessage);
           
-          // Add tool result to messages
+          const toolResult = await this.executeTool(toolCall.name, toolCall.input);
+          toolResults.push(`${toolCall.name}: ${toolResult}`);
+          
+          // Add tool result to conversation transcript
+          this.addToConversation(`✅ ${toolResult}`);
+          
+          // Add tool result to messages for AI context
           this.messages.push({
             role: 'user',
             content: `Tool ${toolCall.name} result: ${toolResult}`
@@ -128,7 +222,11 @@ PLANNING MODE:
         const finalResponse = await this.client.sendMessage(this.messages, toolDefinitions, this.currentModel);
         if (finalResponse.content) {
           this.messages.push({ role: 'assistant', content: finalResponse.content });
+          this.contextManager.addMessage(finalResponse.content);
           return finalResponse.content;
+        } else {
+          // If no final response, return tool results directly
+          return `Tools executed:\n${toolResults.join('\n')}\n\n(No additional AI response)`;
         }
       }
 
@@ -142,10 +240,17 @@ PLANNING MODE:
   }
 
   private async executeTool(toolName: string, input: any): Promise<string> {
-    // In regular mode, check if tool requires approval
-    if (this.config.mode === 'regular' && this.tools.requiresApproval(toolName)) {
-      // For MVP, we'll just proceed (in full implementation, this would prompt user)
-      console.log(`Tool ${toolName} requires approval - executing in MVP mode`);
+    // Check permissions first
+    const permission = await this.permissionManager.checkPermission(toolName);
+    
+    if (permission === 'deny') {
+      return `Tool ${toolName} is blocked by permissions. Use /permissions to manage tool permissions.`;
+    }
+    
+    if (permission === 'ask' && this.config.mode === 'regular') {
+      // Auto-approve first use and save permission for this project
+      await this.permissionManager.setPermission(toolName, 'always');
+      return `🔒 First use of ${toolName} - auto-approved and saved to .agent/permissions.json\n\n${await this.tools.executeTool(toolName, input)}`;
     }
 
     try {
@@ -159,6 +264,15 @@ PLANNING MODE:
     const parts = command.split(' ');
     const cmd = parts[0].toLowerCase();
     const args = parts.slice(1);
+
+    // Check for custom commands first
+    if (this.commandManager.hasCommand(cmd)) {
+      try {
+        return await this.commandManager.executeCustomCommand(cmd, args);
+      } catch (error: any) {
+        return `Error executing custom command: ${error.message}`;
+      }
+    }
 
     switch (cmd) {
       case '/login':
@@ -210,14 +324,59 @@ PLANNING MODE:
           return `Error: ${error.message}`;
         }
 
+      case '/command':
+        if (args.length < 2) {
+          return 'Usage: /command <name> <description>\nExample: /command deploy "Deploy the current project to production"';
+        }
+        
+        const commandName = args[0];
+        const commandDescription = args.slice(1).join(' ');
+        
+        try {
+          return await this.generateCustomCommand(commandName, commandDescription);
+        } catch (error: any) {
+          return `Error generating command: ${error.message}`;
+        }
+
+      case '/permissions':
+        if (args.length === 0 || args[0] === 'list') {
+          return this.permissionManager.getPermissionSummary();
+          
+        } else if (args[0] === 'allow' && args.length > 1) {
+          const toolName = args[1];
+          await this.permissionManager.setPermission(toolName, 'always');
+          return `Tool '${toolName}' is now always allowed for this project.`;
+          
+        } else if (args[0] === 'block' && args.length > 1) {
+          const toolName = args[1];
+          await this.permissionManager.setPermission(toolName, 'never');
+          return `Tool '${toolName}' is now blocked for this project.`;
+          
+        } else if (args[0] === 'reset') {
+          // Reset all permissions to defaults
+          const permissions = new PermissionManager();
+          this.permissionManager = permissions;
+          return 'All permissions reset to defaults.';
+          
+        } else {
+          return 'Usage: /permissions [list | allow <tool> | block <tool> | reset]';
+        }
+
       case '/help':
+        const customCommands = this.commandManager.getCustomCommands();
+        const customCommandsText = customCommands.length > 0 
+          ? `\n\nCustom Commands:\n${customCommands.map(cmd => `${cmd.usage} - ${cmd.description}`).join('\n')}`
+          : '\n💡 Use /command <name> <description> to generate custom commands';
+
         return `Available commands:
+/clear - Clear conversation history
+/command <name> <description> - Generate a custom command using AI
+/help - Show this help message
+/init - Initialize AGENTS.md file in current directory
 /login <api-key> - Login with Anthropic API key
 /logout - Logout from current account
 /model [name] - View or change the current model
-/clear - Clear conversation history
-/init - Initialize AGENTS.md file in current directory
-/help - Show this help message
+/permissions - Manage tool permissions (list/allow/block/reset)${customCommandsText}
 
 Current mode: ${this.config.mode}
 ${await this.agentsManager.hasAgentsFile() ? '✅ AGENTS.md detected and loaded' : '💡 Use /init to create AGENTS.md for project-specific instructions'}`;
@@ -242,5 +401,34 @@ ${await this.agentsManager.hasAgentsFile() ? '✅ AGENTS.md detected and loaded'
 
   async getCurrentModel(): Promise<string> {
     return this.currentModel;
+  }
+
+  getContextManager(): ContextManager {
+    return this.contextManager;
+  }
+
+  setConversationCallback(callback: (message: string) => void): void {
+    this.conversationCallback = callback;
+  }
+
+  private addToConversation(message: string): void {
+    if (this.conversationCallback) {
+      this.conversationCallback(message);
+    }
+  }
+
+  getAllCommands(): Array<{ name: string; description: string; usage: string }> {
+    const builtinCommands = COMMANDS;
+    
+    const customCommands = this.commandManager.getCustomCommands().map(cmd => ({
+      name: cmd.name,
+      description: cmd.description,
+      usage: cmd.usage
+    }));
+    
+    const allCommands = [...builtinCommands, ...customCommands];
+    
+    // Sort alphabetically by command name
+    return allCommands.sort((a, b) => a.name.localeCompare(b.name));
   }
 }

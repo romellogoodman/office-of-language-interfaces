@@ -1,8 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Text, Box, useInput } from "ink";
-import TextInput from "ink-text-input";
+import { Text, Box } from "ink";
 import { Agent } from "./agent.js";
 import { Command, COMMANDS } from "./constants.js";
+import { ContextUsage } from "./context.js";
+
+// Components
+import OutputFormatter from "./components/OutputFormatter.js";
+import StatusBar from "./components/StatusBar.js";
+import CommandSelector from "./components/CommandSelector.js";
+import ChatHistory from "./components/ChatHistory.js";
+import LoadingIndicator from "./components/LoadingIndicator.js";
+import InputArea from "./components/InputArea.js";
+
+// Hooks
+import { useKeyboardNavigation } from "./hooks/useKeyboardNavigation.js";
+import { useCommandFiltering } from "./hooks/useCommandFiltering.js";
 
 const App: React.FC = () => {
   // State variables
@@ -15,110 +27,42 @@ const App: React.FC = () => {
   const [showCommandSelector, setShowCommandSelector] = useState(false);
   const [filteredCommands, setFilteredCommands] = useState<Command[]>([]);
   const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
+  const [allCommands, setAllCommands] = useState<Command[]>(COMMANDS);
 
   // Command history state
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
 
+  // Mode switching state
+  const [currentMode, setCurrentMode] = useState<'regular' | 'autopilot' | 'planning'>('regular');
+  const [escapeCount, setEscapeCount] = useState(0);
+  const [escapeTimeout, setEscapeTimeout] = useState<NodeJS.Timeout | null>(null);
+
+
+  // Context state
+  const [contextUsage, setContextUsage] = useState<ContextUsage>({
+    used: 0,
+    total: 200000,
+    percentage: 0
+  });
+
   // Agent instance
   const [agent] = useState(() => new Agent({ mode: "regular" }));
 
-  // Initialize app and check authentication
-  useEffect(() => {
-    // Show welcome message and check auth status
-    const checkAuth = async () => {
-      const authenticated = await agent.isAuthenticated();
-      setIsAuthenticated(authenticated);
-
-      if (!authenticated) {
-        setOutput([
-          "To get started:",
-          "1. Login with your Anthropic API key: /login <your-api-key>",
-          "2. Type '/' to see available commands",
-          "3. Start chatting with the AI!",
-          "",
-        ]);
-      }
-    };
-
-    checkAuth();
-  }, [agent]);
-
-  // Handle input changes for command filtering
-  useEffect(() => {
-    if (input.startsWith("/") && input.length > 1) {
-      const query = input.toLowerCase();
-      const filtered = COMMANDS.filter(
-        (cmd) =>
-          cmd.name.toLowerCase().includes(query) ||
-          cmd.description.toLowerCase().includes(query.slice(1))
-      );
-      setFilteredCommands(filtered);
-      setSelectedCommandIndex(0);
-      setShowCommandSelector(filtered.length > 0);
-    } else if (input === "/") {
-      setFilteredCommands(COMMANDS);
-      setSelectedCommandIndex(0);
-      setShowCommandSelector(true);
-    } else {
-      setShowCommandSelector(false);
-      setFilteredCommands([]);
-    }
-  }, [input]);
+  // Mode cycling helper
+  const cycleMode = () => {
+    const modes: ('regular' | 'autopilot' | 'planning')[] = ['regular', 'autopilot', 'planning'];
+    const currentIndex = modes.indexOf(currentMode);
+    const nextMode = modes[(currentIndex + 1) % modes.length];
+    setCurrentMode(nextMode);
+    agent.setMode(nextMode);
+  };
 
   // Input handling functions
   const handleInputChange = (value: string) => {
     setInput(value);
     setHistoryIndex(-1);
   };
-
-  // Keyboard navigation handler
-  useInput((_, key) => {
-    if (showCommandSelector && filteredCommands.length > 0) {
-      // Command selector navigation
-      if (key.upArrow) {
-        setSelectedCommandIndex((prev) =>
-          prev > 0 ? prev - 1 : filteredCommands.length - 1
-        );
-      } else if (key.downArrow) {
-        setSelectedCommandIndex((prev) =>
-          prev < filteredCommands.length - 1 ? prev + 1 : 0
-        );
-      } else if (key.return) {
-        const selectedCommand = filteredCommands[selectedCommandIndex];
-        if (selectedCommand) {
-          setInput(selectedCommand.name + " ");
-          setShowCommandSelector(false);
-        }
-      } else if (key.escape) {
-        setShowCommandSelector(false);
-        setInput("");
-      }
-    } else {
-      // Command history navigation (when not showing command selector)
-      if (key.upArrow && commandHistory.length > 0) {
-        const newIndex =
-          historyIndex < commandHistory.length - 1
-            ? historyIndex + 1
-            : historyIndex;
-        setHistoryIndex(newIndex);
-        setInput(commandHistory[commandHistory.length - 1 - newIndex]);
-      } else if (key.downArrow) {
-        if (historyIndex > 0) {
-          const newIndex = historyIndex - 1;
-          setHistoryIndex(newIndex);
-          setInput(commandHistory[commandHistory.length - 1 - newIndex]);
-        } else if (historyIndex === 0) {
-          setHistoryIndex(-1);
-          setInput("");
-        }
-      } else if (key.escape) {
-        // Clear input when escape is pressed (in any context)
-        setInput("");
-        setHistoryIndex(-1);
-      }
-    }
-  });
 
   // Command execution handler
   const handleSubmit = async (value: string) => {
@@ -161,6 +105,11 @@ const App: React.FC = () => {
         const newAuthStatus = await agent.isAuthenticated();
         setIsAuthenticated(newAuthStatus);
       }
+
+      // Update commands if new command was generated
+      if (trimmedValue.startsWith("/command")) {
+        setAllCommands(agent.getAllCommands());
+      }
     } catch (error: any) {
       setOutput((prev) => [...prev, `Error: ${error.message}`, ""]);
     } finally {
@@ -168,92 +117,106 @@ const App: React.FC = () => {
     }
   };
 
+  // Initialize app and check authentication
+  useEffect(() => {
+    // Show welcome message and check auth status
+    const checkAuth = async () => {
+      const authenticated = await agent.isAuthenticated();
+      setIsAuthenticated(authenticated);
+
+      if (!authenticated) {
+        setOutput([
+          "To get started:",
+          "1. Login with your Anthropic API key: /login <your-api-key>",
+          "2. Type '/' to see available commands",
+          "3. Start chatting with the AI!",
+          "",
+        ]);
+      }
+    };
+
+    checkAuth();
+
+    // Set up context manager listener
+    const contextManager = agent.getContextManager();
+    const unsubscribeContext = contextManager.onUpdate((usage) => {
+      setContextUsage(usage);
+    });
+
+    // Update commands list to include custom commands
+    const updateCommands = () => {
+      setAllCommands(agent.getAllCommands());
+    };
+    updateCommands();
+
+    // Set up conversation callback for tool calls
+    agent.setConversationCallback((message: string) => {
+      setOutput(prev => [...prev, message]);
+    });
+
+    return () => {
+      unsubscribeContext();
+    };
+  }, [agent]);
+
+  // Use custom hooks
+  useCommandFiltering({
+    input,
+    allCommands,
+    setFilteredCommands,
+    setSelectedCommandIndex,
+    setShowCommandSelector
+  });
+
+  useKeyboardNavigation({
+    showCommandSelector,
+    filteredCommands,
+    selectedCommandIndex,
+    setSelectedCommandIndex,
+    setInput,
+    setShowCommandSelector,
+    commandHistory,
+    historyIndex,
+    setHistoryIndex,
+    escapeCount,
+    setEscapeCount,
+    escapeTimeout,
+    setEscapeTimeout,
+    setIsLoading,
+    setOutput,
+    cycleMode
+  });
+
   return (
-    <Box flexDirection="column">
+    <Box flexDirection="column" height={30}>
       <Text> </Text>
       <Text color="cyan" bold>
         👀 Blink CLI - AI Coding Assistant
       </Text>
       <Text> </Text>
 
-      {output.map((line, index) => {
-        const isCommand = line.startsWith(">");
-        const prevLine = output[index - 1];
-        const nextLine = output[index + 1];
-        const isFirstCommand = isCommand && !prevLine?.startsWith(">");
-        const isLastCommand = isCommand && !nextLine?.startsWith(">");
-        
-        return (
-          <React.Fragment key={index}>
-            {isFirstCommand && <Text> </Text>}
-            <Text color="white" dimColor={isCommand}>
-              {line}
-            </Text>
-            {isLastCommand && <Text> </Text>}
-          </React.Fragment>
-        );
-      })}
+      <ChatHistory output={output} />
 
-      {isLoading && <Text color="yellow">🤔 Thinking...</Text>}
+      <LoadingIndicator isVisible={isLoading} />
 
       <Text> </Text>
 
-      <Box>
-        <Text color="blue">$ </Text>
-        <TextInput
-          value={input}
-          onChange={handleInputChange}
-          onSubmit={handleSubmit}
-        />
-      </Box>
+      <InputArea
+        value={input}
+        onChange={handleInputChange}
+        onSubmit={handleSubmit}
+      />
 
-      {/* Status line */}
-      <Box
-        borderStyle="single"
-        borderColor="gray"
-        paddingX={1}
-        marginTop={1}
-        justifyContent="space-between"
-      >
-        {/* Left side - Mode */}
-        <Box>
-          <Text color="green" bold>
-            {agent.getMode().toUpperCase()} MODE
-          </Text>
-          <Text dimColor> | </Text>
-          <Text color={isAuthenticated ? "green" : "red"}>
-            {isAuthenticated ? "✅ Logged in" : "❌ Not logged in"}
-          </Text>
-        </Box>
+      <StatusBar
+        currentMode={currentMode}
+        contextUsage={contextUsage}
+      />
 
-        {/* Right side - Shortcuts */}
-        <Box>
-          <Text dimColor>
-            {showCommandSelector
-              ? "↑↓: navigate • enter: select • esc: cancel"
-              : "↑↓: history • /: commands"}
-          </Text>
-        </Box>
-      </Box>
-
-      {/* Live command suggestions */}
-      {showCommandSelector && filteredCommands.length > 0 && (
-        <Box flexDirection="column" marginTop={1} paddingLeft={2}>
-          {filteredCommands.map((cmd, index) => (
-            <Box key={cmd.name}>
-              <Text color={index === selectedCommandIndex ? "blue" : "gray"}>
-                {index === selectedCommandIndex ? "❯ " : "  "}
-              </Text>
-              <Text color={index === selectedCommandIndex ? "blue" : "white"}>
-                {cmd.usage}
-              </Text>
-              <Text color="gray" dimColor>
-                {" - " + cmd.description}
-              </Text>
-            </Box>
-          ))}
-        </Box>
-      )}
+      <CommandSelector
+        isVisible={showCommandSelector}
+        commands={filteredCommands}
+        selectedIndex={selectedCommandIndex}
+      />
     </Box>
   );
 };
