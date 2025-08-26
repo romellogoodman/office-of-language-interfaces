@@ -2,69 +2,36 @@ import React, { useState, useEffect } from "react";
 import { Text, Box, useInput } from "ink";
 import TextInput from "ink-text-input";
 import { Agent } from "./agent.js";
-
-interface Command {
-  name: string;
-  description: string;
-  usage: string;
-}
+import { Command, COMMANDS } from "./constants.js";
 
 const App: React.FC = () => {
+  // State variables
   const [input, setInput] = useState("");
   const [output, setOutput] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Command suggestion state
   const [showCommandSelector, setShowCommandSelector] = useState(false);
   const [filteredCommands, setFilteredCommands] = useState<Command[]>([]);
   const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Command history state
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+
+  // Agent instance
   const [agent] = useState(() => new Agent({ mode: "regular" }));
 
-  const commands: Command[] = [
-    {
-      name: "/login",
-      description: "Login with your Anthropic API key",
-      usage: "/login <api-key>",
-    },
-    {
-      name: "/logout",
-      description: "Sign out from your account",
-      usage: "/logout",
-    },
-    {
-      name: "/model",
-      description: "View or change the AI model",
-      usage: "/model [name]",
-    },
-    {
-      name: "/clear",
-      description: "Clear conversation history",
-      usage: "/clear",
-    },
-    { name: "/help", description: "Show help and usage", usage: "/help" },
-  ];
-
+  // Initialize app and check authentication
   useEffect(() => {
     // Show welcome message and check auth status
     const checkAuth = async () => {
       const authenticated = await agent.isAuthenticated();
       setIsAuthenticated(authenticated);
 
-      if (authenticated) {
+      if (!authenticated) {
         setOutput([
-          // "👀 Welcome to Blink - AI Coding Assistant",
-          // "",
-          // "✅ You are logged in and ready to go!",
-          // "",
-          // "Type '/' to see available commands",
-          // "Or start chatting with the AI!",
-          // "",
-        ]);
-      } else {
-        setOutput([
-          // "👀 Welcome to Blink - AI Coding Assistant",
-          // "",
           "To get started:",
           "1. Login with your Anthropic API key: /login <your-api-key>",
           "2. Type '/' to see available commands",
@@ -81,7 +48,7 @@ const App: React.FC = () => {
   useEffect(() => {
     if (input.startsWith("/") && input.length > 1) {
       const query = input.toLowerCase();
-      const filtered = commands.filter(
+      const filtered = COMMANDS.filter(
         (cmd) =>
           cmd.name.toLowerCase().includes(query) ||
           cmd.description.toLowerCase().includes(query.slice(1))
@@ -90,7 +57,7 @@ const App: React.FC = () => {
       setSelectedCommandIndex(0);
       setShowCommandSelector(filtered.length > 0);
     } else if (input === "/") {
-      setFilteredCommands(commands);
+      setFilteredCommands(COMMANDS);
       setSelectedCommandIndex(0);
       setShowCommandSelector(true);
     } else {
@@ -99,13 +66,13 @@ const App: React.FC = () => {
     }
   }, [input]);
 
-  // Reset history index when user types manually (not via arrow keys)
+  // Input handling functions
   const handleInputChange = (value: string) => {
     setInput(value);
     setHistoryIndex(-1);
   };
 
-  // Handle arrow keys and escape
+  // Keyboard navigation handler
   useInput((_, key) => {
     if (showCommandSelector && filteredCommands.length > 0) {
       // Command selector navigation
@@ -145,10 +112,15 @@ const App: React.FC = () => {
           setHistoryIndex(-1);
           setInput("");
         }
+      } else if (key.escape) {
+        // Clear input when escape is pressed (in any context)
+        setInput("");
+        setHistoryIndex(-1);
       }
     }
   });
 
+  // Command execution handler
   const handleSubmit = async (value: string) => {
     if (!value.trim()) return;
 
@@ -204,11 +176,23 @@ const App: React.FC = () => {
       </Text>
       <Text> </Text>
 
-      {output.map((line, index) => (
-        <Text key={index} color={line.startsWith(">") ? "green" : "white"}>
-          {line}
-        </Text>
-      ))}
+      {output.map((line, index) => {
+        const isCommand = line.startsWith(">");
+        const prevLine = output[index - 1];
+        const nextLine = output[index + 1];
+        const isFirstCommand = isCommand && !prevLine?.startsWith(">");
+        const isLastCommand = isCommand && !nextLine?.startsWith(">");
+        
+        return (
+          <React.Fragment key={index}>
+            {isFirstCommand && <Text> </Text>}
+            <Text color="white" dimColor={isCommand}>
+              {line}
+            </Text>
+            {isLastCommand && <Text> </Text>}
+          </React.Fragment>
+        );
+      })}
 
       {isLoading && <Text color="yellow">🤔 Thinking...</Text>}
 

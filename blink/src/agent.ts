@@ -2,6 +2,7 @@ import { AnthropicClient, Message, ApiResponse } from './client.js';
 import { ToolRegistry } from './tools.js';
 import { AuthManager } from './auth.js';
 import { ModelManager } from './models.js';
+import { AgentsManager } from './agents.js';
 
 export interface AgentConfig {
   mode: 'regular' | 'autopilot' | 'planning';
@@ -13,27 +14,34 @@ export class Agent {
   private tools: ToolRegistry;
   private auth: AuthManager;
   private models: ModelManager;
+  private agentsManager: AgentsManager;
   private messages: Message[] = [];
   private config: AgentConfig;
+  private currentModel: string;
 
   constructor(config: AgentConfig = { mode: 'regular' }) {
     this.client = new AnthropicClient();
     this.tools = new ToolRegistry();
     this.auth = new AuthManager();
     this.models = new ModelManager();
+    this.agentsManager = new AgentsManager();
     this.config = config;
+    this.currentModel = this.models.getDefaultModel().name;
     this.initializeSystemPrompt();
   }
 
-  private initializeSystemPrompt(): void {
-    const systemPrompt = this.getSystemPrompt();
+  private async initializeSystemPrompt(): Promise<void> {
+    const systemPrompt = await this.getSystemPrompt();
     this.messages = [
       { role: 'system', content: systemPrompt }
     ];
   }
 
-  private getSystemPrompt(): string {
+  private async getSystemPrompt(): Promise<string> {
     const mode = this.config.mode;
+    
+    // Load AGENTS.md instructions if available
+    const agentsInstructions = await this.agentsManager.getSystemInstructions();
     
     const basePrompt = `You are Blink, an AI coding assistant. You help users with software engineering tasks.
 
@@ -45,6 +53,12 @@ IMPORTANT GUIDELINES:
 
 AVAILABLE TOOLS:
 ${this.tools.getToolDefinitions().map(tool => `- ${tool.name}: ${tool.description}`).join('\n')}`;
+
+    // Add AGENTS.md instructions if available
+    const agentsSection = agentsInstructions ? `
+
+PROJECT-SPECIFIC INSTRUCTIONS:
+${agentsInstructions}` : '';
 
     const modeSpecificPrompt = {
       regular: `
@@ -67,7 +81,7 @@ PLANNING MODE:
 - Do not execute any file operations or commands in this mode`
     };
 
-    return basePrompt + '\n' + modeSpecificPrompt[mode];
+    return basePrompt + agentsSection + '\n' + modeSpecificPrompt[mode];
   }
 
   async isAuthenticated(): Promise<boolean> {
@@ -91,7 +105,7 @@ PLANNING MODE:
     try {
       // Get response from API
       const toolDefinitions = this.config.mode === 'planning' ? [] : this.tools.getToolDefinitions();
-      const response = await this.client.sendMessage(this.messages, toolDefinitions);
+      const response = await this.client.sendMessage(this.messages, toolDefinitions, this.currentModel);
 
       // Add assistant response
       if (response.content) {
@@ -111,7 +125,7 @@ PLANNING MODE:
         }
 
         // Get final response after tool execution
-        const finalResponse = await this.client.sendMessage(this.messages, toolDefinitions);
+        const finalResponse = await this.client.sendMessage(this.messages, toolDefinitions, this.currentModel);
         if (finalResponse.content) {
           this.messages.push({ role: 'assistant', content: finalResponse.content });
           return finalResponse.content;
@@ -149,12 +163,11 @@ PLANNING MODE:
     switch (cmd) {
       case '/login':
         if (args.length === 0) {
-          return 'Usage: /login <api-key> [model]';
+          return 'Usage: /login <api-key>';
         }
         try {
           const apiKey = args[0];
-          const model = args[1];
-          await this.auth.login(apiKey, model);
+          await this.auth.login(apiKey);
           await this.client.initialize();
           return 'Successfully logged in!';
         } catch (error: any) {
@@ -167,9 +180,8 @@ PLANNING MODE:
 
       case '/model':
         if (args.length === 0) {
-          const currentModel = await this.auth.getCurrentModel();
-          const modelInfo = this.models.getModelByName(currentModel);
-          return `Current model: ${modelInfo?.displayName || currentModel}\n\nAvailable models:\n${this.models.formatModelList()}`;
+          const modelInfo = this.models.getModelByName(this.currentModel);
+          return `Current model: ${modelInfo?.displayName || this.currentModel}\n\nAvailable models:\n${this.models.formatModelList()}`;
         } else {
           const modelName = args.join(' ');
           // Try to find model by display name or actual name
@@ -179,7 +191,7 @@ PLANNING MODE:
           );
           
           if (model) {
-            await this.auth.updateModel(model.name);
+            this.currentModel = model.name;
             return `Model changed to: ${model.displayName}`;
           } else {
             return `Invalid model. Available models:\n${this.models.formatModelList()}`;
@@ -190,16 +202,25 @@ PLANNING MODE:
         this.messages = [this.messages[0]]; // Keep system prompt
         return 'Conversation cleared!';
 
+      case '/init':
+        try {
+          await this.agentsManager.initializeAgentsFile();
+          return 'Created AGENTS.md file in current directory. Edit it to add project-specific instructions.';
+        } catch (error: any) {
+          return `Error: ${error.message}`;
+        }
+
       case '/help':
         return `Available commands:
-/login <api-key> [model] - Login with Anthropic API key
+/login <api-key> - Login with Anthropic API key
 /logout - Logout from current account
 /model [name] - View or change the current model
 /clear - Clear conversation history
+/init - Initialize AGENTS.md file in current directory
 /help - Show this help message
 
 Current mode: ${this.config.mode}
-Use Shift+Tab to cycle between modes (not implemented yet)`;
+${await this.agentsManager.hasAgentsFile() ? '✅ AGENTS.md detected and loaded' : '💡 Use /init to create AGENTS.md for project-specific instructions'}`;
 
       default:
         return `Unknown command: ${cmd}. Type /help for available commands.`;
@@ -220,6 +241,6 @@ Use Shift+Tab to cycle between modes (not implemented yet)`;
   }
 
   async getCurrentModel(): Promise<string> {
-    return await this.auth.getCurrentModel();
+    return this.currentModel;
   }
 }

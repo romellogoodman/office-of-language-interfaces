@@ -4,7 +4,6 @@ import { homedir } from 'os';
 
 export interface AuthConfig {
   apiKey: string;
-  model?: string;
   timestamp: string;
 }
 
@@ -25,12 +24,11 @@ export class AuthManager {
     }
   }
 
-  async login(apiKey: string, model?: string): Promise<void> {
+  async login(apiKey: string): Promise<void> {
     await this.ensureConfigDir();
     
     const config: AuthConfig = {
       apiKey,
-      model: model || 'claude-3-sonnet-20240229',
       timestamp: new Date().toISOString()
     };
 
@@ -69,17 +67,4 @@ export class AuthManager {
     return config?.apiKey || null;
   }
 
-  async getCurrentModel(): Promise<string> {
-    const config = await this.loadConfig();
-    return config?.model || 'claude-3-sonnet-20240229';
-  }
-
-  async updateModel(model: string): Promise<void> {
-    const config = await this.loadConfig();
-    if (config) {
-      config.model = model;
-      await fs.writeFile(this.configPath, JSON.stringify(config, null, 2));
-      this.config = config;
-    }
-  }
 }

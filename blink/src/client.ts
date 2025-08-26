@@ -42,13 +42,14 @@ export class AnthropicClient {
 
   async sendMessage(
     messages: Message[],
-    tools?: any[]
+    tools?: any[],
+    model?: string
   ): Promise<ApiResponse> {
     if (!await this.isInitialized() || !this.client) {
       throw new Error('Client not initialized. Please login first.');
     }
 
-    const model = await this.authManager.getCurrentModel();
+    const modelName = model || 'claude-sonnet-4-20250514';
     
     // Convert messages to Anthropic format
     const anthropicMessages = messages
@@ -59,7 +60,7 @@ export class AnthropicClient {
     const systemMessage = messages.find(m => m.role === 'system')?.content;
 
     const response = await this.client.messages.create({
-      model,
+      model: modelName,
       max_tokens: 4096,
       messages: anthropicMessages,
       system: systemMessage,
