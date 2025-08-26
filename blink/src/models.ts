@@ -7,28 +7,40 @@ export interface ModelConfig {
 
 export const AVAILABLE_MODELS: ModelConfig[] = [
   {
-    name: 'claude-3-opus-20240229',
-    displayName: 'Claude 3 Opus',
+    name: 'claude-opus-4-1-20250805',
+    displayName: 'Claude Opus 4.1',
     contextWindow: 200000,
-    description: 'Most capable model for complex tasks'
+    description: 'Most advanced and capable model'
   },
   {
-    name: 'claude-3-sonnet-20240229',
-    displayName: 'Claude 3 Sonnet',
+    name: 'claude-opus-4-20250514',
+    displayName: 'Claude Opus 4',
     contextWindow: 200000,
-    description: 'Balanced performance and speed'
+    description: 'Highly capable model for complex tasks'
+  },
+  {
+    name: 'claude-sonnet-4-20250514',
+    displayName: 'Claude Sonnet 4',
+    contextWindow: 200000,
+    description: 'Latest Sonnet model with balanced performance and speed'
+  },
+  {
+    name: 'claude-3-7-sonnet-20250219',
+    displayName: 'Claude Sonnet 3.7',
+    contextWindow: 200000,
+    description: 'Enhanced Sonnet model'
+  },
+  {
+    name: 'claude-3-5-haiku-20241022',
+    displayName: 'Claude Haiku 3.5',
+    contextWindow: 200000,
+    description: 'Fast and efficient model'
   },
   {
     name: 'claude-3-haiku-20240307',
-    displayName: 'Claude 3 Haiku',
+    displayName: 'Claude Haiku 3',
     contextWindow: 200000,
     description: 'Fastest model for simple tasks'
-  },
-  {
-    name: 'claude-3-5-sonnet-20241022',
-    displayName: 'Claude 3.5 Sonnet',
-    contextWindow: 200000,
-    description: 'Latest and most capable Sonnet model'
   }
 ];
 
@@ -46,7 +58,7 @@ export class ModelManager {
   }
 
   getDefaultModel(): ModelConfig {
-    return AVAILABLE_MODELS.find(m => m.name === 'claude-3-sonnet-20240229')!;
+    return AVAILABLE_MODELS.find(m => m.name === 'claude-sonnet-4-20250514')!;
   }
 
   formatModelList(): string {
