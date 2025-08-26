@@ -1,6 +1,6 @@
 # Website
 
-The website for Oli - [oli.software/](https://www.oli.software/).
+The website for Oli - [oli.software](https://www.oli.software).
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
