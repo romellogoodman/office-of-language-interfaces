@@ -64,28 +64,8 @@ export default function Home() {
           >
             open-source
           </a>{" "}
-          and freely available. Led by{" "}
-          <a
-            href="https://romellogoodman.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Romello Goodman
-          </a>
-          .
+          and freely available.
         </p>
-
-        {/* <p>
-          Led by{" "}
-          <a
-            href="https://romellogoodman.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Romello Goodman
-          </a>
-          .
-        </p> */}
       </div>
 
       <div className="posts-list">
