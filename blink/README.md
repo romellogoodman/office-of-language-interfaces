@@ -2,19 +2,18 @@
 
 🚧 **Alpha Version - Under Active Development** 🚧
 
-An open-source command line coding agent.
+Command line coding agent.
 
-## Development
+## Getting Started
 
-To develop and work on Blink locally:
+Install dependencies
 
 ```bash
-# Install dependencies
-npm install
+npm run start
+```
 
-# Run in development mode
+Run the development server:
+
+```bash
 npm run dev
-
-# Build for production
-npm run build
 ```
