@@ -46,13 +46,19 @@ export default function Home() {
     setMessages(messagesToResubmit);
     setIsLoading(true);
 
+    // Convert messages to Claude format
+    const chatMessages = messagesToResubmit.map(msg => ({
+      role: msg.isUser ? 'user' as const : 'assistant' as const,
+      content: msg.text,
+    }));
+
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: lastUserMessage.text, apiKey }),
+        body: JSON.stringify({ messages: chatMessages, apiKey }),
       });
 
       if (!response.ok) {
@@ -93,8 +99,15 @@ export default function Home() {
       isUser: true,
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setIsLoading(true);
+
+    // Convert all messages to Claude format
+    const chatMessages = updatedMessages.map(msg => ({
+      role: msg.isUser ? 'user' as const : 'assistant' as const,
+      content: msg.text,
+    }));
 
     try {
       const response = await fetch('/api/chat', {
@@ -102,7 +115,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message, apiKey }),
+        body: JSON.stringify({ messages: chatMessages, apiKey }),
       });
 
       if (!response.ok) {
