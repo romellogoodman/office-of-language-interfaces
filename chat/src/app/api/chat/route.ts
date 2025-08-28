@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sendMessage, sendChat, ChatMessage } from '@/lib/claude';
+import { sendChat, ChatMessage } from '@/lib/claude';
 
 export async function POST(request: NextRequest) {
   try {

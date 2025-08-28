@@ -1,4 +1,5 @@
 import { BotMessageSquare, RefreshCcw, Copy } from 'lucide-react';
+import Response from './Response';
 
 interface ChatMessageProps {
   message: string;
@@ -34,7 +35,7 @@ export default function ChatMessage({ message, isUser, onRefresh }: ChatMessageP
       </div>
       <div className="chat-message__wrapper">
         <div className="chat-message__content">
-          {message}
+          <Response content={message} />
         </div>
         <div className="chat-message__actions">
           <button className="chat-message__action-button" onClick={handleRefresh}>

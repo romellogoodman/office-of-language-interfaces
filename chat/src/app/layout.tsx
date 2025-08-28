@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import "./globals.scss";
+import "../scss/globals.scss";
+import "../scss/prism.scss";
 
 export const metadata: Metadata = {
   title: "Chat | Oli",
