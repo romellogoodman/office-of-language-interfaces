@@ -1,4 +1,4 @@
-# Blink
+# Blink Cli
 
 🚧 **Alpha Version - Under Active Development** 🚧
 

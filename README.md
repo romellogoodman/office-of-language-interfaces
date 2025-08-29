@@ -4,7 +4,7 @@ Oli is a research project exploring the different ways to design software that r
 
 ## Tools
 
-- **Blink** - Command line coding agent
+- **Blink CLI** - Command line coding agent
 - **Chat** - Web interface for LLM conversations
 - **Website** - Research and documentation website
 
