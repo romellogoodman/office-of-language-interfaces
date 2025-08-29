@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blink Chat</title>
+    <script>
+        // Fix for Electron global variable issue
+        if (typeof global === 'undefined') {
+            window.global = globalThis;
+        }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>

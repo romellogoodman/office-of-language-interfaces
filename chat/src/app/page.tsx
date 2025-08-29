@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Hourglass } from 'lucide-react';
 import ChatMessage from '@/components/ChatMessage';
 import ChatInput from '@/components/ChatInput';
@@ -20,13 +20,32 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [prefilledMessage, setPrefilledMessage] = useState<string>('');
+  const shouldScrollRef = useRef(false);
+  const chatInputRef = useRef<{ focus: () => void }>(null);
   const { apiKey, setApiKey, hasApiKey } = useApiKey();
   const { theme, setTheme } = useTheme();
 
-  // Scroll to bottom when new messages are added
+  // Auto-scroll to bottom when new messages are added
   useEffect(() => {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    if (shouldScrollRef.current) {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      shouldScrollRef.current = false;
+      
+      // Refocus the chat input after scrolling
+      setTimeout(() => {
+        if (chatInputRef.current) {
+          chatInputRef.current.focus();
+        }
+      }, 100);
+    }
   }, [messages]);
+
+  // Focus chat input on page load
+  useEffect(() => {
+    if (chatInputRef.current) {
+      chatInputRef.current.focus();
+    }
+  }, []);
 
   const handlePrefilledMessage = (message: string) => {
     setPrefilledMessage(message);
@@ -74,6 +93,7 @@ export default function Home() {
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+      shouldScrollRef.current = true;
     } catch (error) {
       console.error('Error regenerating message:', error);
       const errorMessage: Message = {
@@ -102,6 +122,7 @@ export default function Home() {
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setIsLoading(true);
+    shouldScrollRef.current = true;
 
     // Convert all messages to Claude format
     const chatMessages = updatedMessages.map(msg => ({
@@ -131,6 +152,7 @@ export default function Home() {
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+      shouldScrollRef.current = true;
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage: Message = {
@@ -173,6 +195,7 @@ export default function Home() {
           )}
         </div>
         <ChatInput 
+          ref={chatInputRef}
           onSendMessage={handleSendMessage} 
           isLoading={isLoading} 
           hasMessages={messages.length > 0} 

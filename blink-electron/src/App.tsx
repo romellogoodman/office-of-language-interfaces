@@ -1,13 +1,11 @@
-'use client';
-
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Hourglass } from 'lucide-react';
 import ChatMessage from '@/components/ChatMessage';
 import ChatInput from '@/components/ChatInput';
 import SettingsModal from '@/components/SettingsModal';
-import SearchParamsHandler from '@/components/SearchParamsHandler';
 import { useApiKey } from '@/hooks/useApiKey';
 import { useTheme } from '@/hooks/useTheme';
+import { sendClaudeMessage } from '@/lib/claude';
 
 interface Message {
   id: string;
@@ -15,22 +13,36 @@ interface Message {
   isUser: boolean;
 }
 
-export default function Home() {
+export default function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [prefilledMessage, setPrefilledMessage] = useState<string>('');
+  const shouldScrollRef = useRef(false);
+  const chatInputRef = useRef<{ focus: () => void }>(null);
   const { apiKey, setApiKey, hasApiKey } = useApiKey();
   const { theme, setTheme } = useTheme();
 
-  // Scroll to bottom when new messages are added
+  // Auto-scroll to bottom when new messages are added
   useEffect(() => {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    if (shouldScrollRef.current) {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      shouldScrollRef.current = false;
+      
+      // Refocus the chat input after scrolling
+      setTimeout(() => {
+        if (chatInputRef.current) {
+          chatInputRef.current.focus();
+        }
+      }, 100);
+    }
   }, [messages]);
 
-  const handlePrefilledMessage = (message: string) => {
-    setPrefilledMessage(message);
-  };
+  // Focus chat input on page load
+  useEffect(() => {
+    if (chatInputRef.current) {
+      chatInputRef.current.focus();
+    }
+  }, []);
 
   const regenerateFromMessage = async (messageIndex: number) => {
     const messagesToResubmit = messages.slice(0, messageIndex + 1);
@@ -53,27 +65,16 @@ export default function Home() {
     }));
 
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ messages: chatMessages, apiKey }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to send message');
-      }
-
-      const data = await response.json();
+      const response = await sendClaudeMessage(chatMessages, apiKey);
       
       const assistantMessage: Message = {
         id: Date.now().toString(),
-        text: data.response,
+        text: response,
         isUser: false,
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+      shouldScrollRef.current = true;
     } catch (error) {
       console.error('Error regenerating message:', error);
       const errorMessage: Message = {
@@ -82,6 +83,7 @@ export default function Home() {
         isUser: false,
       };
       setMessages(prev => [...prev, errorMessage]);
+      shouldScrollRef.current = true;
     } finally {
       setIsLoading(false);
     }
@@ -102,6 +104,7 @@ export default function Home() {
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setIsLoading(true);
+    shouldScrollRef.current = true;
 
     // Convert all messages to Claude format
     const chatMessages = updatedMessages.map(msg => ({
@@ -110,27 +113,16 @@ export default function Home() {
     }));
 
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ messages: chatMessages, apiKey }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to send message');
-      }
-
-      const data = await response.json();
+      const response = await sendClaudeMessage(chatMessages, apiKey);
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.response,
+        text: response,
         isUser: false,
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+      shouldScrollRef.current = true;
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage: Message = {
@@ -139,6 +131,7 @@ export default function Home() {
         isUser: false,
       };
       setMessages(prev => [...prev, errorMessage]);
+      shouldScrollRef.current = true;
     } finally {
       setIsLoading(false);
     }
@@ -148,7 +141,6 @@ export default function Home() {
 
   return (
     <>
-      <SearchParamsHandler onPrefilledMessage={handlePrefilledMessage} />
       <div className="chat-container">
         <div className="chat-messages">
           {messages.map((message, index) => (
@@ -173,12 +165,11 @@ export default function Home() {
           )}
         </div>
         <ChatInput 
+          ref={chatInputRef}
           onSendMessage={handleSendMessage} 
           isLoading={isLoading} 
           hasMessages={messages.length > 0} 
           onSettingsClick={() => setIsSettingsOpen(true)}
-          prefilledMessage={prefilledMessage}
-          onMessageChange={() => setPrefilledMessage('')}
         />
         <SettingsModal 
           isOpen={isSettingsOpen}

@@ -35,7 +35,7 @@ export default function ChatMessage({ message, isUser, onRefresh }: ChatMessageP
       </div>
       <div className="chat-message__wrapper">
         <div className="chat-message__content">
-          <Response content={message} />
+          <Response text={message} />
         </div>
         <div className="chat-message__actions">
           <button className="chat-message__action-button" onClick={handleRefresh}>

@@ -12,8 +12,6 @@ interface ChatInputProps {
   isLoading: boolean;
   hasMessages?: boolean;
   onSettingsClick: () => void;
-  prefilledMessage?: string;
-  onMessageChange?: () => void;
 }
 
 const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
@@ -23,8 +21,6 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
       isLoading,
       hasMessages = false,
       onSettingsClick,
-      prefilledMessage = "",
-      onMessageChange,
     },
     ref
   ) => {
@@ -39,22 +35,6 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
       },
     }));
 
-    // Handle prefilled message
-    useEffect(() => {
-      if (prefilledMessage && !message) {
-        setMessage(prefilledMessage);
-        // Adjust textarea height for prefilled content
-        setTimeout(() => {
-          const textarea = document.querySelector(
-            ".chat-input__field"
-          ) as HTMLTextAreaElement;
-          if (textarea) {
-            adjustHeight(textarea);
-            textarea.focus();
-          }
-        }, 0);
-      }
-    }, [prefilledMessage, message]);
 
     const adjustHeight = (textarea: HTMLTextAreaElement) => {
       textarea.style.height = "auto";
@@ -112,9 +92,6 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
               onChange={(e) => {
                 setMessage(e.target.value);
                 adjustHeight(e.target);
-                if (onMessageChange) {
-                  onMessageChange();
-                }
               }}
               onKeyDown={handleKeyDown}
               placeholder={hasMessages ? "Reply..." : "Lets chat..."}
