@@ -4,6 +4,7 @@ import path from 'path';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import matter from 'gray-matter';
 import { Metadata } from 'next';
+import { formatDate } from '@/utils/date';
 
 interface Params {
   slug: string;
@@ -63,7 +64,7 @@ export default async function ResearchPost({ params }: Props) {
         <header>
           <h1>{post.frontmatter.title}</h1>
           <time dateTime={post.frontmatter.publishedAt}>
-            {new Date(post.frontmatter.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            {formatDate(post.frontmatter.publishedAt)}
           </time>
         </header>
         <main>

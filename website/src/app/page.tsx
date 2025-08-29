@@ -3,6 +3,7 @@ import path from "path";
 import matter from "gray-matter";
 import Link from "next/link";
 import { Metadata } from "next";
+import { formatDate } from "@/utils/date";
 
 export const metadata: Metadata = {
   title: "Oli",
@@ -55,6 +56,17 @@ export default function Home() {
     <div className="main-content">
       <div className="homepage-intro">
         <p>
+          An{" "}
+          <a
+            href="https://github.com/romellogoodman/oli"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            open
+          </a>{" "}
+          research lab designing software that responds to language.
+        </p>
+        {/* <p>
           Oli is a research project exploring how to design software that
           responds to language. All of our research is{" "}
           <a
@@ -65,7 +77,7 @@ export default function Home() {
             open-source
           </a>{" "}
           and freely available.
-        </p>
+        </p> */}
       </div>
 
       <div className="posts-list">
@@ -77,11 +89,7 @@ export default function Home() {
                   <h3 className="post-title">{post.title}</h3>
                   <p className="post-meta">
                     <time dateTime={post.publishedAt} className="post-date">
-                      {new Date(post.publishedAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {formatDate(post.publishedAt)}
                     </time>
                     {post.summary}
                   </p>

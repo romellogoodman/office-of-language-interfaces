@@ -3,28 +3,21 @@ export default function Header() {
     <header>
       <div className="header-content">
         <p className="header-logo">
-          <a href="/">Open Language Interfaces</a>
+          <a href="/">Oli</a>
+          {/* <a href="/">Open Language Interfaces</a> */}
         </p>
-        <div className="header-links">
+        {/* <div className="header-links">
           <p>
+            by{" "}
             <a
-              href="https://chat.oli.software/"
+              href="https://romellogoodman.com"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Chat
+              Romello Goodman
             </a>
           </p>
-          <p>
-            <a
-              href="https://github.com/romellogoodman/oli/tree/main/blink"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Blink
-            </a>
-          </p>
-        </div>
+        </div> */}
       </div>
     </header>
   );

@@ -35,9 +35,9 @@ export default function Footer() {
               rel="noopener noreferrer"
             >
               Romello Goodman
-            </a>
+            </a>{" "}
+            in Baltimore, MD
           </p>
-          <p>Baltimore, MD {currentTime}</p>
         </div>
       </div>
     </footer>

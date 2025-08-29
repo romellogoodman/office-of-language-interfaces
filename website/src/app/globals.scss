@@ -14,10 +14,15 @@
 }
 
 :root {
-  --max-content-width: 800px;
-  --bg-color: #212121;
-  --primary-color: #b0afed;
-  --text-color: #ffffff;
+  --max-content-width: 80ch;
+  --page-padding: var(--space-layout-padding);
+  --color-lavender: #b0afed;
+  --color-peach: #f4c2a1;
+  --color-sage: #85c7a3;
+
+  --background-color: var(--color-sage);
+  --link-color: #000000;
+  --text-color: #000000;
 
   /* Fonts */
   --font-heading: "Public Sans", sans-serif;
@@ -34,10 +39,6 @@
   --font-size-6: 2.5rem;
   --font-size-7: 3rem;
   --font-size-8: 3.5rem;
-  --font-size-fluid-0: clamp(0.75rem, 2vw, 1rem);
-  --font-size-fluid-1: clamp(1rem, 4vw, 1.5rem);
-  --font-size-fluid-2: clamp(1.5rem, 6vw, 2.5rem);
-  --font-size-fluid-3: clamp(2rem, 9vw, 3.5rem);
 
   /* Sizing */
   --size-000: -8px;
@@ -59,13 +60,14 @@
   --size-15: 480px;
 
   /* Font Sizes - Display (Headlines) */
-  --font-size-display-s: var(--font-size-5); /* 2rem */
-  --font-size-display-m: var(--font-size-6); /* 2.5rem */
-  --font-size-display-l: var(--font-size-7); /* 3rem */
+  --font-size-display-s: var(--font-size-4); /* 2rem */
+  --font-size-display-m: var(--font-size-5); /* 2.5rem */
+  --font-size-display-l: var(--font-size-6); /* 3rem */
 
   /* Font Sizes - Paragraph (Body) */
-  --font-size-paragraph-s: var(--font-size-2); /* 1.1rem */
-  --font-size-paragraph-m: var(--font-size-3); /* 1.25rem */
+  --font-size-paragraph-s: var(--font-size-1); /* 1.1rem */
+  // Do we want a medium size?
+  // --font-size-paragraph-m:
   --font-size-paragraph-l: var(--font-size-4); /* 1.5rem */
 
   /* Font Sizes - Detail (Supporting) */
@@ -105,18 +107,18 @@ body {
   margin: 0;
   padding: 0;
   font-family: var(--font-body);
-  background-color: var(--bg-color);
+  background-color: var(--background-color);
   color: var(--text-color);
 }
 
 /* Links */
 a {
-  color: var(--primary-color);
+  color: var(--link-color);
   text-decoration: underline;
 }
 
 a:hover {
-  opacity: 0.8;
+  opacity: 1;
 }
 
 /* Typography */
@@ -147,23 +149,15 @@ h3 {
   margin-bottom: var(--space-stack-s);
 }
 
-h4 {
+h4,
+h5,
+h6 {
   font-size: var(--font-size-paragraph-l);
   margin-bottom: var(--space-stack-s);
 }
 
-h5 {
-  font-size: var(--font-size-paragraph-m);
-  margin-bottom: var(--space-stack-s);
-}
-
-h6 {
-  font-size: var(--font-size-paragraph-s);
-  margin-bottom: var(--space-stack-s);
-}
-
 p {
-  font-size: var(--font-size-paragraph-m);
+  font-size: var(--font-size-paragraph);
   line-height: 1.6;
   margin-bottom: var(--space-stack-s);
 }
@@ -175,16 +169,12 @@ time {
 /* Layout Components */
 .header-content {
   max-width: var(--max-content-width);
-  margin: 0 auto;
-  padding: var(--space-layout-padding);
+  padding: var(--page-padding);
   display: flex;
-  justify-content: space-between;
   flex-direction: column;
   gap: var(--space-stack-xs);
-  font-weight: var(--font-weight-semibold);
 
   @include minWidth(md) {
-    flex-direction: row;
     gap: 0;
   }
 }
@@ -195,7 +185,7 @@ time {
 
 .header-logo {
   font-family: var(--font-heading);
-  font-size: var(--font-size-paragraph-m);
+  font-size: var(--font-size-paragraph-l);
   font-weight: var(--font-weight-semibold);
 
   a {
@@ -203,41 +193,39 @@ time {
   }
 }
 
-.header-links {
-  display: flex;
-  gap: var(--space-stack-s);
+// .header-links {
+//   display: flex;
+//   gap: var(--space-stack-s);
 
-  @include minWidth(md) {
-    gap: var(--space-stack-m);
-  }
+//   @include minWidth(md) {
+//     gap: var(--space-stack-m);
+//   }
 
-  a {
-    // color: var(--text-color);
-  }
+//   // a {
+//   //   color: var(--text-color);
+//   // }
 
-  p {
-    font-family: var(--font-heading);
-    font-size: var(--font-size-paragraph-s);
-  }
-}
+//   p {
+//     font-family: var(--font-heading);
+//     font-size: var(--font-size-paragraph);
+//   }
+// }
 
 .main-content {
-  max-width: var(--max-content-width);
-  margin: 0 auto;
-  padding: 40px var(--space-layout-padding);
+  padding: 40px var(--page-padding);
 }
 
 .footer-content {
   max-width: var(--max-content-width);
-  margin: 0 auto var(--space-stack-xl);
-  padding: var(--space-stack-s) var(--space-layout-padding) 0;
-  font-weight: var(--font-weight-semibold);
-  font-family: var(--font-heading);
+  margin: 0 0 var(--space-stack-xl);
+  padding: var(--space-stack-s) var(--page-padding) 0;
+  // font-weight: var(--font-weight-semibold);
+  // font-family: var(--font-heading);
 }
 
 .footer-inner {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-direction: column;
   gap: var(--space-stack-xs);
   border-top: 1.5px solid var(--text-color);
@@ -251,25 +239,21 @@ time {
     margin: 0;
     font-size: var(--font-size-detail-m);
   }
-
-  @include minWidth(md) {
-    flex-direction: row;
-    gap: 0;
-  }
 }
 
 /* Homepage */
 .homepage-intro {
   margin-bottom: var(--space-stack-xl);
+  max-width: var(--max-content-width);
 
   p {
-    font-size: var(--font-size-display-s);
+    font-size: var(--font-size-paragraph-l);
   }
 }
 
-.posts-list {
-  /* Container for all posts */
-}
+// .posts-list {
+//   /* Container for all posts */
+// }
 
 .post-item {
   margin-bottom: var(--space-stack-l);
@@ -282,10 +266,6 @@ time {
 
 .post-title {
   margin: 0 0 var(--space-stack-xs) 0;
-  font-family: var(--font-heading);
-  font-weight: var(--font-weight-semibold);
-  font-size: var(--font-size-paragraph-l);
-  transition: text-decoration 0.2s ease;
 }
 
 .post-link:hover .post-title {
@@ -294,12 +274,12 @@ time {
 
 .post-meta {
   margin: 0;
-  font-size: var(--font-size-paragraph-s);
+  font-size: var(--font-size-paragraph);
   line-height: 1.6;
 }
 
 .post-date {
-  color: #999;
+  color: var(--text-color);
   font-size: var(--font-size-detail-m);
   margin-right: var(--size-03);
 }
@@ -307,6 +287,31 @@ time {
 /* Research Pages */
 .research-content {
   max-width: var(--max-content-width);
-  margin: 0 auto;
-  padding: 40px 20px;
+  padding: 40px var(--page-padding);
+
+  header {
+    margin-bottom: var(--space-stack-l);
+
+    h1 {
+      margin-bottom: var(--space-stack-xs);
+      text-wrap: balance;
+    }
+  }
+}
+
+/* 404 Page */
+.not-found {
+  max-width: var(--max-content-width);
+
+  h1 {
+    margin-bottom: var(--space-stack-s);
+  }
+
+  p {
+    margin-bottom: var(--space-stack-s);
+  }
+
+  a {
+    text-decoration: underline;
+  }
 }
