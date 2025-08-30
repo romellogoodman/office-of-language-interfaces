@@ -311,7 +311,54 @@ time {
     margin-bottom: var(--space-stack-s);
   }
 
-  a {
-    text-decoration: underline;
+  .poem-generator {
+    margin-bottom: var(--space-stack-l);
+  }
+
+  .poem-result {
+    margin-bottom: var(--space-stack-l);
+  }
+
+  .poem-content {
+    margin-bottom: var(--space-stack-s);
+    // padding: var(--size-04);
+    // border: 1px solid var(--text-color);
+    white-space: pre-line;
+
+    p {
+      margin-bottom: var(--space-stack-xs);
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .button-group {
+    display: flex;
+    gap: var(--size-03);
+    align-items: center;
+  }
+
+  .generate-poem-btn,
+  .home-btn {
+    background: transparent;
+    border: 1px solid var(--text-color);
+    color: var(--text-color);
+    padding: var(--size-02) var(--size-04);
+    font-family: var(--font-body);
+    font-size: var(--font-size-paragraph);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
 }
