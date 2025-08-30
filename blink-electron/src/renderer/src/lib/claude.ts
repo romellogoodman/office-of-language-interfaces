@@ -9,20 +9,21 @@ export interface ChatMessage {
   content: string;
 }
 
-export async function sendMessage(message: string, apiKey: string): Promise<string> {
+export async function sendMessage({ prompt, apiKey, model = DEFAULT_CLAUDE_MODEL }: { prompt: string; apiKey: string; model?: string }): Promise<string> {
   try {
     const anthropic = new Anthropic({
       apiKey: apiKey,
+      dangerouslyAllowBrowser: true
     });
 
     const response = await anthropic.messages.create({
-      model: DEFAULT_CLAUDE_MODEL,
+      model: model,
       max_tokens: 1000,
       system: SYSTEM_PROMPT,
       messages: [
         {
           role: 'user',
-          content: message,
+          content: prompt,
         },
       ],
     });
@@ -35,14 +36,15 @@ export async function sendMessage(message: string, apiKey: string): Promise<stri
   }
 }
 
-export async function sendChat(messages: ChatMessage[], apiKey: string): Promise<string> {
+export async function sendChat({ messages, apiKey, model = DEFAULT_CLAUDE_MODEL }: { messages: ChatMessage[]; apiKey: string; model?: string }): Promise<string> {
   try {
     const anthropic = new Anthropic({
       apiKey: apiKey,
+      dangerouslyAllowBrowser: true
     });
 
     const response = await anthropic.messages.create({
-      model: DEFAULT_CLAUDE_MODEL,
+      model: model,
       max_tokens: 1000,
       system: SYSTEM_PROMPT,
       messages: messages.map(msg => ({

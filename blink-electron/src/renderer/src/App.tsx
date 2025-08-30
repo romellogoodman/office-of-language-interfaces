@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Hourglass } from 'lucide-react';
 import ChatMessage from './components/ChatMessage';
 import ChatInput from './components/ChatInput';
-import SettingsModal from './components/SettingsModal';
+import CommandCenter from './components/CommandCenter';
 import { useApiKey } from './hooks/useApiKey';
 import { useTheme } from './hooks/useTheme';
 import { sendChat, ChatMessage as ClaudeMessage } from './lib/claude';
@@ -18,7 +18,7 @@ interface Message {
 function App(): JSX.Element {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isCommandCenterOpen, setIsCommandCenterOpen] = useState(false);
   const shouldScrollRef = useRef(false);
   const chatInputRef = useRef<{ focus: () => void }>(null);
   const { apiKey, setApiKey, hasApiKey } = useApiKey();
@@ -46,13 +46,26 @@ function App(): JSX.Element {
     }
   }, []);
 
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey && e.key === 'k') {
+        e.preventDefault();
+        setIsCommandCenterOpen(prev => !prev);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const regenerateFromMessage = async (messageIndex: number) => {
     const messagesToResubmit = messages.slice(0, messageIndex + 1);
     const lastUserMessage = messagesToResubmit.filter(m => m.isUser).pop();
     
     if (!lastUserMessage) return;
     if (!hasApiKey) {
-      setIsSettingsOpen(true);
+      setIsCommandCenterOpen(true);
       return;
     }
 
@@ -67,7 +80,7 @@ function App(): JSX.Element {
     }));
 
     try {
-      const response = await sendChat(chatMessages, apiKey);
+      const response = await sendChat({ messages: chatMessages, apiKey });
       
       const assistantMessage: Message = {
         id: Date.now().toString(),
@@ -92,7 +105,7 @@ function App(): JSX.Element {
 
   const handleSendMessage = async (message: string): Promise<boolean> => {
     if (!hasApiKey) {
-      setIsSettingsOpen(true);
+      setIsCommandCenterOpen(true);
       return false;
     }
 
@@ -114,7 +127,7 @@ function App(): JSX.Element {
     }));
 
     try {
-      const response = await sendChat(chatMessages, apiKey);
+      const response = await sendChat({ messages: chatMessages, apiKey });
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -169,13 +182,13 @@ function App(): JSX.Element {
           onSendMessage={handleSendMessage} 
           isLoading={isLoading} 
           hasMessages={messages.length > 0} 
-          onSettingsClick={() => setIsSettingsOpen(true)}
+          onCommandClick={() => setIsCommandCenterOpen(true)}
           prefilledMessage=""
           onMessageChange={() => {}}
         />
-        <SettingsModal 
-          isOpen={isSettingsOpen}
-          onClose={() => setIsSettingsOpen(false)}
+        <CommandCenter 
+          isOpen={isCommandCenterOpen}
+          onClose={() => setIsCommandCenterOpen(false)}
           onApiKeyUpdate={setApiKey}
           theme={theme}
           onThemeUpdate={setTheme}

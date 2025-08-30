@@ -1,19 +1,13 @@
-import {
-  useState,
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-} from "react";
-import { Settings, SendHorizontal } from "lucide-react";
+import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react'
+import { SendHorizontal, SquareSlash } from 'lucide-react'
 
 interface ChatInputProps {
-  onSendMessage: (message: string) => Promise<boolean>;
-  isLoading: boolean;
-  hasMessages?: boolean;
-  onSettingsClick: () => void;
-  prefilledMessage?: string;
-  onMessageChange?: () => void;
+  onSendMessage: (message: string) => Promise<boolean>
+  isLoading: boolean
+  hasMessages?: boolean
+  onCommandClick: () => void
+  prefilledMessage?: string
+  onMessageChange?: () => void
 }
 
 const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
@@ -22,85 +16,78 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
       onSendMessage,
       isLoading,
       hasMessages = false,
-      onSettingsClick,
-      prefilledMessage = "",
-      onMessageChange,
+      onCommandClick,
+      prefilledMessage = '',
+      onMessageChange
     },
     ref
   ) => {
-    const [message, setMessage] = useState("");
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const [message, setMessage] = useState('')
+    const textareaRef = useRef<HTMLTextAreaElement>(null)
 
     useImperativeHandle(ref, () => ({
       focus: () => {
         if (textareaRef.current) {
-          textareaRef.current.focus();
+          textareaRef.current.focus()
         }
-      },
-    }));
+      }
+    }))
 
     // Handle prefilled message
     useEffect(() => {
       if (prefilledMessage && !message) {
-        setMessage(prefilledMessage);
+        setMessage(prefilledMessage)
         // Adjust textarea height for prefilled content
         setTimeout(() => {
-          const textarea = document.querySelector(
-            ".chat-input__field"
-          ) as HTMLTextAreaElement;
+          const textarea = document.querySelector('.chat-input__field') as HTMLTextAreaElement
           if (textarea) {
-            adjustHeight(textarea);
-            textarea.focus();
+            adjustHeight(textarea)
+            textarea.focus()
           }
-        }, 0);
+        }, 0)
       }
-    }, [prefilledMessage, message]);
+    }, [prefilledMessage, message])
 
     const adjustHeight = (textarea: HTMLTextAreaElement) => {
-      textarea.style.height = "auto";
-      textarea.style.height = Math.min(textarea.scrollHeight, 200) + "px";
-    };
+      textarea.style.height = 'auto'
+      textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px'
+    }
 
     const handleSubmit = async () => {
       if (message.trim() && !isLoading) {
-        const messageToSend = message.trim();
+        const messageToSend = message.trim()
 
         // Clear input immediately for better UX
-        setMessage("");
+        setMessage('')
         // Reset textarea height immediately
         setTimeout(() => {
-          const textarea = document.querySelector(
-            ".chat-input__field"
-          ) as HTMLTextAreaElement;
+          const textarea = document.querySelector('.chat-input__field') as HTMLTextAreaElement
           if (textarea) {
-            textarea.style.height = "auto";
+            textarea.style.height = 'auto'
           }
-        }, 0);
+        }, 0)
 
-        const success = await onSendMessage(messageToSend);
+        const success = await onSendMessage(messageToSend)
         if (!success) {
           // If failed (no API key), restore the message
-          setMessage(messageToSend);
+          setMessage(messageToSend)
           setTimeout(() => {
-            const textarea = document.querySelector(
-              ".chat-input__field"
-            ) as HTMLTextAreaElement;
+            const textarea = document.querySelector('.chat-input__field') as HTMLTextAreaElement
             if (textarea) {
-              textarea.style.height = "auto";
-              textarea.style.height =
-                Math.min(textarea.scrollHeight, 200) + "px";
+              textarea.style.height = 'auto'
+              textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px'
             }
-          }, 0);
+          }, 0)
         }
       }
-    };
+    }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        handleSubmit();
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault()
+        handleSubmit()
       }
-    };
+    }
 
     return (
       <div className="chat-input">
@@ -110,23 +97,28 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
               ref={textareaRef}
               value={message}
               onChange={(e) => {
-                setMessage(e.target.value);
-                adjustHeight(e.target);
+                setMessage(e.target.value)
+                adjustHeight(e.target)
                 if (onMessageChange) {
-                  onMessageChange();
+                  onMessageChange()
                 }
               }}
               onKeyDown={handleKeyDown}
-              placeholder={hasMessages ? "Reply..." : "Lets chat..."}
+              placeholder={hasMessages ? 'Reply...' : 'Lets chat...'}
               className="chat-input__field"
               rows={1}
             />
           </div>
           <div className="chat-input__buttons">
-            <div className="chat-input__buttons-right">
-              <button className="chat-input__button" onClick={onSettingsClick}>
-                <Settings size={16} />
+            <div className="chat-input__buttons-left">
+              <button
+                className="chat-input__button"
+                onClick={onCommandClick}
+              >
+                <SquareSlash size={16} />
               </button>
+            </div>
+            <div className="chat-input__buttons-right">
               <button
                 onClick={handleSubmit}
                 className="chat-input__button chat-input__button--primary"
@@ -138,10 +130,10 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
           </div>
         </div>
       </div>
-    );
+    )
   }
-);
+)
 
-ChatInput.displayName = "ChatInput";
+ChatInput.displayName = 'ChatInput'
 
-export default ChatInput;
+export default ChatInput
