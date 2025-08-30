@@ -85,6 +85,11 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
     const handleKeyDown = (e: React.KeyboardEvent) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault()
+        e.stopPropagation()
+        handleSubmit()
+      } else if (e.key === 'Enter' && e.metaKey) {
+        e.preventDefault()
+        e.stopPropagation()
         handleSubmit()
       }
     }

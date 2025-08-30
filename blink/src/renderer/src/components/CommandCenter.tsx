@@ -1,40 +1,29 @@
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import { ArrowLeft, X } from 'lucide-react'
 import CommandList from './CommandList'
 import SubmenuApiKey from './SubmenuApiKey'
 import SubmenuTheme from './SubmenuTheme'
 import { Theme } from '../hooks/useTheme'
+import { useCommandCenter } from '../hooks/useCommandCenter'
 
 interface CommandCenterProps {
-  isOpen: boolean
-  onClose: () => void
+  commandCenter: ReturnType<typeof useCommandCenter>
   onApiKeyUpdate: (apiKey: string) => void
   theme: Theme
   onThemeUpdate: (theme: Theme) => void
 }
 
-type View = 'commands' | 'api-key' | 'theme'
-
 export default function CommandCenter({
-  isOpen,
-  onClose,
+  commandCenter,
   onApiKeyUpdate,
   theme,
   onThemeUpdate
 }: CommandCenterProps) {
-  const [currentView, setCurrentView] = useState<View>('commands')
   const overlayRef = useRef<HTMLDivElement>(null)
-
-  // Reset to main view when opening
-  useEffect(() => {
-    if (isOpen) {
-      setCurrentView('commands')
-    }
-  }, [isOpen])
 
   // Dynamic positioning above chat input
   useEffect(() => {
-    if (isOpen && overlayRef.current) {
+    if (commandCenter.isOpen && overlayRef.current) {
       const updatePosition = () => {
         const chatInput = document.querySelector('.chat-input')
         if (chatInput && overlayRef.current) {
@@ -47,81 +36,39 @@ export default function CommandCenter({
       window.addEventListener('resize', updatePosition)
       return () => window.removeEventListener('resize', updatePosition)
     }
-  }, [isOpen])
+  }, [commandCenter.isOpen])
 
-  // Handle Escape key
-  useEffect(() => {
-    if (isOpen) {
-      const handleEscape = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          if (currentView === 'commands') {
-            onClose()
-          } else {
-            setCurrentView('commands')
-          }
-        }
-      }
-
-      document.addEventListener('keydown', handleEscape)
-      return () => document.removeEventListener('keydown', handleEscape)
-    }
-  }, [isOpen, currentView, onClose])
-
-  const handleBack = () => {
-    setCurrentView('commands')
-  }
-
-  const handleOpenApiKey = () => {
-    setCurrentView('api-key')
-  }
-
-  const handleOpenTheme = () => {
-    setCurrentView('theme')
-  }
-
-  if (!isOpen) return null
-
-  const getViewTitle = () => {
-    switch (currentView) {
-      case 'commands':
-        return 'Commands'
-      case 'api-key':
-        return 'API Key'
-      case 'theme':
-        return 'Theme'
-    }
-  }
-
-  const showBackButton = currentView !== 'commands'
+  if (!commandCenter.isOpen) return null
 
   return (
-    <div ref={overlayRef} className="command-center-overlay" onClick={onClose}>
+    <div ref={overlayRef} className="command-center-overlay" onClick={commandCenter.close}>
       <div className="command-center" onClick={(e) => e.stopPropagation()}>
         <div className="command-center__header">
           <div className="command-center__header-left">
-            {showBackButton && (
-              <button className="command-center__back" onClick={handleBack}>
+            {commandCenter.showBackButton && (
+              <button className="command-center__back" onClick={commandCenter.goBack}>
                 <ArrowLeft size={16} />
               </button>
             )}
-            <h2 className="command-center__title">{getViewTitle()}</h2>
+            <h2 className="command-center__title">{commandCenter.viewTitle}</h2>
           </div>
-          <button className="command-center__close" onClick={onClose}>
+          <button className="command-center__close" onClick={commandCenter.close}>
             <X size={20} />
           </button>
         </div>
 
         <div className="command-center__content">
-          {currentView === 'commands' && (
+          {commandCenter.currentView === 'commands' && (
             <CommandList 
-              onOpenApiKey={handleOpenApiKey} 
-              onOpenTheme={handleOpenTheme}
+              onOpenApiKey={commandCenter.openApiKey} 
+              onOpenTheme={commandCenter.openTheme}
+              selectedIndex={commandCenter.selectedIndex}
             />
           )}
-          {currentView === 'api-key' && (
-            <SubmenuApiKey onApiKeyUpdate={onApiKeyUpdate} />
+          {commandCenter.currentView === 'api-key' && (
+            <SubmenuApiKey onApiKeyUpdate={onApiKeyUpdate} onClose={commandCenter.close} />
           )}
-          {currentView === 'theme' && (
+          {commandCenter.currentView === 'theme' && (
             <SubmenuTheme theme={theme} onThemeUpdate={onThemeUpdate} />
           )}
         </div>

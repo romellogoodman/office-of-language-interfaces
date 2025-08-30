@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react'
 
 interface SubmenuApiKeyProps {
   onApiKeyUpdate: (apiKey: string) => void
+  onClose: () => void
 }
 
-export default function SubmenuApiKey({ onApiKeyUpdate }: SubmenuApiKeyProps) {
+export default function SubmenuApiKey({ onApiKeyUpdate, onClose }: SubmenuApiKeyProps) {
   const [apiKey, setApiKey] = useState('')
   const [hasExistingKey, setHasExistingKey] = useState(false)
 
@@ -20,6 +21,7 @@ export default function SubmenuApiKey({ onApiKeyUpdate }: SubmenuApiKeyProps) {
     if (apiKey.trim()) {
       localStorage.setItem('anthropic_api_key', apiKey.trim())
       onApiKeyUpdate(apiKey.trim())
+      onClose()
     }
   }
 
