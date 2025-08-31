@@ -34,11 +34,47 @@ Based on the above git changes, create a single commit with a Gitmoji-style comm
 **Instructions:**
 1. Stage all changes with `git add .`
 2. Analyze the changes and choose the most appropriate Gitmoji
-3. Create a commit message in format: `emoji description`
-4. If custom message provided as $ARGUMENTS, incorporate it: `emoji $ARGUMENTS`
-5. Commit the changes
+3. Create a commit message with:
+   - Title: `emoji description` (if custom message provided as $ARGUMENTS, use: `emoji $ARGUMENTS`)
+   - Body: Detailed changelog in keepachangelog format listing specific changes
+4. Commit the changes using HEREDOC format
 
-Example formats:
-- `✨ add user authentication system`
-- `🐛 fix memory leak in data processing`
-- `📚 update API documentation`
+**Commit Message Format:**
+```
+🎯 title description
+
+## Added
+- New features or capabilities
+
+## Changed  
+- Modified existing functionality
+
+## Fixed
+- Bug fixes and corrections
+
+## Removed
+- Deleted files or features
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+**Example:**
+```
+✨ add user authentication system
+
+## Added
+- User registration and login endpoints
+- JWT token authentication middleware  
+- Password hashing with bcrypt
+- User session management
+
+## Changed
+- Updated API routes to require authentication
+- Modified user model schema
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
