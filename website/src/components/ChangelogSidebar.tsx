@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import ButtonLink from "@/components/ButtonLink";
 
 interface Commit {
   hash: string;
@@ -60,14 +61,13 @@ export default function ChangelogSidebar() {
             <div className="changelog-line">
               {/* <time className="changelog-date">{new Date(commit.date).toLocaleDateString()}</time> */}
               <div className="changelog-message">{commit.message}</div>
-              <a 
+              <ButtonLink
                 href={`https://github.com/romellogoodman/oli/commit/${commit.hash}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="changelog-hash"
               >
                 {commit.hash.substring(0, 7)}
-              </a>
+              </ButtonLink>
             </div>
           </div>
         ))}

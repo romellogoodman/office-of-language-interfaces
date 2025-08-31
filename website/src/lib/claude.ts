@@ -58,3 +58,28 @@ export async function sendChat({ messages, model = DEFAULT_CLAUDE_MODEL }: { mes
     throw new Error('Failed to get response from Claude');
   }
 }
+
+export async function fetchClaude({ prompt, model = 'claude-3-5-haiku-20241022' }: { prompt: string; model?: string }): Promise<string> {
+  try {
+    const response = await fetch('/api/claude', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        prompt,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch from Claude API');
+    }
+
+    const data = await response.json();
+    return data.response;
+  } catch (error) {
+    console.error('Error fetching Claude API:', error);
+    throw new Error('Failed to get response from Claude');
+  }
+}
