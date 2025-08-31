@@ -36,8 +36,8 @@ export function useCommandCenter() {
     const target = e.target as HTMLElement
     const isInInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA'
 
-    // Cmd+K - Toggle command center (only when not in input)
-    if (e.metaKey && e.key === 'k' && !e.repeat && !isInInput) {
+    // Cmd+K - Toggle command center (works from anywhere)
+    if (e.metaKey && e.key === 'k' && !e.repeat) {
       e.preventDefault()
       setIsOpen(prev => !prev)
       return
