@@ -53,3 +53,15 @@ src/
 - Page components are client components that contain the main logic for each page
 - App router pages (in `src/app/`) are thin wrappers that import and render the corresponding Page component
 - This separation allows for better code organization and reusability
+
+## Documentation
+
+The project maintains comprehensive documentation in the `docs/` folder:
+
+- **[docs/README.md](docs/README.md)** - Documentation index and overview
+- **[docs/api-security.md](docs/api-security.md)** - API security implementation and middleware usage
+- **[docs/components.md](docs/components.md)** - Component architecture and patterns  
+- **[docs/project-structure.md](docs/project-structure.md)** - File organization and development workflow
+- **[docs/styling-system.md](docs/styling-system.md)** - Design system, SCSS architecture, and styling conventions
+
+**Maintenance**: Documentation should be updated when making significant architectural changes, adding new security features, or changing component patterns. The docs provide detailed implementation guides and examples for future development.
