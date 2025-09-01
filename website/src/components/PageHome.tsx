@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { formatDate } from "@/utils/date";
 import GenerationControls from "@/components/GenerationControls";
+import { EXPAND_RESEARCH_DESCRIPTION_PROMPT } from "@/prompts/expand-research-description";
 
 interface Post {
   slug: string;
@@ -20,28 +21,7 @@ export default function PageHome({ posts }: PageHomeProps) {
   const initialText =
     "An open research lab designing software that responds to language.";
 
-  const generatePrompt = (currentText: string, generations: string[]) => {
-    const targetWordCount = Math.max(15, 15 + generations.length * 10);
-
-    const previousGenerations = generations
-      .slice(0, -2)
-      .map((gen, i) => `Generation ${i + 1}: ${gen}`)
-      .join("\n\n");
-
-    const contextPrompt = previousGenerations
-      ? `Here are the previous generations for context:\n\n${previousGenerations}\n\n`
-      : "";
-
-    return `${contextPrompt}Please rewrite this text: "${currentText}"
-
-Requirements:
-- Keep the core meaning about being an open-source research lab designing software that responds to language (this means tools for interfacing with llms)
-- Make it approximately ${targetWordCount} words long
-- Make it more detailed and expansive than the original
-- Keep it engaging and descriptive
-- Build upon the evolution shown in previous generations but don't repeat exact phrases
-- Only return the rewritten text, nothing else`;
-  };
+  const generatePrompt = () => EXPAND_RESEARCH_DESCRIPTION_PROMPT;
 
   const { currentText, controls } = GenerationControls({
     initialText,
