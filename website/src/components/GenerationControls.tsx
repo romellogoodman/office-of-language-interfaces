@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import ButtonControl from '@/components/ButtonControl';
-import { fetchClaude } from '@/lib/claude';
+import { useState } from "react";
+import ButtonControl from "@/components/ButtonControl";
+import { fetchClaude } from "@/lib/claude";
 
 interface GenerationControlsProps {
   initialText: string;
@@ -13,11 +13,12 @@ interface GenerationControlsProps {
 export default function GenerationControls({
   initialText,
   generatePrompt,
-  model = 'claude-3-5-haiku-20241022'
+  model = "claude-3-5-haiku-20241022",
 }: GenerationControlsProps) {
   const [generations, setGenerations] = useState<string[]>([initialText]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [dotCount, setDotCount] = useState(3);
 
   const currentText = generations[currentIndex];
   const canGoPrevious = currentIndex > 0;
@@ -25,6 +26,7 @@ export default function GenerationControls({
 
   const handleGenerate = async () => {
     setIsGenerating(true);
+    setDotCount(Math.floor(Math.random() * 4) + 3); // Random between 3-6
     try {
       const prompt = generatePrompt(currentText, generations);
 
@@ -37,7 +39,7 @@ export default function GenerationControls({
       setGenerations(newGenerations);
       setCurrentIndex(newGenerations.length - 1);
     } catch (error) {
-      console.error('Error generating text:', error);
+      console.error("Error generating text:", error);
     } finally {
       setIsGenerating(false);
     }
@@ -45,13 +47,13 @@ export default function GenerationControls({
 
   const handlePrevious = () => {
     if (canGoPrevious) {
-      setCurrentIndex(prev => prev - 1);
+      setCurrentIndex((prev) => prev - 1);
     }
   };
 
   const handleNext = () => {
     if (canGoNext) {
-      setCurrentIndex(prev => prev + 1);
+      setCurrentIndex((prev) => prev + 1);
     }
   };
 
@@ -75,9 +77,20 @@ export default function GenerationControls({
           onClick={handleGenerate}
           className={isGenerating ? "generating" : ""}
         >
-          {isGenerating ? "generating..." : "generate"}
+          {isGenerating ? (
+            <>
+              generating
+              <span className="dots">
+                {Array.from({ length: dotCount }, (_, i) => (
+                  <span key={i}>.</span>
+                ))}
+              </span>
+            </>
+          ) : (
+            "generate"
+          )}
         </ButtonControl>
       </div>
-    )
+    ),
   };
 }

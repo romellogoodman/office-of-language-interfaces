@@ -473,6 +473,9 @@ time {
   border: none;
   cursor: pointer;
   flex-shrink: 0;
+  // transition: all 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
 
   &:hover {
     background: rgba(0, 0, 0, 0.1);
@@ -505,6 +508,48 @@ time {
 .generation-counter {
   font-size: var(--font-size-detail-s);
   font-family: monospace;
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(0, 0, 0, 0.8);
   padding: var(--size-01) var(--size-02);
+}
+
+/* Animated dots for generating state */
+.dots span {
+  animation: dots-fade 1.2s infinite;
+}
+
+.dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.dots span:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+.dots span:nth-child(5) {
+  animation-delay: 0.8s;
+}
+
+.dots span:nth-child(6) {
+  animation-delay: 1s;
+}
+
+@keyframes dots-fade {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
