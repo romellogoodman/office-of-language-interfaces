@@ -63,6 +63,9 @@ export default async function ResearchPost({ params }: Props) {
       <article>
         <header>
           <h1>{post.frontmatter.title}</h1>
+          {post.frontmatter.subhead && (
+            <p className="research-subhead">{post.frontmatter.subhead}</p>
+          )}
           <time dateTime={post.frontmatter.publishedAt}>
             {formatDate(post.frontmatter.publishedAt)}
           </time>

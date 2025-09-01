@@ -324,6 +324,15 @@ time {
       margin-bottom: var(--space-stack-xs);
       text-wrap: balance;
     }
+
+    .research-subhead {
+      font-size: var(--font-size-detail-m);
+      margin: 0 0 var(--space-stack-xs) 0;
+    }
+
+    time {
+      font-size: var(--font-size-detail-m);
+    }
   }
 
   /* Body content styles */
