@@ -488,6 +488,7 @@ time {
   &.generating {
     opacity: 0.7;
     cursor: not-allowed;
+    animation: skeleton-flash 2s infinite ease-in-out;
   }
 
   &.disabled {
@@ -514,7 +515,15 @@ time {
 
 /* Animated dots for generating state */
 .dots span {
+  display: inline-block;
+}
+
+.dots.fade-animation span {
   animation: dots-fade 1.2s infinite;
+}
+
+.dots.bounce-animation span {
+  animation: dots-bounce 1.2s infinite;
 }
 
 .dots span:nth-child(1) {
@@ -551,5 +560,33 @@ time {
   }
   100% {
     opacity: 0;
+  }
+}
+
+@keyframes dots-bounce {
+  0%,
+  15% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-3px);
+  }
+  55% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes skeleton-flash {
+  0% {
+    background: rgba(0, 0, 0, 0.05);
+  }
+  50% {
+    background: rgba(0, 0, 0, 0.15);
+  }
+  100% {
+    background: rgba(0, 0, 0, 0.05);
   }
 }

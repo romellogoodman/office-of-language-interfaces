@@ -19,6 +19,7 @@ export default function GenerationControls({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [dotCount, setDotCount] = useState(3);
+  const [animationType, setAnimationType] = useState<"fade" | "bounce">("fade");
 
   const currentText = generations[currentIndex];
   const canGoPrevious = currentIndex > 0;
@@ -27,17 +28,31 @@ export default function GenerationControls({
   const handleGenerate = async () => {
     setIsGenerating(true);
     setDotCount(Math.floor(Math.random() * 4) + 3); // Random between 3-6
+    setAnimationType(Math.random() < 0.5 ? "fade" : "bounce"); // Random animation
+
+    const USE_MOCK = false; // Set to false to use real API
+
     try {
-      const prompt = generatePrompt(currentText, generations);
+      if (USE_MOCK) {
+        // Mock delay for testing animations
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const mockResponse =
+          "This is a mock response for testing the animations.";
+        const newGenerations = [...generations, mockResponse];
+        setGenerations(newGenerations);
+        setCurrentIndex(newGenerations.length - 1);
+      } else {
+        const prompt = generatePrompt(currentText, generations);
 
-      const response = await fetchClaude({
-        prompt,
-        model,
-      });
+        const response = await fetchClaude({
+          prompt,
+          model,
+        });
 
-      const newGenerations = [...generations, response];
-      setGenerations(newGenerations);
-      setCurrentIndex(newGenerations.length - 1);
+        const newGenerations = [...generations, response];
+        setGenerations(newGenerations);
+        setCurrentIndex(newGenerations.length - 1);
+      }
     } catch (error) {
       console.error("Error generating text:", error);
     } finally {
@@ -80,7 +95,7 @@ export default function GenerationControls({
           {isGenerating ? (
             <>
               generating
-              <span className="dots">
+              <span className={`dots ${animationType}-animation`}>
                 {Array.from({ length: dotCount }, (_, i) => (
                   <span key={i}>.</span>
                 ))}
