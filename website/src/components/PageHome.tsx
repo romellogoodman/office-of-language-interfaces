@@ -17,17 +17,20 @@ interface PageHomeProps {
 }
 
 export default function PageHome({ posts }: PageHomeProps) {
-  const initialText = "An open research lab designing software that responds to language.";
-  
+  const initialText =
+    "An open research lab designing software that responds to language.";
+
   const generatePrompt = (currentText: string, generations: string[]) => {
     const targetWordCount = Math.max(15, 15 + generations.length * 10);
-    
-    const previousGenerations = generations.slice(0, -2).map((gen, i) => 
-      `Generation ${i + 1}: ${gen}`
-    ).join('\n\n');
-    
-    const contextPrompt = previousGenerations ? 
-      `Here are the previous generations for context:\n\n${previousGenerations}\n\n` : '';
+
+    const previousGenerations = generations
+      .slice(0, -2)
+      .map((gen, i) => `Generation ${i + 1}: ${gen}`)
+      .join("\n\n");
+
+    const contextPrompt = previousGenerations
+      ? `Here are the previous generations for context:\n\n${previousGenerations}\n\n`
+      : "";
 
     return `${contextPrompt}Please rewrite this text: "${currentText}"
 
@@ -50,18 +53,6 @@ Requirements:
       <div className="homepage-intro">
         <p>{currentText}</p>
         {controls}
-        {/* <p>
-          Oli is a research project exploring how to design software that
-          responds to language. All of our research is{" "}
-          <a
-            href="https://github.com/romellogoodman/oli"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            open-source
-          </a>{" "}
-          and freely available.
-        </p> */}
       </div>
 
       <div className="posts-list">

@@ -6,8 +6,8 @@ import { ipRateLimiter } from '@/lib/rate-limiter';
 
 export async function POST(request: NextRequest) {
   return withFullProtection(request, async ({ clientIP, body }) => {
-    const prompt = body.prompt || '';
-    const model = body.model || '';
+    const prompt = typeof body.prompt === 'string' ? body.prompt : '';
+    const model = typeof body.model === 'string' ? body.model : '';
 
     // Validate request
     const validation = validateRequest(prompt, model);

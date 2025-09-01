@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { Metadata } from "next";
-import { formatDate } from "@/utils/date";
 import PageHome from "@/components/PageHome";
 
 export const metadata: Metadata = {

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import ButtonLink from "@/components/ButtonLink";
 import ButtonControl from "@/components/ButtonControl";
 
@@ -9,25 +8,6 @@ interface FooterProps {
 }
 
 export default function Footer({ commitHash }: FooterProps) {
-  const [currentTime, setCurrentTime] = useState<string>("");
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString("en-US", {
-        timeZone: "America/New_York",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      });
-      setCurrentTime(timeString);
-    };
-
-    updateTime();
-    const interval = setInterval(updateTime, 60000); // Update every minute
-
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <footer>

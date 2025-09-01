@@ -5,7 +5,7 @@ import { logRequest } from '@/lib/request-validator';
 
 export interface MiddlewareContext {
   clientIP: string;
-  body: any;
+  body: Record<string, unknown>;
 }
 
 export interface MiddlewareOptions {
@@ -26,7 +26,7 @@ export async function withApiMiddleware(
   } = options;
 
   const clientIP = getClientIP(request);
-  let body: any = {};
+  let body: Record<string, unknown> = {};
 
   try {
     // Parse request body
