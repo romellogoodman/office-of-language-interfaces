@@ -1,0 +1,12 @@
+{
+  "name": "oli",
+  "version": "1.0.0",
+  "description": "Open Language Interfaces monorepo",
+  "scripts": {
+    "dev:website": "cd website && npm run dev",
+    "dev:blink": "cd blink && npm run dev",
+    "dw": "npm run dev:website",
+    "db": "npm run dev:blink"
+  },
+  "private": true
+}
