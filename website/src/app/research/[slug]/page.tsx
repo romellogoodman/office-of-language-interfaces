@@ -68,7 +68,9 @@ export default async function ResearchPost({ params }: Props) {
           </time>
         </header>
         <main>
-          <MDXRemote source={post.content} />
+          <div className="body-section">
+            <MDXRemote source={post.content} />
+          </div>
         </main>
       </article>
     </div>
