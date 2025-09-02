@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: "Oli - Office of Language Interfaces",
   description:
     "Office of Language Interfaces is an open research lab designing software that responds to language.",
+  icons: {
+    icon: "/api/favicon?color=%2385c7a3", // URL encoded sage green
+  },
 };
 
 export default async function RootLayout({
