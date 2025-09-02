@@ -1,10 +1,11 @@
-# Open Language Interfaces (Oli)
+# Office of Language Interfaces (Oli)
 
-Oli is a research project exploring the different ways to design software that responds to language. All of our research is open-source and freely available.
+Oli is an open research lab designing software that responds to language. Our research is open-source and freely available.
 
 ## Tools
 
-- **Blink CLI** - Command line coding agent
+- **Blink** - Electron interface for LLM conversations
+- **CLI** - Command line coding agent
 - **Chat** - Web interface for LLM conversations
 - **Website** - Research and documentation website
 

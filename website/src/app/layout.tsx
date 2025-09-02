@@ -6,8 +6,9 @@ import Footer from "@/components/Footer";
 import { getLatestCommitHash } from "@/lib/build-info";
 
 export const metadata: Metadata = {
-  title: "Oli - Open Language Interfaces",
-  description: "Open Language Interfaces",
+  title: "Oli - Office of Language Interfaces",
+  description:
+    "Office of Language Interfaces is an open research lab designing software that responds to language.",
 };
 
 export default async function RootLayout({

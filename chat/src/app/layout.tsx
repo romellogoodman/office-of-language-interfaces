@@ -4,7 +4,7 @@ import "../scss/prism.scss";
 
 export const metadata: Metadata = {
   title: "Chat | Oli",
-  description: "Open Language Interfaces - Chat",
+  description: "Office of Language Interfaces - Chat",
 };
 
 export default function RootLayout({
