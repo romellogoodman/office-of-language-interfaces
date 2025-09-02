@@ -5,7 +5,7 @@ import { Metadata } from "next";
 import PageHome from "@/components/PageHome";
 
 export const metadata: Metadata = {
-  title: "Oli",
+  title: "Office of Language Interfaces | Oli",
 };
 
 interface Post {
@@ -50,6 +50,6 @@ function getAllPosts(): Post[] {
 
 export default function Home() {
   const posts = getAllPosts();
-  
+
   return <PageHome posts={posts} />;
 }
