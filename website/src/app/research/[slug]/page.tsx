@@ -16,7 +16,7 @@ interface Props {
 
 function getPostBySlug(slug: string) {
   try {
-    const postsDirectory = path.join(process.cwd(), 'content/research');
+    const postsDirectory = path.join(process.cwd(), 'research');
     const fullPath = path.join(postsDirectory, `${slug}.mdx`);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);

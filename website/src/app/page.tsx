@@ -17,7 +17,7 @@ interface Post {
 }
 
 function getAllPosts(): Post[] {
-  const postsDirectory = path.join(process.cwd(), "content/research");
+  const postsDirectory = path.join(process.cwd(), "research");
 
   if (!fs.existsSync(postsDirectory)) {
     return [];
