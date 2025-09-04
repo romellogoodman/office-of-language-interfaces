@@ -5,8 +5,6 @@ Oli is an open research lab designing software that responds to language. Our re
 ## Tools
 
 - **Blink** - Electron interface for LLM conversations
-- **CLI** - Command line coding agent
-- **Chat** - Web interface for LLM conversations
 - **Website** - Research and documentation website
 
 ## Author
