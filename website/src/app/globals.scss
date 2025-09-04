@@ -408,6 +408,12 @@ time {
       }
     }
   }
+
+  .research-actions {
+    display: flex;
+    gap: var(--size-02);
+    margin-top: var(--space-stack-s);
+  }
 }
 
 /* 404 Page */

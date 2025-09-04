@@ -3,6 +3,7 @@ import path from "path";
 import matter from "gray-matter";
 import { Metadata } from "next";
 import PageHome from "@/components/PageHome";
+import { isDev } from "@/utils/env";
 
 export const metadata: Metadata = {
   title: "Office of Language Interfaces | Oli",
@@ -39,7 +40,7 @@ function getAllPosts(): Post[] {
         draft: data.draft || false,
       };
     })
-    .filter((post) => !post.draft)
+    .filter((post) => isDev ? true : !post.draft)
     .sort(
       (a, b) =>
         new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()

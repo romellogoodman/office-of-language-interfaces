@@ -1,17 +1,17 @@
 interface ButtonLinkProps {
   children: React.ReactNode;
   href: string;
-  className?: string;
   target?: string;
   rel?: string;
+  className?: string;
 }
 
 export default function ButtonLink({ 
   children, 
   href, 
-  className = "",
-  target,
-  rel
+  target, 
+  rel, 
+  className = "" 
 }: ButtonLinkProps) {
   return (
     <a

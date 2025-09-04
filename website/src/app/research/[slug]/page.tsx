@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation';
 import fs from 'fs';
 import path from 'path';
-import { MDXRemote } from 'next-mdx-remote/rsc';
 import matter from 'gray-matter';
 import { Metadata } from 'next';
-import { formatDate } from '@/utils/date';
+import { isDev } from '@/utils/env';
+import PageResearch from '@/components/PageResearch';
 
 interface Params {
   slug: string;
@@ -21,8 +21,8 @@ function getPostBySlug(slug: string) {
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
     
-    // Don't return draft posts
-    if (data.draft) {
+    // Don't return draft posts in production
+    if (data.draft && !isDev) {
       return null;
     }
     
@@ -58,24 +58,5 @@ export default async function ResearchPost({ params }: Props) {
     notFound();
   }
 
-  return (
-    <div className="research-content">
-      <article>
-        <header>
-          <h1>{post.frontmatter.title}</h1>
-          {post.frontmatter.subhead && (
-            <p className="research-subhead">{post.frontmatter.subhead}</p>
-          )}
-          <time dateTime={post.frontmatter.publishedAt}>
-            {formatDate(post.frontmatter.publishedAt)}
-          </time>
-        </header>
-        <main>
-          <div className="body-section">
-            <MDXRemote source={post.content} />
-          </div>
-        </main>
-      </article>
-    </div>
-  );
+  return <PageResearch post={post} slug={slug} />;
 }

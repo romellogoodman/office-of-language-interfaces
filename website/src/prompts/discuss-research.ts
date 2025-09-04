@@ -1,0 +1,2 @@
+export const DISCUSS_RESEARCH_PROMPT = (url: string) => 
+  `Please read the content at this URL: ${url}. After reviewing it, identify 3-5 key discussion points or interesting aspects from the material that would make for engaging conversation. For each point, briefly explain why it's worth discussing and what questions or perspectives it might raise.`;
