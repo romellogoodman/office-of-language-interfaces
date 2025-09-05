@@ -2,14 +2,17 @@ import { MetadataRoute } from 'next'
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
-import { isDev } from '@/utils/env'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://oli.software'
 
   // Research posts
   const postsDirectory = path.join(process.cwd(), 'research')
-  let posts: any[] = []
+  let posts: Array<{
+    slug: string;
+    publishedAt: string;
+    draft: boolean;
+  }> = []
 
   if (fs.existsSync(postsDirectory)) {
     const filenames = fs.readdirSync(postsDirectory)

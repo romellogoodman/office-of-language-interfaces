@@ -21,6 +21,14 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <link 
+          rel="alternate" 
+          type="application/rss+xml" 
+          title="Office of Language Interfaces RSS Feed" 
+          href="/rss.xml" 
+        />
+      </head>
       <body>
         <Favicon />
         <Header />
