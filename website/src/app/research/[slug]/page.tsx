@@ -27,7 +27,11 @@ function getPostBySlug(slug: string) {
     }
     
     return {
-      frontmatter: data,
+      frontmatter: {
+        title: data.title || '',
+        subhead: data.subhead,
+        publishedAt: data.publishedAt || '',
+      },
       content,
     };
   } catch {
