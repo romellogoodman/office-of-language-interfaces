@@ -4,9 +4,7 @@
   "description": "OLI monorepo",
   "scripts": {
     "dev:website": "cd website && npm run dev",
-    "dev:blink": "cd blink && npm run dev",
-    "dw": "npm run dev:website",
-    "db": "npm run dev:blink"
+    "dev": "npm run dev:website"
   },
   "private": true
 }
