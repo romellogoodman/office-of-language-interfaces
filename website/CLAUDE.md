@@ -21,8 +21,9 @@ npx tsc --noEmit
 
 - Next.js 15 with App Router
 - TypeScript
-- SCSS for styling (using BEM naming conventions) - **All styles are in `src/app/globals.scss`, no inline styles**
+- SCSS for styling with CSS custom properties (tokens) - **All styles are in `src/app/globals.scss`, no inline styles**
 - **Proto components**: Interactive demos and experiments go in `src/components/prototype/` with styles in `prototypes.scss`
+- react-lucide for standard icons (Copy, ArrowLeft, ArrowRight, RefreshCw)
 - ESLint for code quality
 
 ## Project Structure
@@ -30,7 +31,7 @@ npx tsc --noEmit
 ```
 src/
 ├── app/
-│   ├── globals.scss     # Global styles
+│   ├── globals.scss     # Global styles with CSS tokens
 │   ├── layout.tsx       # Root layout component
 │   ├── page.tsx         # Homepage
 │   ├── not-found.tsx    # 404 page
@@ -41,11 +42,22 @@ src/
 │   ├── Header.tsx       # Site header component
 │   ├── PageHome.tsx     # Homepage component
 │   ├── PageNotFound.tsx # 404 page component
-│   ├── ButtonControl.tsx # Reusable button component
+│   ├── PageResearch.tsx # Research page with MDX components
+│   ├── ButtonControl.tsx # Reusable button component with icon support
+│   ├── ButtonLink.tsx   # Link-style button component
+│   ├── ButtonIconRow.tsx # Multi-icon button component
+│   ├── ResearchActions.tsx # Research page action buttons
+│   ├── Icons/           # Custom SVG icon components
+│   │   ├── IconClaude.tsx
+│   │   ├── IconOpenAI.tsx
+│   │   └── IconMistral.tsx
 │   └── prototype/       # Interactive demos and experiments
+│       ├── ProtoPromptBuilder.tsx # Prompt prefilling demo
 │       └── prototypes.scss # Styles for all proto components
 ├── lib/
 │   └── claude.ts        # Claude API utilities
+├── prompts/             # Reusable prompt templates
+│   └── discuss-research.ts
 └── content/
     └── research/        # MDX research posts
 ```
@@ -56,15 +68,24 @@ src/
 - Page components are client components that contain the main logic for each page
 - App router pages (in `src/app/`) are thin wrappers that import and render the corresponding Page component
 - This separation allows for better code organization and reusability
+- **Icon Components**: Custom SVG icons go in `src/components/Icons/` with `Icon` prefix (e.g., `IconClaude`, `IconOpenAI`)
+- **Button Components**: Use `ButtonControl` for interactive buttons with optional icon prop, `ButtonLink` for navigation links
 
 ## Proto Component Guidelines
 
 - **Naming**: All proto components must use the `Proto` prefix (e.g., `ProtoPromptBuilder`, `ProtoSlider`)
 - **Location**: All proto components go in `src/components/prototype/`
-- **Styling**: All proto styles go in `prototypes.scss` - never inline styles
+- **Styling**: All proto styles go in `prototypes.scss` - never inline styles, use CSS tokens from globals.scss
 - **Display**: Proto components should display "Proto:" prefix in their UI titles
 - **Purpose**: Interactive demos, experiments, and prototypes for research articles
 - **MDX Integration**: Register proto components in `PageResearch.tsx` components mapping
+
+## Styling System
+
+- **CSS Tokens**: Use custom properties defined in `globals.scss` (e.g., `--button-background`, `--button-text-color`)
+- **Button Styling**: All buttons use `.button-control` class with flexbox layout and gap spacing
+- **Icon Integration**: Icons appear after text in buttons, use `size={14}` for consistency
+- **Hover States**: Implement `:hover` states using CSS tokens for consistent theming
 
 ## Documentation
 
