@@ -31,6 +31,7 @@ function getPostBySlug(slug: string) {
         title: data.title || "",
         subhead: data.subhead,
         publishedAt: data.publishedAt || "",
+        furtherReading: data.furtherReading,
       },
       content,
     };

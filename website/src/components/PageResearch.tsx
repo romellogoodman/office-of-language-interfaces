@@ -4,11 +4,18 @@ import ResearchActions from '@/components/ResearchActions';
 import CodeBlock from '@/components/CodeBlock';
 import ProtoPromptBuilder from '@/components/prototype/ProtoPromptBuilder';
 
+interface FurtherReading {
+  title: string;
+  author: string;
+  url: string;
+}
+
 interface Post {
   frontmatter: {
     title: string;
     subhead?: string;
     publishedAt: string;
+    furtherReading?: FurtherReading[];
   };
   content: string;
 }
@@ -49,6 +56,21 @@ export default function PageResearch({ post, slug }: PageResearchProps) {
           </div>
         </main>
       </article>
+      {post.frontmatter.furtherReading && post.frontmatter.furtherReading.length > 0 && (
+        <aside className="further-reading-sidebar">
+          <h2>Further reading</h2>
+          <ul className="further-reading-list">
+            {post.frontmatter.furtherReading.map((item, index) => (
+              <li key={index} className="further-reading-item">
+                <a href={item.url} target="_blank" rel="noopener noreferrer">
+                  {item.title}
+                </a>
+                <span className="further-reading-author">by {item.author}</span>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )}
     </div>
   );
 }
