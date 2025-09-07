@@ -1,10 +1,10 @@
-import { notFound } from 'next/navigation';
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import { Metadata } from 'next';
-import { isDev } from '@/utils/env';
-import PageResearch from '@/components/PageResearch';
+import { notFound } from "next/navigation";
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+import { Metadata } from "next";
+import { isDev } from "@/utils/env";
+import PageResearch from "@/components/PageResearch";
 
 interface Params {
   slug: string;
@@ -16,21 +16,21 @@ interface Props {
 
 function getPostBySlug(slug: string) {
   try {
-    const postsDirectory = path.join(process.cwd(), 'research');
+    const postsDirectory = path.join(process.cwd(), "research");
     const fullPath = path.join(postsDirectory, `${slug}.mdx`);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    const fileContents = fs.readFileSync(fullPath, "utf8");
     const { data, content } = matter(fileContents);
-    
+
     // Don't return draft posts in production
     if (data.draft && !isDev) {
       return null;
     }
-    
+
     return {
       frontmatter: {
-        title: data.title || '',
+        title: data.title || "",
         subhead: data.subhead,
-        publishedAt: data.publishedAt || '',
+        publishedAt: data.publishedAt || "",
       },
       content,
     };
@@ -42,10 +42,10 @@ function getPostBySlug(slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = getPostBySlug(slug);
-  
+
   if (!post) {
     return {
-      title: "Post Not Found | Oli",
+      title: "Page Not Found | Oli",
     };
   }
 
