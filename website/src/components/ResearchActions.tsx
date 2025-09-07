@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import ButtonLink from '@/components/ButtonLink';
+import { Copy } from 'lucide-react';
 import ButtonControl from '@/components/ButtonControl';
+import IconClaude from '@/components/Icons/IconClaude';
 import { DISCUSS_RESEARCH_PROMPT } from '@/prompts/discuss-research';
 
 interface ResearchActionsProps {
@@ -32,16 +33,22 @@ export default function ResearchActions({ slug, title, subhead, content }: Resea
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const openDiscussion = () => {
+    window.open(claudeUrl, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <div className="research-actions">
-      <ButtonLink 
-        href={claudeUrl}
-        target="_blank"
-        rel="noopener noreferrer"
+      <ButtonControl 
+        onClick={openDiscussion}
+        icon={<IconClaude size={14} />}
       >
         discuss
-      </ButtonLink>
-      <ButtonControl onClick={copyMarkdown}>
+      </ButtonControl>
+      <ButtonControl 
+        onClick={copyMarkdown}
+        icon={<Copy size={14} />}
+      >
         {copied ? 'copied' : 'copy'}
       </ButtonControl>
     </div>

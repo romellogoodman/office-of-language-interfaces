@@ -632,6 +632,9 @@ pre {
   // transition: all 0.2s ease;
   white-space: nowrap;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: var(--size-01);
 
   &:hover {
     background: rgba(0, 0, 0, 0.1);
@@ -652,6 +655,11 @@ pre {
     cursor: not-allowed;
     pointer-events: none;
   }
+}
+
+.button-icon {
+  display: flex;
+  align-items: center;
 }
 
 /* Generation Controls */
