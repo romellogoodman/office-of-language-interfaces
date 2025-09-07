@@ -17,10 +17,10 @@ export default function CodeBlock({ children, className = "" }: CodeBlockProps) 
       let text = '';
       if (typeof children === 'string') {
         text = children;
-      } else if (React.isValidElement(children) && children.props?.children) {
-        text = typeof children.props.children === 'string' 
-          ? children.props.children 
-          : children.props.children?.toString() || '';
+      } else if (React.isValidElement(children) && (children.props as any)?.children) {
+        text = typeof (children.props as any).children === 'string' 
+          ? (children.props as any).children 
+          : (children.props as any).children?.toString() || '';
       } else {
         text = children?.toString() || '';
       }
