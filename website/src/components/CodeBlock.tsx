@@ -11,19 +11,28 @@ interface CodeBlockProps {
 export default function CodeBlock({ children, className = "" }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
+  const extractTextFromChildren = (node: React.ReactNode): string => {
+    if (typeof node === 'string') {
+      return node;
+    }
+    if (typeof node === 'number') {
+      return node.toString();
+    }
+    if (React.isValidElement(node)) {
+      const element = node as React.ReactElement<{ children?: React.ReactNode }>;
+      if (element.props?.children) {
+        return extractTextFromChildren(element.props.children);
+      }
+    }
+    if (Array.isArray(node)) {
+      return node.map(extractTextFromChildren).join('');
+    }
+    return node?.toString() || '';
+  };
+
   const handleCopy = async () => {
     try {
-      // Extract text content from React children
-      let text = '';
-      if (typeof children === 'string') {
-        text = children;
-      } else if (React.isValidElement(children) && (children.props as any)?.children) {
-        text = typeof (children.props as any).children === 'string' 
-          ? (children.props as any).children 
-          : (children.props as any).children?.toString() || '';
-      } else {
-        text = children?.toString() || '';
-      }
+      const text = extractTextFromChildren(children);
       
       await navigator.clipboard.writeText(text);
       setCopied(true);

@@ -7,7 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://oli.software'
 
   // Research posts
-  const postsDirectory = path.join(process.cwd(), 'research')
+  const postsDirectory = path.join(process.cwd(), 'content', 'research')
   let posts: Array<{
     slug: string;
     publishedAt: string;
