@@ -231,7 +231,7 @@ time {
 .footer-inner {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
   gap: var(--space-stack-xs);
   border-top: 1.5px solid var(--text-color);
   padding-top: var(--space-stack-s);
@@ -253,6 +253,17 @@ time {
 
 .footer-left {
   flex: 1;
+
+  .footer-oli-link {
+    font-weight: var(--font-weight-bold);
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-size: var(--font-size-detail-l);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .footer-right {
@@ -342,7 +353,6 @@ time {
       font-style: italic;
     }
   }
-
 
   /* Body content styles */
   main {

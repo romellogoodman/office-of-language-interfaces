@@ -8,13 +8,16 @@ interface FooterProps {
 }
 
 export default function Footer({ commitHash }: FooterProps) {
-
   return (
     <footer>
       <div className="footer-content">
         <div className="footer-inner">
           <div className="footer-left">
             <p>
+              <a href="/" className="footer-oli-link">
+                Office of Language Interfaces
+              </a>
+              <br />
               Led by{" "}
               <a
                 href="https://romellogoodman.com"
@@ -28,7 +31,7 @@ export default function Footer({ commitHash }: FooterProps) {
           </div>
           <div className="footer-right">
             <ButtonControl
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
               return to top
             </ButtonControl>
