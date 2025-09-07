@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { formatDate } from "@/utils/date";
-import GenerationControls from "@/components/GenerationControls";
+import ButtonGenerate from "@/components/ButtonGenerate";
 import { EXPAND_RESEARCH_DESCRIPTION_PROMPT } from "@/prompts/expand-research-description";
 
 interface Post {
@@ -23,7 +23,7 @@ export default function PageHome({ posts }: PageHomeProps) {
 
   const generatePrompt = () => EXPAND_RESEARCH_DESCRIPTION_PROMPT;
 
-  const { currentText, controls } = GenerationControls({
+  const { currentText, controls } = ButtonGenerate({
     initialText,
     generatePrompt,
   });

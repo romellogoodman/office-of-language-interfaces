@@ -1,4 +1,5 @@
 @use "sass:map";
+@import "../components/prototype/prototypes.scss";
 
 /**
  * Mixin for min-width media queries
@@ -23,6 +24,10 @@
   --background-color: var(--color-sage);
   --link-color: #000000;
   --text-color: #000000;
+
+  /* Button tokens */
+  --button-background: rgba(0, 0, 0, 0.05);
+  --button-text-color: rgba(0, 0, 0, 0.6);
 
   /* Fonts */
   --font-heading: "Public Sans", sans-serif;
@@ -568,12 +573,57 @@ time {
   flex-shrink: 0;
 }
 
-/* Button Control */
-.button-control {
+/* Code Styling */
+code {
   font-size: var(--font-size-detail-s);
   font-family: monospace;
   color: rgba(0, 0, 0, 0.6);
   background: rgba(0, 0, 0, 0.05);
+  padding: var(--size-01) var(--size-02);
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+pre {
+  font-size: var(--font-size-detail-s);
+  font-family: monospace;
+  color: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.05);
+  padding: var(--size-03);
+  border-radius: 3px;
+  white-space: pre;
+  overflow-x: auto;
+  margin: var(--space-stack-s) 0;
+
+  code {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+  }
+}
+
+.code-block-container {
+  position: relative;
+  margin: var(--space-stack-s) 0;
+
+  pre {
+    margin: 0;
+    padding-right: var(--size-09); /* Make room for copy button */
+  }
+
+  .button-control {
+    position: absolute;
+    top: var(--size-02);
+    right: var(--size-02);
+  }
+}
+
+/* Button Control */
+.button-control {
+  font-size: var(--font-size-detail-s);
+  font-family: monospace;
+  color: var(--button-text-color);
+  background: var(--button-background);
   padding: var(--size-01) var(--size-02);
   border-radius: 3px;
   border: none;
@@ -610,6 +660,44 @@ time {
   align-items: center;
   gap: var(--size-02);
   flex-wrap: wrap;
+}
+
+.generation-button {
+  display: flex;
+  align-items: center;
+  gap: var(--size-02);
+  font-size: var(--font-size-detail-s);
+  font-family: monospace;
+  color: var(--button-text-color);
+  background: var(--button-background);
+  padding: var(--size-01) var(--size-02);
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    background: rgba(0, 0, 0, 0.15);
+  }
+}
+
+.generation-text {
+  flex: 1;
+}
+
+.generation-icons {
+  display: flex;
+  align-items: center;
+  gap: var(--size-02);
+}
+
+.generation-icons > div {
+  display: flex;
+  align-items: center;
 }
 
 .generation-counter {

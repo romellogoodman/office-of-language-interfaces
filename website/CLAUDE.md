@@ -22,6 +22,7 @@ npx tsc --noEmit
 - Next.js 15 with App Router
 - TypeScript
 - SCSS for styling (using BEM naming conventions) - **All styles are in `src/app/globals.scss`, no inline styles**
+- **Proto components**: Interactive demos and experiments go in `src/components/prototype/` with styles in `prototypes.scss`
 - ESLint for code quality
 
 ## Project Structure
@@ -40,7 +41,9 @@ src/
 │   ├── Header.tsx       # Site header component
 │   ├── PageHome.tsx     # Homepage component
 │   ├── PageNotFound.tsx # 404 page component
-│   └── ButtonControl.tsx # Reusable button component
+│   ├── ButtonControl.tsx # Reusable button component
+│   └── prototype/       # Interactive demos and experiments
+│       └── prototypes.scss # Styles for all proto components
 ├── lib/
 │   └── claude.ts        # Claude API utilities
 └── content/
@@ -54,13 +57,22 @@ src/
 - App router pages (in `src/app/`) are thin wrappers that import and render the corresponding Page component
 - This separation allows for better code organization and reusability
 
+## Proto Component Guidelines
+
+- **Naming**: All proto components must use the `Proto` prefix (e.g., `ProtoPromptBuilder`, `ProtoSlider`)
+- **Location**: All proto components go in `src/components/prototype/`
+- **Styling**: All proto styles go in `prototypes.scss` - never inline styles
+- **Display**: Proto components should display "Proto:" prefix in their UI titles
+- **Purpose**: Interactive demos, experiments, and prototypes for research articles
+- **MDX Integration**: Register proto components in `PageResearch.tsx` components mapping
+
 ## Documentation
 
 The project maintains comprehensive documentation in the `docs/` folder:
 
 - **[docs/README.md](docs/README.md)** - Documentation index and overview
 - **[docs/api-security.md](docs/api-security.md)** - API security implementation and middleware usage
-- **[docs/components.md](docs/components.md)** - Component architecture and patterns  
+- **[docs/components.md](docs/components.md)** - Component architecture and patterns
 - **[docs/project-structure.md](docs/project-structure.md)** - File organization and development workflow
 - **[docs/styling-system.md](docs/styling-system.md)** - Design system, SCSS architecture, and styling conventions
 

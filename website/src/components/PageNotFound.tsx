@@ -1,6 +1,6 @@
 "use client";
 
-import GenerationControls from "@/components/GenerationControls";
+import ButtonGenerate from "@/components/ButtonGenerate";
 import { GENERATE_ERROR_POEM_PROMPT } from "@/prompts/generate-error-poem";
 
 const defaultPoem = `The page you seek has wandered off,
@@ -21,7 +21,7 @@ And begin again today.`;
 export default function PageNotFound() {
   const generatePrompt = () => GENERATE_ERROR_POEM_PROMPT;
 
-  const { currentText: poem, controls } = GenerationControls({
+  const { currentText: poem, controls } = ButtonGenerate({
     initialText: defaultPoem,
     generatePrompt,
   });

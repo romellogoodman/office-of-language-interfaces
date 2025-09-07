@@ -1,20 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import ButtonControl from "@/components/ButtonControl";
+import { ArrowLeft, ArrowRight, RefreshCw } from "lucide-react";
 import { fetchClaude } from "@/lib/claude";
 
-interface GenerationControlsProps {
+interface ButtonGenerateProps {
   initialText: string;
   generatePrompt: (currentText: string, generations: string[]) => string;
   model?: string;
 }
 
-export default function GenerationControls({
+export default function ButtonGenerate({
   initialText,
   generatePrompt,
   model = "claude-3-5-haiku-20241022",
-}: GenerationControlsProps) {
+}: ButtonGenerateProps) {
   const [generations, setGenerations] = useState<string[]>([initialText]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -76,35 +76,49 @@ export default function GenerationControls({
     currentText,
     controls: (
       <div className="generation-controls">
-        <ButtonControl
-          onClick={handlePrevious}
-          className={!canGoPrevious ? "disabled" : ""}
-        >
-          previous
-        </ButtonControl>
-        <ButtonControl
-          onClick={handleNext}
-          className={!canGoNext ? "disabled" : ""}
-        >
-          next
-        </ButtonControl>
-        <ButtonControl
-          onClick={handleGenerate}
-          className={isGenerating ? "generating" : ""}
-        >
-          {isGenerating ? (
-            <>
-              generating
-              <span className={`dots ${animationType}-animation`}>
-                {Array.from({ length: dotCount }, (_, i) => (
-                  <span key={i}>.</span>
-                ))}
-              </span>
-            </>
-          ) : (
-            "generate"
-          )}
-        </ButtonControl>
+        <button className="generation-button">
+          <span className="generation-text">
+            {isGenerating ? (
+              <>
+                generating
+                <span className={`dots ${animationType}-animation`}>
+                  {Array.from({ length: dotCount }, (_, i) => (
+                    <span key={i}>.</span>
+                  ))}
+                </span>
+              </>
+            ) : (
+              "generate"
+            )}
+          </span>
+          <div className="generation-icons">
+            <ArrowLeft
+              size={14}
+              onClick={handlePrevious}
+              style={{
+                opacity: !canGoPrevious ? 0.3 : 1,
+                cursor: !canGoPrevious ? "default" : "pointer",
+              }}
+            />
+            <ArrowRight
+              size={14}
+              onClick={handleNext}
+              style={{
+                opacity: !canGoNext ? 0.3 : 1,
+                cursor: !canGoNext ? "default" : "pointer",
+              }}
+            />
+            <RefreshCw
+              size={14}
+              onClick={handleGenerate}
+              style={{
+                cursor: isGenerating ? "default" : "pointer",
+                transform: isGenerating ? "rotate(180deg)" : "none",
+                transition: "transform 0.3s ease",
+              }}
+            />
+          </div>
+        </button>
       </div>
     ),
   };

@@ -1,6 +1,8 @@
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { formatDate } from '@/utils/date';
 import ResearchActions from '@/components/ResearchActions';
+import CodeBlock from '@/components/CodeBlock';
+import ProtoPromptBuilder from '@/components/prototype/ProtoPromptBuilder';
 
 interface Post {
   frontmatter: {
@@ -37,7 +39,13 @@ export default function PageResearch({ post, slug }: PageResearchProps) {
         </header>
         <main>
           <div className="body-section">
-            <MDXRemote source={post.content} />
+            <MDXRemote 
+              source={post.content} 
+              components={{
+                pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
+                ProtoPromptBuilder: ProtoPromptBuilder
+              }}
+            />
           </div>
         </main>
       </article>

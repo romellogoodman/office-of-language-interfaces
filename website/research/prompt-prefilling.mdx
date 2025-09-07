@@ -1,0 +1,22 @@
+---
+title: "Prompt Prefilling"
+slug: "prefilling-prompts"
+publishedAt: "2025-09-04"
+summary: "Seeding the discussion"
+subhead: "Seeding the discussion"
+draft: false
+---
+
+One of my favorite parts about teaching is guiding the discussion by assigning readings. Using them as a way to introduce a new concept or idea to students. I use LLMs to achieve something similar via a technique called: Prompt Prefilling.
+
+In most of the chat UIs you can append a `q` parameter to the [query string parameter](https://en.wikipedia.org/wiki/Query_string) and prefill the text field with your desired prompt:
+
+```
+http://example.com?q=
+```
+
+This allows you to give people starter prompts to help guide their discussion. Instead of a blank text field, users arrive with a thoughtful question or creative query waiting for them. You might prefill a prompt asking them to [analyze a piece of writing](https://claude.ai/new?q=I%27d%20like%20to%20discuss%20this%20research%20piece%3A%20https%3A//www.oli.software/research/research-lab-as-container%20What%20are%20your%20thoughts%20on%20the%20author%27s%20perspective%20about%20research%20labs%20serving%20as%20containers%20for%20exploration%3F), [explore a concept from multiple perspectives](https://claude.ai/new?q=Based%20on%20this%20research%3A%20https%3A//www.oli.software/research/prototypes-and-projects%20how%20might%20we%20better%20bridge%20the%20gap%20between%20prototyping%20and%20shipping%20production%20features%3F%20What%20are%20some%20creative%20approaches%20to%20maintaining%20experimental%20thinking%20in%20mature%20products%3F), or something abstract like a [poem](https://claude.ai/new?q=write%20me%20a%20poem%20about%20digital%20gardens). The hope is that you create branching pathways for people to steer conversations down. Allowing space for their natural curiosity.
+
+Give it a try:
+
+<ProtoPromptBuilder  noPrompt />
