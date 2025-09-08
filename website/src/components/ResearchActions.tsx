@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { Copy } from 'lucide-react';
 import ButtonControl from '@/components/ButtonControl';
+import ButtonCopy from '@/components/ButtonCopy';
 import IconClaude from '@/components/Icons/IconClaude';
 import { DISCUSS_RESEARCH_PROMPT } from '@/prompts/discuss-research';
 
@@ -14,12 +13,11 @@ interface ResearchActionsProps {
 }
 
 export default function ResearchActions({ slug, title, subhead, content }: ResearchActionsProps) {
-  const [copied, setCopied] = useState(false);
   const currentUrl = `https://oli.software/research/${slug}`;
   const claudePrompt = DISCUSS_RESEARCH_PROMPT(currentUrl);
   const claudeUrl = `https://claude.ai/new?q=${encodeURIComponent(claudePrompt)}`;
 
-  const copyMarkdown = async () => {
+  const getMarkdownContent = () => {
     let markdownContent = `# ${title}\n\n`;
     
     if (subhead) {
@@ -27,10 +25,7 @@ export default function ResearchActions({ slug, title, subhead, content }: Resea
     }
     
     markdownContent += content;
-    
-    await navigator.clipboard.writeText(markdownContent);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    return markdownContent;
   };
 
   const openDiscussion = () => {
@@ -38,19 +33,14 @@ export default function ResearchActions({ slug, title, subhead, content }: Resea
   };
 
   return (
-    <div className="research-actions">
+    <div className="button-control-group" style={{ marginTop: 'var(--space-stack-s)' }}>
       <ButtonControl 
         onClick={openDiscussion}
         icon={<IconClaude size={14} />}
       >
         discuss
       </ButtonControl>
-      <ButtonControl 
-        onClick={copyMarkdown}
-        icon={<Copy size={14} />}
-      >
-        {copied ? 'copied' : 'copy'}
-      </ButtonControl>
+      <ButtonCopy text={getMarkdownContent()} />
     </div>
   );
 }

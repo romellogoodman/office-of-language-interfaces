@@ -443,11 +443,7 @@ time {
     }
   }
 
-  .research-actions {
-    display: flex;
-    gap: var(--size-02);
-    margin-top: var(--space-stack-s);
-  }
+
 
   /* Further Reading Sidebar */
   .further-reading-sidebar {
@@ -692,7 +688,14 @@ pre {
   }
 }
 
-/* Button Control */
+/* Button Controls */
+.button-control-group {
+  display: flex;
+  align-items: center;
+  gap: var(--size-02);
+  flex-wrap: wrap;
+}
+
 .button-control {
   font-size: var(--font-size-detail-s);
   font-family: monospace;
@@ -736,13 +739,6 @@ pre {
   align-items: center;
 }
 
-/* Generation Controls */
-.generation-controls {
-  display: flex;
-  align-items: center;
-  gap: var(--size-02);
-  flex-wrap: wrap;
-}
 
 .generation-button {
   display: flex;

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import ButtonControl from './ButtonControl';
+import React from 'react';
+import ButtonCopy from './ButtonCopy';
 
 interface CodeBlockProps {
   children: React.ReactNode;
@@ -9,8 +9,6 @@ interface CodeBlockProps {
 }
 
 export default function CodeBlock({ children, className = "" }: CodeBlockProps) {
-  const [copied, setCopied] = useState(false);
-
   const extractTextFromChildren = (node: React.ReactNode): string => {
     if (typeof node === 'string') {
       return node;
@@ -30,26 +28,14 @@ export default function CodeBlock({ children, className = "" }: CodeBlockProps) 
     return node?.toString() || '';
   };
 
-  const handleCopy = async () => {
-    try {
-      const text = extractTextFromChildren(children);
-      
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
-    }
-  };
+  const textContent = extractTextFromChildren(children);
 
   return (
     <div className={`code-block-container ${className}`}>
       <pre>
         <code>{children}</code>
       </pre>
-      <ButtonControl onClick={handleCopy}>
-        {copied ? 'copied' : 'copy'}
-      </ButtonControl>
+      <ButtonCopy text={textContent} />
     </div>
   );
 }

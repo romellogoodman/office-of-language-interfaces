@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import ButtonIconRow from "../ButtonIconRow";
+import ButtonControl from "../ButtonControl";
 import IconClaude from "../Icons/IconClaude";
 import IconOpenAI from "../Icons/IconOpenAI";
 import IconMistral from "../Icons/IconMistral";
+import { MessageSquare } from "lucide-react";
 import "./prototypes.scss";
 
 const CHAT_PLATFORMS = {
   claude: "https://claude.ai/new",
   openai: "https://chat.openai.com/",
   mistral: "https://chat.mistral.ai/chat/",
+  t3: "https://t3.chat/new",
 };
 
 interface ProtoPromptBuilderProps {
@@ -32,21 +34,6 @@ export default function ProtoPromptBuilder({
     window.open(buildUrl(platform), "_blank");
   };
 
-  const icons = [
-    {
-      icon: <IconClaude size={14} />,
-      onClick: () => openInPlatform("claude"),
-    },
-    {
-      icon: <IconOpenAI size={14} />,
-      onClick: () => openInPlatform("openai"),
-    },
-    {
-      icon: <IconMistral size={14} />,
-      onClick: () => openInPlatform("mistral"),
-    },
-  ];
-
   return (
     <div className="proto-prompt-builder">
       {/* <h3 className="proto-title">Proto: Try it yourself</h3> */}
@@ -66,8 +53,31 @@ export default function ProtoPromptBuilder({
           />
         </div>
 
-        <div className="proto-buttons">
-          <ButtonIconRow text="open in" icons={icons} />
+        <div className="button-control-group">
+          <ButtonControl
+            onClick={() => openInPlatform("claude")}
+            icon={<IconClaude size={14} />}
+          >
+            Claude
+          </ButtonControl>
+          <ButtonControl
+            onClick={() => openInPlatform("openai")}
+            icon={<IconOpenAI size={14} />}
+          >
+            ChatGPT
+          </ButtonControl>
+          <ButtonControl
+            onClick={() => openInPlatform("mistral")}
+            icon={<IconMistral size={14} />}
+          >
+            Mistral
+          </ButtonControl>
+          <ButtonControl
+            onClick={() => openInPlatform("t3")}
+            icon={<MessageSquare size={14} />}
+          >
+            T3 Chat
+          </ButtonControl>
         </div>
       </div>
     </div>
