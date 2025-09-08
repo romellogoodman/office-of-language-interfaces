@@ -1,4 +1,4 @@
-export const EXPAND_RESEARCH_DESCRIPTION_PROMPT = `Please reword the ending of this text: An open research lab designing software that responds to language.
+export const GENERATE_RESEARCH_TAGLINE_PROMPT = `Please reword the ending of this text: An open research lab designing software that responds to language.
 
 Context:
 We believe open source is open knowledge—ideas flourish when shared, not hoarded. The tools we build to respond to language should be genuinely delightful to use, not just efficient. But current design paradigms weren't built for conversational software—we need new approaches that prioritize understanding and joy over speed and utility.

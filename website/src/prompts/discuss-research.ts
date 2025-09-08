@@ -1,2 +1,2 @@
-export const DISCUSS_RESEARCH_PROMPT = (url: string) => 
-  `Please read the content at this URL: ${url}. After reviewing it, identify 3-5 key discussion points or interesting aspects from the material that would make for engaging conversation. For each point, briefly explain why it's worth discussing and what questions or perspectives it might raise.`;
+export const DISCUSS_RESEARCH_PROMPT = (url: string) =>
+  `I'd like to discuss this piece: ${url}\n\nAssuming I've read it, let's dive into a conversation about the ideas. Rather than summarizing, focus on the implications and connections. Share what resonated with you or what you found provocative about the concepts presented. Then pose 2-3 thoughtful questions that could spark deeper discussion about the themes, methodology, or broader implications. Keep your tone casual and collaborative - like you're continuing a conversation that started after everyone finished reading.`;

@@ -7,13 +7,15 @@ import ButtonControl from "./ButtonControl";
 
 interface ButtonGenerateProps {
   initialText: string;
-  generatePrompt: (currentText: string, generations: string[]) => string;
+  generatePrompt?: (currentText: string, generations: string[]) => string;
+  prompt?: string;
   model?: string;
 }
 
 export default function ButtonGenerate({
   initialText,
   generatePrompt,
+  prompt,
   model = "claude-3-5-haiku-20241022",
 }: ButtonGenerateProps) {
   const [generations, setGenerations] = useState<string[]>([initialText]);
@@ -28,10 +30,14 @@ export default function ButtonGenerate({
     setIsGenerating(true);
 
     try {
-      const prompt = generatePrompt(currentText, generations);
+      const promptText = prompt || (generatePrompt ? generatePrompt(currentText, generations) : '');
+      
+      if (!promptText) {
+        throw new Error('No prompt provided');
+      }
 
       const response = await fetchClaude({
-        prompt,
+        prompt: promptText,
         model,
       });
 

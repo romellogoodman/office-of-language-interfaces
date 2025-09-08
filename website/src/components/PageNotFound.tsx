@@ -3,7 +3,7 @@
 import ButtonGenerate from "@/components/ButtonGenerate";
 import { GENERATE_ERROR_POEM_PROMPT } from "@/prompts/generate-error-poem";
 
-const defaultPoem = `The page you seek has wandered off,
+const initialText = `The page you seek has wandered off,
 Lost in the vast digital void,
 Where broken links and missing files
 Dance in the space between deployed.
@@ -19,11 +19,9 @@ Return home where stories start,
 And begin again today.`;
 
 export default function PageNotFound() {
-  const generatePrompt = () => GENERATE_ERROR_POEM_PROMPT;
-
   const { currentText: poem, controls } = ButtonGenerate({
-    initialText: defaultPoem,
-    generatePrompt,
+    initialText: initialText,
+    prompt: GENERATE_ERROR_POEM_PROMPT,
   });
 
   return (
@@ -37,9 +35,7 @@ export default function PageNotFound() {
           </div>
         )}
 
-        <div className="button-group">
-          {controls}
-        </div>
+        <div className="button-group">{controls}</div>
       </div>
     </div>
   );

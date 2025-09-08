@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { formatDate } from "@/utils/date";
 import ButtonGenerate from "@/components/ButtonGenerate";
-import { EXPAND_RESEARCH_DESCRIPTION_PROMPT } from "@/prompts/expand-research-description";
+import { GENERATE_RESEARCH_TAGLINE_PROMPT } from "@/prompts/generate-research-tagline";
 
 interface Post {
   slug: string;
@@ -17,15 +17,13 @@ interface PageHomeProps {
   posts: Post[];
 }
 
+const initialText =
+  "An open research lab designing software that responds to language.";
+
 export default function PageHome({ posts }: PageHomeProps) {
-  const initialText =
-    "An open research lab designing software that responds to language.";
-
-  const generatePrompt = () => EXPAND_RESEARCH_DESCRIPTION_PROMPT;
-
   const { currentText, controls } = ButtonGenerate({
     initialText,
-    generatePrompt,
+    prompt: GENERATE_RESEARCH_TAGLINE_PROMPT,
   });
 
   return (
