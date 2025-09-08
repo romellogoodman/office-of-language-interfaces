@@ -723,7 +723,7 @@ pre {
 
   &.generating {
     opacity: 0.7;
-    cursor: not-allowed;
+    cursor: wait;
     animation: skeleton-flash 2s infinite ease-in-out;
   }
 
