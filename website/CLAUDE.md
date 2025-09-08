@@ -22,79 +22,80 @@ npx tsc --noEmit
 - Next.js 15 with App Router
 - TypeScript
 - SCSS for styling with CSS custom properties (tokens) - **All styles are in `src/app/globals.scss`, no inline styles**
-- **Proto components**: Interactive demos and experiments go in `src/components/prototype/` with styles in `prototypes.scss`
 - react-lucide for standard icons (Copy, ArrowLeft, ArrowRight, RefreshCw)
 - ESLint for code quality
 
-## Project Structure
+## Strict Conventions
 
+### Component Naming (REQUIRED)
+
+- **Page Components**: `Page{Name}` format (e.g., `PageHome`, `PageNotFound`)
+- **UI Components**: Descriptive names (`ButtonControl`, `ButtonCopy`, `ButtonGenerate`)
+- **Files**: Match component names exactly
+
+### Client/Server Pattern (REQUIRED)
+
+- **App Router pages** (`src/app/`): Thin server components for data fetching
+- **Page Components** (`src/components/Page*.tsx`): Client components with `"use client"`
+- This separation is mandatory for the architecture
+
+### Styling Rules (REQUIRED)
+
+- **All styles** must be in `src/app/globals.scss` - NO inline styles
+- **Use CSS tokens**: `var(--font-size-detail-s)`, `var(--space-stack-s)`, etc.
+- **BEM naming**: `.button-control`, `.button-control-group`, `.post-title`
+- **Button icons**: Use `size={14}` for consistency
+
+### Import Order (REQUIRED)
+
+1. React and Next.js imports
+2. Third-party libraries
+3. Internal utilities (`@/lib/`)
+4. Components (`@/components/`)
+5. Relative imports
+
+```typescript
+import { useState } from "react";
+import { NextRequest } from "next/server";
+
+import { fetchClaude } from "@/lib/claude";
+import ButtonControl from "@/components/ButtonControl";
 ```
-src/
-├── app/
-│   ├── globals.scss     # Global styles with CSS tokens
-│   ├── layout.tsx       # Root layout component
-│   ├── page.tsx         # Homepage
-│   ├── not-found.tsx    # 404 page
-│   └── research/
-│       └── [slug]/
-│           └── page.tsx # Individual research post pages
-├── components/
-│   ├── Header.tsx       # Site header component
-│   ├── PageHome.tsx     # Homepage component
-│   ├── PageNotFound.tsx # 404 page component
-│   ├── PageResearch.tsx # Research page with MDX components
-│   ├── ButtonControl.tsx # Reusable button component with icon support
-│   ├── ButtonLink.tsx   # Link-style button component
-│   ├── ButtonIconRow.tsx # Multi-icon button component
-│   ├── ResearchActions.tsx # Research page action buttons
-│   ├── Icons/           # Custom SVG icon components
-│   │   ├── IconClaude.tsx
-│   │   ├── IconOpenAI.tsx
-│   │   └── IconMistral.tsx
-│   └── prototype/       # Interactive demos and experiments
-│       ├── ProtoPromptBuilder.tsx # Prompt prefilling demo
-│       └── prototypes.scss # Styles for all proto components
-├── lib/
-│   └── claude.ts        # Claude API utilities
-├── prompts/             # Reusable prompt templates
-│   └── discuss-research.ts
-└── content/
-    └── research/        # MDX research posts
-```
 
-## Component Conventions
+## Proto Component Guidelines (STRICT)
 
-- **Page Components**: Follow the `PageName` convention (e.g., `PageHome`, `PageNotFound`)
-- Page components are client components that contain the main logic for each page
-- App router pages (in `src/app/`) are thin wrappers that import and render the corresponding Page component
-- This separation allows for better code organization and reusability
-- **Icon Components**: Custom SVG icons go in `src/components/Icons/` with `Icon` prefix (e.g., `IconClaude`, `IconOpenAI`)
-- **Button Components**: Use `ButtonControl` for interactive buttons with optional icon prop, `ButtonLink` for navigation links
+- **Naming**: MUST use `Proto` prefix (e.g., `ProtoPromptBuilder`)
+- **Location**: MUST go in `src/components/prototype/`
+- **Styling**: ALL styles go in `prototypes.scss` - use CSS tokens from globals.scss
+- **Display**: MUST show "Proto:" prefix in UI titles
+- **Purpose**: Interactive demos and experiments for research articles
 
-## Proto Component Guidelines
+## Quick Reference
 
-- **Naming**: All proto components must use the `Proto` prefix (e.g., `ProtoPromptBuilder`, `ProtoSlider`)
-- **Location**: All proto components go in `src/components/prototype/`
-- **Styling**: All proto styles go in `prototypes.scss` - never inline styles, use CSS tokens from globals.scss
-- **Display**: Proto components should display "Proto:" prefix in their UI titles
-- **Purpose**: Interactive demos, experiments, and prototypes for research articles
-- **MDX Integration**: Register proto components in `PageResearch.tsx` components mapping
+- **Architecture details**: See [docs/components.md](docs/components.md)
+- **Styling system**: See [docs/styling-system.md](docs/styling-system.md)
+- **File organization**: See [docs/project-structure.md](docs/project-structure.md)
+- **AI prompts**: See [docs/prompts-and-api.md](docs/prompts-and-api.md)
+- **Security patterns**: See [docs/api-security.md](docs/api-security.md)
 
-## Styling System
+## Documentation Maintenance
 
-- **CSS Tokens**: Use custom properties defined in `globals.scss` (e.g., `--button-background`, `--button-text-color`)
-- **Button Styling**: All buttons use `.button-control` class with flexbox layout and gap spacing
-- **Icon Integration**: Icons appear after text in buttons, use `size={14}` for consistency
-- **Hover States**: Implement `:hover` states using CSS tokens for consistent theming
+**When to Update Documentation:**
 
-## Documentation
+- Adding new components or changing component patterns
+- Modifying security middleware or API routes
+- Changing styling conventions or design tokens
+- Adding new AI prompts or API integrations
+- Updating development workflows
 
-The project maintains comprehensive documentation in the `docs/` folder:
+**Process:**
 
-- **[docs/README.md](docs/README.md)** - Documentation index and overview
-- **[docs/api-security.md](docs/api-security.md)** - API security implementation and middleware usage
-- **[docs/components.md](docs/components.md)** - Component architecture and patterns
-- **[docs/project-structure.md](docs/project-structure.md)** - File organization and development workflow
-- **[docs/styling-system.md](docs/styling-system.md)** - Design system, SCSS architecture, and styling conventions
+1. Read existing docs to understand current structure
+2. Update all affected documentation files
+3. Remove redundancy between docs
+4. Add cross-references for related concepts
+5. Verify code examples match implementation
 
-**Maintenance**: Documentation should be updated when making significant architectural changes, adding new security features, or changing component patterns. The docs provide detailed implementation guides and examples for future development.
+---
+
+_For detailed implementation guides, patterns, and examples, refer to the comprehensive documentation in the `docs/` folder._

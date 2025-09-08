@@ -1,50 +1,22 @@
 # Project Structure
 
-This document outlines the file organization and development patterns for the Oli website.
+This document outlines the file organization and development patterns for the Oli website. For component architecture, see [Component Architecture](./components.md). For styling details, see [Styling System](./styling-system.md).
 
 ## Directory Structure
 
 ```
 oli/website/
-├── docs/                          # Documentation
-│   ├── README.md                  # Documentation index
-│   ├── api-security.md           # API security guide
-│   ├── components.md             # Component architecture
-│   └── project-structure.md      # This file
+├── docs/                    # Documentation
 ├── src/
-│   ├── app/                      # Next.js App Router
-│   │   ├── globals.scss          # Global styles (BEM)
-│   │   ├── layout.tsx            # Root layout
-│   │   ├── page.tsx              # Homepage route
-│   │   ├── not-found.tsx         # 404 page
-│   │   └── api/                  # API routes
-│   │       ├── claude/           # Claude AI endpoint
-│   │       └── commits/          # Git commits endpoint
-│   ├── components/               # React components
-│   │   ├── PageHome.tsx          # Homepage logic
-│   │   ├── PageNotFound.tsx      # 404 page logic
-│   │   ├── GenerationControls.tsx # Text generation UI
-│   │   ├── ButtonControl.tsx     # Interactive button
-│   │   ├── ButtonLink.tsx        # Link with button styling
-│   │   ├── Header.tsx            # Site header
-│   │   └── Footer.tsx            # Site footer
-│   ├── lib/                      # Utilities and services
-│   │   ├── claude.ts             # Claude API client
-│   │   ├── api-middleware.ts     # Security middleware
-│   │   ├── rate-limiter.ts       # Rate limiting logic
-│   │   ├── origin-validator.ts   # Origin whitelist validation
-│   │   ├── request-validator.ts  # Request validation
-│   │   ├── build-info.ts         # Build-time utilities
-│   │   └── date.ts               # Date formatting
-│   └── utils/                    # Helper functions
-├── public/                       # Static assets
-├── content/                      # MDX content
-│   └── research/                 # Research posts
-├── CLAUDE.md                     # Claude Code development notes
-├── package.json                  # Dependencies and scripts
-├── next.config.js               # Next.js configuration
-├── tailwind.config.js           # Tailwind CSS config
-└── tsconfig.json                # TypeScript configuration
+│   ├── app/                 # Next.js App Router (routes & globals.scss)
+│   │   └── api/             # API endpoints (claude, commits)
+│   ├── components/          # React components (Page*, Button*, UI components)
+│   ├── lib/                 # Utilities (claude.ts, middleware, validation)
+│   ├── prompts/             # AI prompt templates
+│   └── utils/               # Helper functions
+├── content/research/        # MDX research posts
+├── public/                  # Static assets
+└── CLAUDE.md                # Development notes
 ```
 
 ## File Naming Conventions
@@ -54,7 +26,7 @@ oli/website/
 - **UI Components**: Descriptive names (`ButtonControl.tsx`)
 - **Layout Components**: Simple names (`Header.tsx`, `Footer.tsx`)
 
-### Utilities  
+### Utilities
 - **Services**: Feature-based (`claude.ts`, `rate-limiter.ts`)
 - **Middleware**: Purpose-based (`api-middleware.ts`)
 - **Validators**: Domain-based (`origin-validator.ts`)
@@ -69,45 +41,43 @@ oli/website/
 Use `@/` prefix for clean imports:
 
 ```typescript
-import { fetchClaude } from '@/lib/claude';
-import ButtonControl from '@/components/ButtonControl';
-import PageHome from '@/components/PageHome';
+import { fetchClaude } from "@/lib/claude";
+import ButtonControl from "@/components/ButtonControl";
+import PageHome from "@/components/PageHome";
 ```
 
 ### Import Order
 1. React and Next.js imports
-2. Third-party libraries  
+2. Third-party libraries
 3. Internal utilities (`@/lib/`)
 4. Components (`@/components/`)
 5. Relative imports
 
 ```typescript
-import { useState } from 'react';
-import { NextRequest } from 'next/server';
-import matter from 'gray-matter';
+import { useState } from "react";
+import { NextRequest } from "next/server";
+import matter from "gray-matter";
 
-import { fetchClaude } from '@/lib/claude';
-import ButtonControl from '@/components/ButtonControl';
-import './styles.scss';
+import { fetchClaude } from "@/lib/claude";
+import ButtonControl from "@/components/ButtonControl";
+import "./styles.scss";
 ```
 
 ## Development Patterns
 
 ### 1. Server/Client Architecture
+- **Server Components** (`src/app/`): Data fetching, metadata, routing
+- **Client Components** (`src/components/Page*.tsx`): Interactivity, state
 
-**Server Components (App Router):**
 ```typescript
-// src/app/page.tsx - Server component
+// Server component - data fetching
 export default function Home() {
-  const posts = getAllPosts(); // Server-side data fetching
+  const posts = getAllPosts();
   return <PageHome posts={posts} />;
 }
-```
 
-**Client Components (Page Components):**
-```typescript
-// src/components/PageHome.tsx - Client component
-'use client';
+// Client component - interactivity  
+"use client";
 export default function PageHome({ posts }) {
   const [state, setState] = useState();
   // Interactive logic
@@ -115,8 +85,7 @@ export default function PageHome({ posts }) {
 ```
 
 ### 2. API Route Security
-
-All API routes use middleware for consistent security:
+All API routes use middleware for consistent security. See [API Security](./api-security.md) for details.
 
 ```typescript
 // Full protection for external APIs
@@ -125,72 +94,19 @@ export async function POST(request: NextRequest) {
     // Route logic
   });
 }
-
-// Rate limiting only for internal APIs  
-export async function GET(request: NextRequest) {
-  return withRateLimitOnly(request, async () => {
-    // Route logic
-  });
-}
 ```
 
-### 3. Component Composition
-
-Components compose through props and children:
-
-```typescript
-// Flexible composition
-const { currentText, controls } = GenerationControls(config);
-
-return (
-  <div>
-    <p>{currentText}</p>
-    {controls}
-  </div>
-);
-```
-
-## Styling Architecture
-
-### Global Styles (`globals.scss`)
-
-All styles in one file using CSS custom properties and BEM methodology:
-
-```scss
-:root {
-  /* Design tokens */
-  --font-size-detail-s: 0.75rem;
-  --space-stack-s: 24px;
-  --color-sage: #85c7a3;
-}
-
-/* Component styles */
-.button-control {
-  font-size: var(--font-size-detail-s);
-  
-  &:hover {
-    opacity: 0.7;
-  }
-  
-  &.disabled {
-    pointer-events: none;
-  }
-}
-```
-
-### Design System
-
-- **Typography Scale**: Consistent font sizes (`--font-size-*`)
-- **Spacing Scale**: Consistent spacing (`--space-stack-*`, `--size-*`) 
-- **Color Palette**: Named colors (`--color-sage`, `--color-peach`)
-- **Component States**: Modifier classes (`.disabled`, `.generating`)
+### 3. Component Organization
+- **Flat structure**: All components in `src/components/`
+- **Clear naming**: Component purpose obvious from filename
+- **Type definitions**: Every component has TypeScript interfaces
 
 ## Environment Configuration
 
-### Development
+### Development Commands
 ```bash
 npm run dev          # Start development server
-npm run build        # Build for production  
+npm run build        # Build for production
 npm run lint         # Run ESLint
 npx tsc --noEmit     # Type checking
 ```
@@ -202,11 +118,11 @@ ANTHROPIC_API_KEY=sk-...    # Claude API access
 
 ### Build Process
 1. **Type Checking**: TypeScript compilation
-2. **Style Processing**: SCSS compilation  
+2. **Style Processing**: SCSS compilation
 3. **Bundle Generation**: Next.js build
 4. **Build Info**: Git commit hash capture
 
-## Security Considerations
+## Security Architecture
 
 ### API Protection
 - **Rate Limiting**: Per-IP and global limits
@@ -215,72 +131,44 @@ ANTHROPIC_API_KEY=sk-...    # Claude API access
 - **Error Logging**: Monitor security violations
 
 ### Content Security
-- **Prompt Filtering**: Block jailbreak attempts
+- **Prompt Filtering**: Block jailbreak attempts in [Prompts & API](./prompts-and-api.md)
 - **Model Validation**: Whitelist allowed AI models
 - **Length Limits**: Prevent oversized requests
-
-## Performance Patterns
-
-### Code Splitting
-- **Server Components**: Automatic optimization
-- **Client Components**: Bundle splitting by route
-- **Dynamic Imports**: Load heavy components on demand
-
-### Caching Strategy  
-- **Static Assets**: Next.js automatic optimization
-- **API Responses**: No caching for dynamic content
-- **Rate Limits**: In-memory with automatic cleanup
 
 ## Development Workflow
 
 ### 1. New Features
 1. Create component in appropriate directory
 2. Add TypeScript interfaces
-3. Implement with proper error handling
-4. Add security middleware if API route
+3. Follow [Component Architecture](./components.md) patterns
+4. Use [Styling System](./styling-system.md) classes
 5. Update documentation
 
-### 2. API Routes
+### 2. API Routes  
 1. Use appropriate middleware wrapper
-2. Validate inputs with request-validator
-3. Handle errors gracefully  
-4. Add logging for security events
-5. Test rate limiting behavior
+2. Follow security patterns in [API Security](./api-security.md)
+3. Add proper error handling
+4. Test rate limiting behavior
 
-### 3. Components
-1. Follow naming conventions
-2. Add proper TypeScript types
-3. Use global SCSS classes
-4. Handle loading and error states
-5. Compose with existing components
+### 3. Styling
+1. Use design tokens from [Styling System](./styling-system.md)
+2. Follow BEM naming conventions
+3. Add to `src/app/globals.scss`
+4. Test responsive behavior
+
+## Performance Patterns
+
+### Code Splitting
+- **Server Components**: Automatic optimization
+- **Client Components**: Bundle splitting by route  
+- **Dynamic Imports**: Load heavy components on demand
+
+### Caching Strategy
+- **Static Assets**: Next.js automatic optimization
+- **API Responses**: No caching for dynamic content
+- **Rate Limits**: In-memory with automatic cleanup
 
 ## Testing Strategy
-
-### Unit Tests
-- **Components**: Props, state, and interactions
-- **Utilities**: Pure function behavior
-- **Validators**: Input/output validation
-
-### Integration Tests  
-- **API Routes**: Security middleware integration
-- **Components**: Data flow between components
-- **Pages**: Server/client component interaction
-
-### End-to-End Tests
-- **User Flows**: Complete feature usage
-- **Security**: Rate limiting and validation
-- **Performance**: Load times and responsiveness
-
-## Deployment Considerations
-
-### Production Build
-- Set `NODE_ENV=production`
-- Configure `ANTHROPIC_API_KEY`
-- Update allowed origins for domain
-- Monitor rate limiting logs
-
-### Monitoring
-- **API Usage**: Rate limit violations
-- **Security Events**: Blocked requests  
-- **Performance**: Response times
-- **Errors**: Application crashes
+- **Unit Tests**: Components, utilities, validators
+- **Integration Tests**: API routes, security middleware
+- **End-to-End Tests**: User flows, security, performance

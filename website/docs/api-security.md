@@ -40,9 +40,9 @@ The core middleware system that wraps API routes with security checks.
 
 ```typescript
 interface MiddlewareOptions {
-  requireOriginValidation?: boolean;  // Check allowed origins
-  requireRateLimit?: boolean;         // Apply rate limits
-  logErrors?: boolean;                // Log errors and violations
+  requireOriginValidation?: boolean; // Check allowed origins
+  requireRateLimit?: boolean; // Apply rate limits
+  logErrors?: boolean; // Log errors and violations
 }
 ```
 
@@ -71,7 +71,7 @@ Whitelist-based origin validation to prevent unauthorized access.
 #### Allowed Origins
 
 - `http://localhost:3000` (development)
-- `https://localhost:3000` (development SSL)  
+- `https://localhost:3000` (development SSL)
 - `https://oli.software` (production)
 - `https://www.oli.software` (www subdomain)
 
@@ -103,16 +103,16 @@ Content validation and sanitization for Claude API requests.
 ### Full Protection (Claude API)
 
 ```typescript
-import { withFullProtection } from '@/lib/api-middleware';
+import { withFullProtection } from "@/lib/api-middleware";
 
 export async function POST(request: NextRequest) {
   return withFullProtection(request, async ({ clientIP, body }) => {
     // Your secure route logic here
     const { prompt, model } = body;
-    
+
     // Validation, rate limiting, and origin checking are automatic
     const response = await callClaudeAPI(prompt, model);
-    
+
     return NextResponse.json({ response });
   });
 }
@@ -121,13 +121,13 @@ export async function POST(request: NextRequest) {
 ### Rate Limiting Only (Internal APIs)
 
 ```typescript
-import { withRateLimitOnly } from '@/lib/api-middleware';
+import { withRateLimitOnly } from "@/lib/api-middleware";
 
 export async function GET(request: NextRequest) {
   return withRateLimitOnly(request, async () => {
     // Internal API logic - no origin validation needed
     const data = await getInternalData();
-    
+
     return NextResponse.json(data);
   });
 }
@@ -136,16 +136,20 @@ export async function GET(request: NextRequest) {
 ### Custom Configuration
 
 ```typescript
-import { withApiMiddleware } from '@/lib/api-middleware';
+import { withApiMiddleware } from "@/lib/api-middleware";
 
 export async function POST(request: NextRequest) {
-  return withApiMiddleware(request, async ({ clientIP, body }) => {
-    // Custom logic
-  }, {
-    requireOriginValidation: false,  // Skip origin check
-    requireRateLimit: true,          // Keep rate limiting
-    logErrors: false                 // Disable error logging
-  });
+  return withApiMiddleware(
+    request,
+    async ({ clientIP, body }) => {
+      // Custom logic
+    },
+    {
+      requireOriginValidation: false, // Skip origin check
+      requireRateLimit: true, // Keep rate limiting
+      logErrors: false, // Disable error logging
+    }
+  );
 }
 ```
 
@@ -167,13 +171,14 @@ export async function POST(request: NextRequest) {
 ### 📊 Monitoring
 
 - **Error Logging**: Failed requests and security violations
-- **Rate Limit Headers**: `retryAfter` in 429 responses  
+- **Rate Limit Headers**: `retryAfter` in 429 responses
 - **IP Tracking**: Request counts per IP address
 - **Pattern Detection**: Blocked content attempts
 
 ## Response Formats
 
 ### Success Response
+
 ```json
 {
   "response": "API response data",
@@ -182,6 +187,7 @@ export async function POST(request: NextRequest) {
 ```
 
 ### Rate Limit Exceeded
+
 ```json
 {
   "error": "Too many requests. Please try again later.",
@@ -190,6 +196,7 @@ export async function POST(request: NextRequest) {
 ```
 
 ### Origin Blocked
+
 ```json
 {
   "error": "Unauthorized origin"
@@ -197,6 +204,7 @@ export async function POST(request: NextRequest) {
 ```
 
 ### Validation Failed
+
 ```json
 {
   "error": "Prompt exceeds maximum length of 4000 characters"
@@ -214,6 +222,6 @@ export async function POST(request: NextRequest) {
 ## Deployment Notes
 
 - Set `ANTHROPIC_API_KEY` environment variable
-- Monitor API usage costs through rate limiting logs  
+- Monitor API usage costs through rate limiting logs
 - Consider upgrading to Redis-based rate limiting for production scale
 - Update allowed origins list for new deployment domains

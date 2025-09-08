@@ -7,6 +7,7 @@ Welcome to the Oli website documentation. This folder contains detailed technica
 - **[API Security & Middleware](./api-security.md)** - Security implementation, rate limiting, and middleware usage
 - **[Component Architecture](./components.md)** - Page components, reusable UI components, and conventions
 - **[Project Structure](./project-structure.md)** - File organization and development patterns
+- **[Prompts and API](./prompts-and-api.md)** - AI prompt system and API integration patterns
 - **[Styling System](./styling-system.md)** - Design system, SCSS architecture, and styling conventions
 
 ## Quick Links
@@ -24,4 +25,4 @@ Welcome to the Oli website documentation. This folder contains detailed technica
 
 ---
 
-*This documentation is maintained alongside the codebase. Please update relevant docs when making significant changes.*
+_This documentation is maintained alongside the codebase by Claude._
