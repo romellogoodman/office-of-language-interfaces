@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(git add:*), Bash(git status:*), Bash(git commit:*), Bash(git diff:*)
+allowed-tools: Bash(npm run format:*), Bash(git add:*), Bash(git status:*), Bash(git commit:*), Bash(git diff:*)
 argument-hint: [optional custom message]
-description: Commit all changes with Gitmoji format
+description: Format code and commit all changes with Gitmoji format
 ---
 
 ## Context
@@ -16,6 +16,7 @@ description: Commit all changes with Gitmoji format
 Based on the above git changes, create a single commit with a Gitmoji-style commit message.
 
 **Gitmoji Guidelines:**
+
 - ✨ `:sparkles:` - New features
 - 🐛 `:bug:` - Bug fixes
 - 📚 `:books:` - Documentation
@@ -32,21 +33,24 @@ Based on the above git changes, create a single commit with a Gitmoji-style comm
 - 🏗️ `:building_construction:` - Architectural changes
 
 **Instructions:**
-1. Stage all changes with `git add .`
-2. Analyze the changes and choose the most appropriate Gitmoji
-3. Create a commit message with:
+
+1. Format all code with `npm run format` to ensure consistent formatting
+2. Stage all changes with `git add .`
+3. Analyze the changes and choose the most appropriate Gitmoji
+4. Create a commit message with:
    - Title: `emoji description` (if custom message provided as $ARGUMENTS, use: `emoji $ARGUMENTS`)
    - Body: Detailed changelog in keepachangelog format listing specific changes
-4. Commit the changes using HEREDOC format
+5. Commit the changes using HEREDOC format
 
 **Commit Message Format:**
+
 ```
 🎯 title description
 
 ## Added
 - New features or capabilities
 
-## Changed  
+## Changed
 - Modified existing functionality
 
 ## Fixed
@@ -61,12 +65,13 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
 **Example:**
+
 ```
 ✨ add user authentication system
 
 ## Added
 - User registration and login endpoints
-- JWT token authentication middleware  
+- JWT token authentication middleware
 - Password hashing with bcrypt
 - User session management
 
