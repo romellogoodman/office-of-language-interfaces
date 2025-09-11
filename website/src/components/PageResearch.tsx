@@ -1,8 +1,9 @@
-import { MDXRemote } from 'next-mdx-remote/rsc';
-import { formatDate } from '@/utils/date';
-import ResearchActions from '@/components/ResearchActions';
-import CodeBlock from '@/components/CodeBlock';
-import ProtoPromptBuilder from '@/components/prototype/ProtoPromptBuilder';
+import { MDXRemote } from "next-mdx-remote/rsc";
+import { formatDate } from "@/utils/date";
+import ResearchActions from "@/components/ResearchActions";
+import CodeBlock from "@/components/CodeBlock";
+import ProtoPromptBuilder from "@/components/prototype/ProtoPromptBuilder";
+import ProtoWordExplorer from "@/components/prototype/ProtoWordExplorer";
 
 interface FurtherReading {
   title: string;
@@ -37,7 +38,7 @@ export default function PageResearch({ post, slug }: PageResearchProps) {
           <time dateTime={post.frontmatter.publishedAt}>
             {formatDate(post.frontmatter.publishedAt)}
           </time>
-          <ResearchActions 
+          <ResearchActions
             slug={slug}
             title={post.frontmatter.title}
             subhead={post.frontmatter.subhead}
@@ -46,31 +47,35 @@ export default function PageResearch({ post, slug }: PageResearchProps) {
         </header>
         <main>
           <div className="body-section">
-            <MDXRemote 
-              source={post.content} 
+            <MDXRemote
+              source={post.content}
               components={{
                 pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
-                ProtoPromptBuilder: ProtoPromptBuilder
+                ProtoPromptBuilder: ProtoPromptBuilder,
+                ProtoWordExplorer: ProtoWordExplorer,
               }}
             />
           </div>
         </main>
       </article>
-      {post.frontmatter.furtherReading && post.frontmatter.furtherReading.length > 0 && (
-        <aside className="further-reading-sidebar">
-          <h2>Further reading</h2>
-          <ul className="further-reading-list">
-            {post.frontmatter.furtherReading.map((item, index) => (
-              <li key={index} className="further-reading-item">
-                <a href={item.url} target="_blank" rel="noopener noreferrer">
-                  {item.title}
-                </a>
-                <span className="further-reading-author">by {item.author}</span>
-              </li>
-            ))}
-          </ul>
-        </aside>
-      )}
+      {post.frontmatter.furtherReading &&
+        post.frontmatter.furtherReading.length > 0 && (
+          <aside className="further-reading-sidebar">
+            <h2>Further reading</h2>
+            <ul className="further-reading-list">
+              {post.frontmatter.furtherReading.map((item, index) => (
+                <li key={index} className="further-reading-item">
+                  <a href={item.url} target="_blank" rel="noopener noreferrer">
+                    {item.title}
+                  </a>
+                  <span className="further-reading-author">
+                    by {item.author}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
     </div>
   );
 }

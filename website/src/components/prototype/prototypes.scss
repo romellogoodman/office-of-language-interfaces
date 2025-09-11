@@ -1,15 +1,9 @@
 /* Prototype Component Styles */
 
 /* Shared Proto Styles */
-.proto-prompt-builder {
+.proto-prompt-builder,
+.proto-word-explorer {
   margin: var(--space-stack-s) 0;
-}
-
-.proto-title {
-  font-family: var(--font-heading);
-  font-size: var(--font-size-paragraph-l);
-  font-weight: var(--font-weight-semibold);
-  margin: 0 0 var(--space-stack-xs) 0;
 }
 
 .proto-form {
@@ -37,7 +31,7 @@
   font-family: var(--font-body);
   font-size: var(--font-size-detail-m);
   background: var(--background-color);
-  
+
   &:focus {
     outline: none;
     border-color: var(--text-color);
@@ -54,7 +48,7 @@
   background: var(--button-background);
   resize: vertical;
   min-height: 80px;
-  
+
   &:focus {
     outline: none;
   }
@@ -72,7 +66,7 @@
   font-size: var(--font-size-detail-m);
   background: var(--background-color);
   cursor: pointer;
-  
+
   &:focus {
     outline: none;
     border-color: var(--text-color);
@@ -113,39 +107,59 @@
   align-items: center;
 }
 
-/* Legacy URL Builder - keeping for backward compatibility */
-.url-builder {
-  @extend .proto-prompt-builder;
+/* Word Explorer Specific Styles */
+.proto-word-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-01);
+  margin: var(--space-stack-xs) 0;
 }
 
-.url-builder-title {
-  @extend .proto-title;
+.proto-word {
+  padding: var(--size-02) var(--size-03);
+  background: var(--button-background);
+  color: var(--button-text-color);
+  border: 1px dotted var(--button-text-color);
+  border-radius: 3px;
+  font-family: var(--font-body);
+  font-size: var(--font-size-detail-m);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  &.selected {
+    background: var(--text-color);
+    color: var(--background-color);
+    border-color: var(--background-color);
+  }
 }
 
-.url-builder-form {
-  @extend .proto-form;
+.proto-analysis {
+  margin-top: var(--space-stack-xs);
+  padding: var(--size-03);
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
 }
 
-.url-builder-input-group {
-  @extend .proto-input-group;
+.proto-analysis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--size-02);
 }
 
-.url-builder-label {
-  @extend .proto-label;
+.proto-analysis-header h4 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-detail-m);
+  font-weight: var(--font-weight-semibold);
 }
 
-.url-builder-input {
-  @extend .proto-input;
-}
-
-.url-builder-select {
-  @extend .proto-select;
-}
-
-.url-builder-result {
-  @extend .proto-result;
-}
-
-.url-builder-actions {
-  @extend .proto-actions;
+.proto-analysis-text {
+  margin: 0;
+  font-size: var(--font-size-detail-s);
+  line-height: 1.4;
 }
