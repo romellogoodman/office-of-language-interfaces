@@ -3,7 +3,7 @@ import { formatDate } from "@/utils/date";
 import ResearchActions from "@/components/ResearchActions";
 import CodeBlock from "@/components/CodeBlock";
 import ProtoPromptBuilder from "@/components/prototype/ProtoPromptBuilder";
-import ProtoWordExplorer from "@/components/prototype/ProtoWordExplorer";
+import ProtoPangramExplorer from "@/components/prototype/ProtoPangramExplorer";
 
 interface FurtherReading {
   title: string;
@@ -52,7 +52,7 @@ export default function PageResearch({ post, slug }: PageResearchProps) {
               components={{
                 pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
                 ProtoPromptBuilder: ProtoPromptBuilder,
-                ProtoWordExplorer: ProtoWordExplorer,
+                ProtoPangramExplorer: ProtoPangramExplorer,
               }}
             />
           </div>

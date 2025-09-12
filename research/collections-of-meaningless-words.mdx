@@ -1,16 +1,20 @@
 ---
-title: "Collections of Meaningless Words"
+title: "Collections of meaningless words"
 slug: "collections-of-meaningless-words"
 publishedAt: "2025-09-10"
 summary: "Finding meaning in generated text"
-subhead: "Searching for a singal in the (LLM generated) noise"
-draft: true
+subhead: "Searching for a signal in the LLM noise"
+draft: false
+furtherReading:
+  - title: "Defeating Nondeterminism in LLM Inference"
+    url: "https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/"
+    author: "Thinking Machines Lab"
 ---
 
-Do LLMs output having meaning? The question feels almost paradoxical when you consider that all words have meaning by their very nature. Each token carries semantic weight, references concepts, evokes associations. The tension doesn't arise from the words themselves being meaningless, but from the speed and sheer volume at which LLMs generate text. When machines can produce thousands of words in seconds, our traditional relationship with language—where each word is carefully chosen, weighed, considered—begins to break down. Yet even in this torrent of generated text, meaning persists. It's just harder to grasp.
+The amount of LLM-generated text we read is increasing. These tools can generate instant walls of text at inhuman speeds, rewriting and adjusting with dizzying velocity. Every aspect of the text is endlessly malleable: length, tone, message, metaphor. The writing can seem cheap and the words flimsy and impermanent. But this perceived meaninglessness isn't inherent to the words themselves. Each token carries semantic weight and associations that guide the model's choices, creating an underlying logic even when it feels random. The challenge isn't that the output is meaningless, it's that we lack tools to extract signals from the system's noise.
 
-In human conversation, we have a ritual for navigating ambiguity: we ask people what they mean. "What do you mean by that?" "Can you clarify?" "I don't follow." These clarifying questions are the connective tissue of understanding, the way we bridge the gap between speaker and listener. But what happens when the speaker is an algorithm that generated text through statistical patterns rather than intentional communication? What if we had a tool for doing the same kind of meaning-making with LLM writing—a way to interrogate the text itself?
+In human conversation, we have developed tools and phrases for finding meaning and bridging understanding gaps. We ask clarifying questions: "What do you mean by that?" "Come again?" "I don't follow." These questions bridge the space between us. What if we had similar tools for LLM-generated text?
 
-This is precisely what we need: a tool for excavating meaning from the avalanche of AI-generated language. Something that lets us dive deeper into the meaning of words within their specific context, to trace the threads of coherence that run through seemingly random assemblages of text. The challenge isn't that LLM output is meaningless—it's that we lack the interpretive tools to extract meaning from the noise, to find signal in systems designed to optimize for fluency rather than intent. We need ways to gain meaning from apparent randomness, to make sense of collections of words that feel simultaneously profound and hollow:
+Pangrams offer a perfect testing ground. Inherently meaningless and designed purely to use all 26 letters of the alphabet. But each word selection reveals something about the model's learned associations and intuitions. The prototype below asks the system to define and analyze its own word choices in these constructed sentences. An attempt to understand not just what words were chosen, but why.
 
-<ProtoWordExplorer />
+<ProtoPangramExplorer />

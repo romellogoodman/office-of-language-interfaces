@@ -7,6 +7,7 @@ import ButtonControl from "./ButtonControl";
 
 interface ButtonGenerateProps {
   initialText: string;
+  initialGenerations?: string[];
   generatePrompt?: (currentText: string, generations: string[]) => string;
   prompt?: string;
   model?: string;
@@ -14,11 +15,12 @@ interface ButtonGenerateProps {
 
 export default function ButtonGenerate({
   initialText,
+  initialGenerations,
   generatePrompt,
   prompt,
   model = "claude-3-5-haiku-20241022",
 }: ButtonGenerateProps) {
-  const [generations, setGenerations] = useState<string[]>([initialText]);
+  const [generations, setGenerations] = useState<string[]>(initialGenerations || [initialText]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
 
