@@ -30,11 +30,11 @@ export default function Footer({ commitHash }: FooterProps) {
             </p>
           </div>
           <div className="footer-right">
-            <ButtonControl
+            {/* <ButtonControl
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
               return to top
-            </ButtonControl>
+            </ButtonControl> */}
             {commitHash && (
               <ButtonLink
                 href={`https://github.com/romellogoodman/oli/commit/${commitHash}`}
