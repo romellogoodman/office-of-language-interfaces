@@ -3,7 +3,8 @@ export default function Header() {
     <header>
       <div className="header-content">
         <p className="header-logo">
-          <a href="/">Oli</a>
+          {/* <a href="/">Oli</a> */}
+          <a href="/">OLI</a>
           {/* <a href="/">Office of Language Interfaces</a> */}
         </p>
         {/* <div className="header-links">

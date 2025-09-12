@@ -17,12 +17,18 @@ interface PageHomeProps {
   posts: Post[];
 }
 
-const initialText =
-  "An open research lab designing software that responds to language.";
+const initialGenerations = [
+  "An open research lab designing software that responds to language.",
+  "An open research lab exploring conversational interfaces that reimagine how humans and machines create meaning together.",
+  "An open research lab designing conversational interfaces that reimagine human-computer meaning-making.",
+];
+
+const initialText = initialGenerations[0];
 
 export default function PageHome({ posts }: PageHomeProps) {
   const { currentText, controls } = ButtonGenerate({
     initialText,
+    initialGenerations,
     prompt: GENERATE_RESEARCH_TAGLINE_PROMPT,
   });
 
