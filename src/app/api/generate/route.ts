@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const prompt = `Please rewrite this text: "${text}"
 
 Requirements:
-- Keep the core meaning about being an open research lab designing software that responds to language
+- Keep the core meaning about being a research lab designing software that responds to language
 - Make it approximately ${targetWordCount} words long
 - Make it more detailed and expansive than the original
 - Keep it engaging and descriptive

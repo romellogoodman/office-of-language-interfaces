@@ -44,13 +44,13 @@ export async function GET() {
 <rss version="2.0">
 <channel>
   <title>Office of Language Interfaces</title>
-  <description>An open research lab designing software that responds to language</description>
+  <description>A research lab designing software that responds to language</description>
   <link>${baseUrl}</link>
   <language>en-us</language>
   <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
   ${posts
-    .map(post => {
-      return `
+      .map(post => {
+        return `
   <item>
     <title>${post.title}</title>
     <description>${post.summary || post.content}</description>
@@ -58,8 +58,8 @@ export async function GET() {
     <guid>${baseUrl}/research/${post.slug}</guid>
     <pubDate>${new Date(post.publishedAt).toUTCString()}</pubDate>
   </item>`;
-    })
-    .join("")}
+      })
+      .join("")}
 </channel>
 </rss>`;
 

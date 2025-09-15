@@ -1,6 +1,6 @@
 # Office of Language Interfaces (Oli)
 
-Oli is an open research lab designing software that responds to language. Our research is open-source and freely available.
+Oli is a research lab designing software that responds to language. Our research is open-source and freely available.
 
 The website for Oli - [oli.software](https://www.oli.software).
 

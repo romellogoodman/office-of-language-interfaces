@@ -18,9 +18,9 @@ interface PageHomeProps {
 }
 
 const initialGenerations = [
-  "An open research lab designing software that responds to language.",
-  "An open research lab exploring conversational interfaces that reimagine how humans and machines create meaning together.",
-  "An open research lab designing conversational interfaces that reimagine human-computer meaning-making.",
+  "A research lab designing software that responds to language.",
+  "A research lab exploring conversational interfaces that reimagine how humans and machines create meaning together.",
+  "A research lab designing conversational interfaces that reimagine human-computer meaning-making.",
 ];
 
 const initialText = initialGenerations[0];
