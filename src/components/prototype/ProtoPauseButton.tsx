@@ -79,10 +79,6 @@ export default function ProtoPauseButton({ onSubmit }: ProtoPauseButtonProps) {
     }
   };
 
-  const getNextPauseDuration = (): string => {
-    const nextIndex = Math.min(submitCount, PAUSE_DURATIONS.length - 1);
-    return PAUSE_DURATIONS[nextIndex].label;
-  };
 
   return (
     <div className="proto-pause-button">

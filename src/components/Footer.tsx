@@ -1,7 +1,6 @@
 "use client";
 
 import ButtonLink from "@/components/ButtonLink";
-import ButtonControl from "@/components/ButtonControl";
 
 interface FooterProps {
   commitHash?: string;
