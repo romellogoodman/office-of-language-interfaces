@@ -4,6 +4,7 @@ import ResearchActions from "@/components/ResearchActions";
 import CodeBlock from "@/components/CodeBlock";
 import ProtoPromptBuilder from "@/components/prototype/ProtoPromptBuilder";
 import ProtoPangramExplorer from "@/components/prototype/ProtoPangramExplorer";
+import ProtoPauseButton from "@/components/prototype/ProtoPauseButton";
 
 interface FurtherReading {
   title: string;
@@ -53,6 +54,7 @@ export default function PageResearch({ post, slug }: PageResearchProps) {
                 pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
                 ProtoPromptBuilder: ProtoPromptBuilder,
                 ProtoPangramExplorer: ProtoPangramExplorer,
+                ProtoPauseButton: ProtoPauseButton,
               }}
             />
           </div>

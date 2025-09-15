@@ -2,7 +2,8 @@
 
 /* Shared Proto Styles */
 .proto-prompt-builder,
-.proto-word-explorer {
+.proto-word-explorer,
+.proto-pause-button {
   margin: var(--space-stack-s) 0;
 }
 
@@ -186,4 +187,58 @@
 .proto-analysis-text {
   margin: 0;
   font-size: var(--font-size-paragraph-s) !important;
+}
+
+/* Pause Button Specific Styles */
+.proto-pause-button {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-stack-l) 0;
+}
+
+.proto-pause-button .button-control {
+  font-size: var(--font-size-paragraph-m);
+}
+
+.proto-pause-button .button-control svg {
+  width: 18px;
+  height: 18px;
+}
+
+.proto-pause-info {
+  margin-bottom: var(--space-stack-xs);
+}
+
+.proto-pause-stats {
+  margin: 0;
+  font-size: var(--font-size-detail-s);
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.proto-pause-countdown {
+  margin: 0;
+  font-size: var(--font-size-detail-m);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-color);
+  padding: var(--size-02) var(--size-03);
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+.proto-pause-explanation {
+  margin-top: var(--space-stack-xs);
+}
+
+.proto-explanation-text {
+  margin: 0;
+  font-size: var(--font-size-detail-s);
+  color: var(--text-color);
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.button-control.paused {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
