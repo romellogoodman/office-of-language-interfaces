@@ -1,40 +1,11 @@
 import { MetadataRoute } from "next";
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
+import { getResearchPosts } from "@/lib/getResearchPosts";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://oli.software";
 
   // Research posts
-  const postsDirectory = path.join(process.cwd(), "research");
-  let posts: Array<{
-    slug: string;
-    publishedAt: string;
-    draft: boolean;
-  }> = [];
-
-  if (fs.existsSync(postsDirectory)) {
-    const filenames = fs.readdirSync(postsDirectory);
-    posts = filenames
-      .filter(name => name.endsWith(".mdx"))
-      .map(name => {
-        const filePath = path.join(postsDirectory, name);
-        const fileContents = fs.readFileSync(filePath, "utf8");
-        const { data } = matter(fileContents);
-
-        return {
-          slug: data.slug || name.replace(/\.mdx$/, ""),
-          publishedAt: data.publishedAt,
-          draft: data.draft || false,
-        };
-      })
-      .filter(post => !post.draft)
-      .sort(
-        (a, b) =>
-          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-      );
-  }
+  const posts = getResearchPosts();
 
   // Get most recent post date for homepage
   const mostRecentPostDate =

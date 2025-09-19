@@ -14,8 +14,7 @@ export function getResearchPosts(): ResearchPost[] {
     "poetic-404",
     "collections-of-meaningless-words",
     "prompt-prefilling",
-    "prototypes-and-projects",
-    "a-pause-to-think",
+    "pausing-to-think",
   ];
 
   return posts

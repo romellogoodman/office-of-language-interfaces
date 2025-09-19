@@ -1,42 +1,21 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
+import { getResearchPosts } from "@/lib/getResearchPosts";
+import { parseResearchPost } from "@/lib/parseResearch";
 
 export async function GET() {
   const baseUrl = "https://oli.software";
-  const postsDirectory = path.join(process.cwd(), "research");
-  let posts: Array<{
-    title: string;
-    slug: string;
-    publishedAt: string;
-    content: string;
-    draft: boolean;
-  }> = [];
+  const researchPosts = getResearchPosts();
 
-  if (fs.existsSync(postsDirectory)) {
-    const filenames = fs.readdirSync(postsDirectory);
-    posts = filenames
-      .filter(name => name.endsWith(".mdx"))
-      .map(name => {
-        const filePath = path.join(postsDirectory, name);
-        const fileContents = fs.readFileSync(filePath, "utf8");
-        const { data, content } = matter(fileContents);
-
-        return {
-          title: data.title,
-          slug: data.slug || name.replace(/\.mdx$/, ""),
-          publishedAt: data.publishedAt,
-          content: content.slice(0, 300) + "...", // Truncate content for RSS
-          draft: data.draft || false,
-        };
-      })
-      .filter(post => !post.draft)
-      .sort(
-        (a, b) =>
-          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-      );
-  }
+  const posts = researchPosts.map(post => {
+    const fullPost = parseResearchPost(post.slug);
+    return {
+      title: post.title,
+      slug: post.slug,
+      publishedAt: post.publishedAt,
+      content: fullPost?.content.slice(0, 300) + "..." || "",
+      subhead: post.subhead || "",
+    };
+  });
 
   const rss = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
@@ -51,7 +30,7 @@ export async function GET() {
       return `
   <item>
     <title>${post.title}</title>
-    <description>${post.summary || post.content}</description>
+    <description>${post.subhead || post.content}</description>
     <link>${baseUrl}/research/${post.slug}</link>
     <guid>${baseUrl}/research/${post.slug}</guid>
     <pubDate>${new Date(post.publishedAt).toUTCString()}</pubDate>

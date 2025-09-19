@@ -1,5 +1,4 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { formatDate } from "@/utils/date";
 import CodeBlock from "@/components/CodeBlock";
 import Footer from "@/components/Footer";
 
@@ -21,14 +20,12 @@ interface Post {
 
 interface PageResearchProps {
   post: Post;
-  slug: string;
   prototype?: React.ReactNode;
   commitHash?: string;
 }
 
 export default function PageResearch({
   post,
-  slug,
   prototype,
   commitHash,
 }: PageResearchProps) {

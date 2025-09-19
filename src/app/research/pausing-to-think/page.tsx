@@ -10,7 +10,7 @@ export default async function Page() {
 
   return PageResearch({
     post,
-    slug: "pausing-to-think",
+    
     prototype: <Prototype />,
     commitHash,
   });

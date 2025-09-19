@@ -10,7 +10,7 @@ export default async function CollectionsOfMeaninglessWordsPage() {
 
   return PageResearch({
     post,
-    slug: "collections-of-meaningless-words",
+    
     prototype: <Prototype />,
     commitHash,
   });

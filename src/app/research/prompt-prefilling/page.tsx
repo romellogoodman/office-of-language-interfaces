@@ -10,7 +10,7 @@ export default async function Page() {
 
   return PageResearch({
     post,
-    slug: "prompt-prefilling",
+    
     prototype: <Prototype prompt="Write me a poem about digital gardens" />,
     commitHash,
   });

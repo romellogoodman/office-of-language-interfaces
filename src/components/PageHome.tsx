@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { formatDate } from "@/utils/date";
 import ButtonGenerate from "@/components/ButtonGenerate";
 import { GENERATE_RESEARCH_TAGLINE_PROMPT } from "@/prompts/generate-research-tagline";
 import Footer from "@/components/Footer";

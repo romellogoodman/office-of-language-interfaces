@@ -9,7 +9,7 @@ export default async function Page() {
 
   return PageResearch({
     post,
-    slug: "research-lab-as-container",
+    
     commitHash,
   });
 }
