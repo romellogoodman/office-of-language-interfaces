@@ -10,7 +10,7 @@ furtherReading:
     author: "Thinking Machines Lab"
 ---
 
-The amount of LLM-generated text we read is increasing. These tools can generate instant walls of text at inhuman speeds, rewriting and adjusting with dizzying velocity. Every aspect of the text is endlessly malleable: length, tone, message, metaphor. The writing can seem cheap and the words flimsy and impermanent. But this perceived meaninglessness isn't inherent to the words themselves. Each token carries semantic weight and associations that guide the model's choices, creating an underlying logic even when it feels random. The challenge isn't that the output is meaningless, it's that we lack tools to extract signals from the system's noise.
+The amount of LLM-generated text we read is increasing. These tools can generate instant walls of text at inhuman speeds, rewriting and adjusting with dizzying velocity. Every aspect of the text is endlessly malleable: length, tone, message, metaphor. The writing can seem cheap and the words flimsy and impermanent. But this perceived meaninglessness isn't inherent to the words themselves. Each token carries semantic weight and associations that guide the model's choices, creating an underlying logic even when it feels random. The challenge isn't that the output is meaningless; it's that we lack tools to extract signals from the system's noise.
 
 In human conversation, we have developed tools and phrases for finding meaning and bridging understanding gaps. We ask clarifying questions: "What do you mean by that?" "Come again?" "I don't follow." These questions bridge the space between us. What if we had similar tools for LLM-generated text?
 

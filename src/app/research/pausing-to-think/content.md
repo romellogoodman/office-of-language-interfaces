@@ -3,7 +3,7 @@ title: "Pausing to think"
 slug: "pausing-to-think"
 publishedAt: "2025-09-14"
 subhead: "Finding space between the prompt and the response"
-draft: true
+draft: false
 furtherReading:
   - title: "10-Minute Challenge"
     url: "https://www.nytimes.com/spotlight/10-minute-challenge"
