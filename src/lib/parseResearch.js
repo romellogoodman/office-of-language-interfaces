@@ -19,6 +19,7 @@ export function parseResearchPost(slug) {
         subhead: data.subhead,
         publishedAt: data.publishedAt || "",
         furtherReading: data.furtherReading,
+        draft: data.draft || false,
       },
       content,
     };

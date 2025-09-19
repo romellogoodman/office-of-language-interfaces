@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import { parseResearchPost } from "./parseResearch";
 
 export interface ResearchPost {
@@ -9,28 +11,29 @@ export interface ResearchPost {
 }
 
 export function getResearchPosts(): ResearchPost[] {
-  const posts = [
-    "research-lab-as-container",
-    "poetic-404",
-    "collections-of-meaningless-words",
-    "prompt-prefilling",
-    "pausing-to-think",
-  ];
+  const researchDir = path.join(process.cwd(), "src/app/research");
 
-  return posts
-    .map(slug => {
+  if (!fs.existsSync(researchDir)) {
+    return [];
+  }
+
+  const folders = fs.readdirSync(researchDir, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+
+  return folders
+    .flatMap(slug => {
       const post = parseResearchPost(slug);
-      if (!post) return null;
+      if (!post) return [];
 
-      return {
+      return [{
         slug,
         title: post.frontmatter.title,
         subhead: post.frontmatter.subhead,
         publishedAt: post.frontmatter.publishedAt,
         draft: post.frontmatter.draft,
-      };
+      }];
     })
-    .filter((post): post is ResearchPost => post !== null)
     .filter(post => !post.draft) // Filter out drafts in production
     .sort(
       (a, b) =>
