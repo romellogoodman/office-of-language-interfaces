@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import ButtonControl from "../ButtonControl";
-import IconClaude from "../Icons/IconClaude";
-import IconOpenAI from "../Icons/IconOpenAI";
-import IconMistral from "../Icons/IconMistral";
+import ButtonControl from "@/components/ButtonControl";
+import IconClaude from "@/components/Icons/IconClaude";
+import IconOpenAI from "@/components/Icons/IconOpenAI";
+import IconMistral from "@/components/Icons/IconMistral";
 import { MessageSquare } from "lucide-react";
-import "./prototypes.scss";
+import "../../prototypes.scss";
 
 const CHAT_PLATFORMS = {
   claude: "https://claude.ai/new",
@@ -15,13 +15,11 @@ const CHAT_PLATFORMS = {
   t3: "https://t3.chat/new",
 };
 
-interface ProtoPromptBuilderProps {
+interface PrototypeProps {
   prompt?: string;
 }
 
-export default function ProtoPromptBuilder({
-  prompt: initialPrompt,
-}: ProtoPromptBuilderProps) {
+export default function Prototype({ prompt: initialPrompt }: PrototypeProps) {
   const [prompt, setPrompt] = useState(initialPrompt || "");
 
   const buildUrl = (platform: keyof typeof CHAT_PLATFORMS) => {

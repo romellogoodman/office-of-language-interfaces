@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ButtonGenerate from "../ButtonGenerate";
-import "./prototypes.scss";
+import ButtonGenerate from "@/components/ButtonGenerate";
+import "../../prototypes.scss";
 
-interface ProtoPangramExplorerProps {
+interface PrototypeProps {
   text?: string;
 }
 
@@ -263,7 +263,7 @@ interface WordData {
   analysis: string;
 }
 
-export default function ProtoPangramExplorer({}: ProtoPangramExplorerProps) {
+export default function Prototype({}: PrototypeProps) {
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [wordData, setWordData] = useState<{ [key: string]: WordData }>({});
   const initialData = initialPangrams[0];

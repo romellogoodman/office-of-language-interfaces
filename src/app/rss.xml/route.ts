@@ -10,7 +10,6 @@ export async function GET() {
     title: string;
     slug: string;
     publishedAt: string;
-    summary: string;
     content: string;
     draft: boolean;
   }> = [];
@@ -28,7 +27,6 @@ export async function GET() {
           title: data.title,
           slug: data.slug || name.replace(/\.mdx$/, ""),
           publishedAt: data.publishedAt,
-          summary: data.summary || "",
           content: content.slice(0, 300) + "...", // Truncate content for RSS
           draft: data.draft || false,
         };
@@ -49,8 +47,8 @@ export async function GET() {
   <language>en-us</language>
   <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
   ${posts
-      .map(post => {
-        return `
+    .map(post => {
+      return `
   <item>
     <title>${post.title}</title>
     <description>${post.summary || post.content}</description>
@@ -58,8 +56,8 @@ export async function GET() {
     <guid>${baseUrl}/research/${post.slug}</guid>
     <pubDate>${new Date(post.publishedAt).toUTCString()}</pubDate>
   </item>`;
-      })
-      .join("")}
+    })
+    .join("")}
 </channel>
 </rss>`;
 

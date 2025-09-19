@@ -99,13 +99,43 @@ Button component for copying text to clipboard with visual feedback.
 <ButtonCopy text="Text to copy">copy</ButtonCopy>
 ```
 
+#### ButtonLink
+
+Link component with button styling and optional icon support.
+
+```typescript
+<ButtonLink
+  href="https://github.com/user/repo/commit/abc123"
+  target="_blank"
+  rel="noopener noreferrer"
+  icon={<Code size={14} />}
+>
+  abc123
+</ButtonLink>
+```
+
+#### Footer
+
+Integrated footer component that handles both site footer and research actions.
+
+```typescript
+// For research pages - includes discuss/copy actions
+<Footer
+  commitHash="abc123"
+  slug="research-slug"
+  title="Research Title"
+  content="Research content..."
+/>
+
+// For regular pages - just commit hash
+<Footer commitHash="abc123" />
+```
+
 #### Other UI Components
 
-- **ButtonLink**: Link component with button styling
-- **Header**: Main site header with navigation
-- **Footer**: Site footer with copyright and links
-- **ResearchActions**: Action buttons for research posts
+- **Header**: Main site header with logo and navigation
 - **CodeBlock**: Syntax highlighted code display
+- **PageResearch**: Research article layout with integrated footer
 
 ## Design Patterns
 

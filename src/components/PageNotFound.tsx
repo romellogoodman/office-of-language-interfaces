@@ -45,7 +45,7 @@ export default function PageNotFound() {
   return (
     <div className="main-content">
       <div className="not-found">
-        <h1>404 Not Found</h1>
+        {/* <h1>404 Not Found</h1> */}
 
         {poem && (
           <div className="poem-result">

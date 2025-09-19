@@ -1,8 +1,8 @@
 ---
-title: "A poem for those who have strayed"
+# title: "Poetic 404 pages"
+title: "Poems for those who have strayed"
 slug: "poetic-404"
 publishedAt: "2025-09-02"
-summary: "Using LLMs in a poetic context"
 subhead: "Roses are red, violets are blue, the page you requested returned 404."
 draft: false
 furtherReading:

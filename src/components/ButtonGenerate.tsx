@@ -20,7 +20,9 @@ export default function ButtonGenerate({
   prompt,
   model = "claude-3-5-haiku-20241022",
 }: ButtonGenerateProps) {
-  const [generations, setGenerations] = useState<string[]>(initialGenerations || [initialText]);
+  const [generations, setGenerations] = useState<string[]>(
+    initialGenerations || [initialText]
+  );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
 

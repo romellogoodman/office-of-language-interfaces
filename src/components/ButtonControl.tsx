@@ -16,8 +16,8 @@ export default function ButtonControl({
   disabled = false,
 }: ButtonControlProps) {
   return (
-    <button 
-      onClick={onClick} 
+    <button
+      onClick={onClick}
       className={`button-control ${className}`}
       disabled={disabled}
     >

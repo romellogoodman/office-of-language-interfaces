@@ -2,7 +2,6 @@
 title: "Prompt prefilling"
 slug: "prompt-prefilling"
 publishedAt: "2025-09-04"
-summary: "Seeding the discussion"
 subhead: "Seeding the discussion"
 draft: false
 ---
@@ -16,7 +15,3 @@ http://example.com?q=
 ```
 
 This allows you to give people starter prompts to help guide their discussion. Instead of a blank text field, users arrive with a thoughtful question or creative query waiting for them. You might prefill a prompt asking them to [analyze](https://claude.ai/new?q=I%27d%20like%20to%20discuss%20this%20research%20piece%3A%20https%3A//www.oli.software/research/research-lab-as-container%20What%20are%20your%20thoughts%20on%20the%20author%27s%20perspective%20about%20research%20labs%20serving%20as%20containers%20for%20exploration%3F) a piece of writing, [explore](https://claude.ai/new?q=Based%20on%20this%20research%3A%20https%3A//www.oli.software/research/prototypes-and-projects%20how%20might%20we%20better%20bridge%20the%20gap%20between%20prototyping%20and%20shipping%20production%20features%3F%20What%20are%20some%20creative%20approaches%20to%20maintaining%20experimental%20thinking%20in%20mature%20products%3F) a concept from multiple perspectives, or write something abstract like a [poem](https://claude.ai/new?q=Write%20me%20a%20poem%20about%20digital%20gardens). The hope is that you create branching pathways for people to steer conversations down. Allowing space for their natural curiosity.
-
-Give it a try:
-
-<ProtoPromptBuilder prompt="Write me a poem about digital gardens" />

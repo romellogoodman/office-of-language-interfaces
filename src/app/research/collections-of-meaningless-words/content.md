@@ -2,8 +2,7 @@
 title: "Collections of meaningless words"
 slug: "collections-of-meaningless-words"
 publishedAt: "2025-09-10"
-summary: "Finding meaning in generated text"
-subhead: "Searching for a signal in the LLM noise"
+subhead: "Bouncy wizards expertly jog through whimsical text, crafting zany verbal quips and jokes."
 draft: false
 furtherReading:
   - title: "Defeating Nondeterminism in LLM Inference"
@@ -15,6 +14,4 @@ The amount of LLM-generated text we read is increasing. These tools can generate
 
 In human conversation, we have developed tools and phrases for finding meaning and bridging understanding gaps. We ask clarifying questions: "What do you mean by that?" "Come again?" "I don't follow." These questions bridge the space between us. What if we had similar tools for LLM-generated text?
 
-Pangrams offer a perfect testing ground. Inherently meaningless and designed purely to use all 26 letters of the alphabet. But each word selection reveals something about the model's learned associations and intuitions. The prototype below asks the system to define and analyze its own word choices in these constructed sentences. An attempt to understand not just what words were chosen, but why.
-
-<ProtoPangramExplorer />
+Pangrams offer a perfect testing ground. Inherently meaningless and designed purely to use all 26 letters of the alphabet. But each word selection reveals something about the model's learned associations and intuitions. An attempt to understand not just what words were chosen, but why.

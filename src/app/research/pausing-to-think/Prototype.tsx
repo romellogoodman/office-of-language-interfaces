@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Send, Clock } from "lucide-react";
-import ButtonControl from "../ButtonControl";
-import "./prototypes.scss";
+import ButtonControl from "@/components/ButtonControl";
+import "../../prototypes.scss";
 
 const PAUSE_DURATIONS = [
   { duration: 3, label: "3 seconds" },
@@ -16,21 +16,21 @@ const PAUSE_DURATIONS = [
   { duration: 3600, label: "1 hour" },
 ];
 
-interface ProtoPauseButtonProps {
+interface PrototypeProps {
   onSubmit?: () => void;
 }
 
-export default function ProtoPauseButton({ onSubmit }: ProtoPauseButtonProps) {
+export default function Prototype({ onSubmit }: PrototypeProps) {
   const [submitCount, setSubmitCount] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(0);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    
+
     if (isPaused && timeRemaining > 0) {
       interval = setInterval(() => {
-        setTimeRemaining((prev) => {
+        setTimeRemaining(prev => {
           if (prev <= 1) {
             setIsPaused(false);
             return 0;
@@ -71,14 +71,17 @@ export default function ProtoPauseButton({ onSubmit }: ProtoPauseButtonProps) {
     } else if (seconds < 3600) {
       const minutes = Math.floor(seconds / 60);
       const remainingSeconds = seconds % 60;
-      return remainingSeconds > 0 ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
+      return remainingSeconds > 0
+        ? `${minutes}m ${remainingSeconds}s`
+        : `${minutes}m`;
     } else {
       const hours = Math.floor(seconds / 3600);
       const remainingMinutes = Math.floor((seconds % 3600) / 60);
-      return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
+      return remainingMinutes > 0
+        ? `${hours}h ${remainingMinutes}m`
+        : `${hours}h`;
     }
   };
-
 
   return (
     <div className="proto-pause-button">

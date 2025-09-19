@@ -5,17 +5,23 @@ This document outlines the file organization and development patterns for the Ol
 ## Directory Structure
 
 ```
-oli/website/
+oli/
 ├── docs/                    # Documentation
 ├── src/
 │   ├── app/                 # Next.js App Router (routes & globals.scss)
+│   │   ├── research/        # Research posts (individual folders)
+│   │   │   ├── post-slug/
+│   │   │   │   ├── content.md      # Markdown with frontmatter
+│   │   │   │   ├── page.tsx        # Renders PageResearch
+│   │   │   │   └── Prototype.tsx   # Optional prototype component
+│   │   │   └── ...
 │   │   └── api/             # API endpoints (claude, commits)
 │   ├── components/          # React components (Page*, Button*, UI components)
-│   ├── lib/                 # Utilities (claude.ts, middleware, validation)
+│   ├── lib/                 # Utilities (claude.ts, middleware, validation, parsing)
 │   ├── prompts/             # AI prompt templates
 │   └── utils/               # Helper functions
-├── content/research/        # MDX research posts
 ├── public/                  # Static assets
+├── next.config.ts           # Next.js config with raw-loader for .md files
 └── CLAUDE.md                # Development notes
 ```
 
@@ -129,9 +135,10 @@ ANTHROPIC_API_KEY=sk-...    # Claude API access
 ### Build Process
 
 1. **Type Checking**: TypeScript compilation
-2. **Style Processing**: SCSS compilation
-3. **Bundle Generation**: Next.js build
-4. **Build Info**: Git commit hash capture
+2. **Style Processing**: SCSS compilation with CSS custom properties
+3. **Bundle Generation**: Next.js build with Turbopack (dev)
+4. **Markdown Processing**: raw-loader imports .md files as text
+5. **Build Info**: Git commit hash capture for footer display
 
 ## Security Architecture
 
@@ -171,6 +178,14 @@ ANTHROPIC_API_KEY=sk-...    # Claude API access
 2. Follow BEM naming conventions
 3. Add to `src/app/globals.scss`
 4. Test responsive behavior
+
+### 4. Research Content
+
+1. Create folder in `src/app/research/{slug}/`
+2. Add `content.md` with proper frontmatter
+3. Create `page.tsx` that renders PageResearch with parsed content and commit hash
+4. Optional: Add prototype component co-located in same folder
+5. Use `parseResearchPostContent()` utility to process markdown
 
 ## Performance Patterns
 

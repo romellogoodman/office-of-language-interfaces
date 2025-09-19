@@ -4,6 +4,7 @@ interface ButtonLinkProps {
   target?: string;
   rel?: string;
   className?: string;
+  icon?: React.ReactNode;
 }
 
 export default function ButtonLink({
@@ -12,6 +13,7 @@ export default function ButtonLink({
   target,
   rel,
   className = "",
+  icon,
 }: ButtonLinkProps) {
   return (
     <a
@@ -21,6 +23,7 @@ export default function ButtonLink({
       className={`button-control ${className}`}
     >
       {children}
+      {icon && <span className="button-icon">{icon}</span>}
     </a>
   );
 }

@@ -4,6 +4,21 @@ import createMDX from "@next/mdx";
 const nextConfig: NextConfig = {
   // devIndicators: false,
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
+  turbopack: {
+    rules: {
+      "*.md": {
+        loaders: ["raw-loader"],
+        as: "*.js",
+      },
+    },
+  },
+  webpack: config => {
+    config.module.rules.push({
+      test: /\.md$/,
+      use: "raw-loader",
+    });
+    return config;
+  },
 };
 
 const withMDX = createMDX({

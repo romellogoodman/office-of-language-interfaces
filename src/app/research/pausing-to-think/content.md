@@ -1,8 +1,7 @@
 ---
-title: "A pause to think"
-slug: "a-pause-to-think"
+title: "Pausing to think"
+slug: "pausing-to-think"
 publishedAt: "2025-09-14"
-summary: "Interfaces for slowing down"
 subhead: "Finding space between the prompt and the response"
 draft: true
 furtherReading:
@@ -14,6 +13,3 @@ furtherReading:
 We've all fallen into the pattern of it. The back and forth exchange with AI where we ask for something, receive a response, then immediately request changes. The malleability is intoxicating—you can reshape any aspect of the output with another prompt. But this endless iteration often leads us further from our intended destination. Each revision becomes a small course correction that compounds into something entirely different from what we originally sought. There's a paradox here: the more easily we can change something, the less likely we are to consider what we actually want. We develop a tendency toward quick modifications, trusting that we can always adjust later. Yet experience teaches us something different. When we pause and craft a thoughtful, deliberate prompt from the start, we often land much closer to our intended destination on the first try.
 
 The real issue isn't the AI's ability to iterate; it's our ability to submit without thought. The frictionless interface encourages rapid-fire interaction, turning conversation into a stream of consciousness rather than deliberate communication. What if the interface itself encouraged us to pause? Not forced—that word carries the wrong weight—but gently created space for pondering, preventing us from rushing forward until we'd taken a moment to consider what we truly wanted to say.
-
-<ProtoPauseButton />
-

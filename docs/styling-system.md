@@ -46,16 +46,19 @@ All design values are defined as CSS custom properties in `:root` for consistenc
 
 #### Typography
 
-- **Font Stacks**: `--font-heading` (Public Sans), `--font-body` (Georgia)
-- **Font Weights**: `--font-weight-light` to `--font-weight-bold`
+- **Font Stacks**: `--font-georgia` (Georgia serif), `--font-public-sans` (Public Sans - available but unused)
+- **Primary Typeface**: Georgia is used throughout for both headings and body text
+- **Font Weights**: `--font-weight-light` (300) to `--font-weight-bold` (700)
 
 ### 2. Layout System
 
 #### Breakpoints
 
 - **Mobile-first** responsive design
-- **Semantic breakpoints**: xs, sm, md, lg, xl, 2xl
+- **Semantic breakpoints**: xs (320px), sm (640px), md (768px), lg (1024px), xl (1280px), 2xl (1536px)
+- **CSS tokens**: `--breakpoint-xs` through `--breakpoint-xl` available as custom properties
 - **SCSS mixin**: `@include minWidth(md)` for consistent media queries
+- **Usage**: Both tokens and mixins available for different use cases
 
 #### Container Sizes
 

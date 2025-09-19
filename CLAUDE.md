@@ -22,8 +22,10 @@ npx tsc --noEmit
 - Next.js 15 with App Router
 - TypeScript
 - SCSS for styling with CSS custom properties (tokens) - **All styles are in `src/app/globals.scss`, no inline styles**
-- react-lucide for standard icons (Copy, ArrowLeft, ArrowRight, RefreshCw)
+- react-lucide for standard icons (Copy, ArrowLeft, ArrowRight, RefreshCw, Code)
 - ESLint for code quality
+- gray-matter for parsing markdown frontmatter
+- raw-loader for importing .md files as text
 
 ## Strict Conventions
 
@@ -42,9 +44,11 @@ npx tsc --noEmit
 ### Styling Rules (REQUIRED)
 
 - **All styles** must be in `src/app/globals.scss` - NO inline styles
-- **Use CSS tokens**: `var(--font-size-detail-s)`, `var(--space-stack-s)`, etc.
+- **Use CSS tokens**: `var(--font-size-detail-s)`, `var(--space-stack-s)`, `var(--breakpoint-md)`, etc.
+- **Typography**: Georgia (`var(--font-georgia)`) for all text, Public Sans (`var(--font-public-sans)`) available but not used
 - **BEM naming**: `.button-control`, `.button-control-group`, `.post-title`
 - **Button icons**: Use `size={14}` for consistency
+- **Responsive**: Mobile-first design with breakpoint tokens
 
 ### Import Order (REQUIRED)
 
@@ -62,13 +66,24 @@ import { fetchClaude } from "@/lib/claude";
 import ButtonControl from "@/components/ButtonControl";
 ```
 
+## Research Content Structure (REQUIRED)
+
+- **Location**: Research posts are in individual folders: `/src/app/research/{slug}/`
+- **Files per post**:
+  - `content.md` - Markdown content with frontmatter
+  - `page.tsx` - Renders PageResearch with parsed content and commit hash
+  - `Prototype.tsx` - Optional prototype component for interactive demos
+- **Frontmatter**: title, slug, publishedAt, summary, subhead, furtherReading
+- **Parsing**: Use `parseResearchPostContent()` utility with gray-matter
+
 ## Proto Component Guidelines (STRICT)
 
-- **Naming**: MUST use `Proto` prefix (e.g., `ProtoPromptBuilder`)
-- **Location**: MUST go in `src/components/prototype/`
+- **Naming**: MUST use `Prototype` as component name (since they're organized by research slug)
+- **Location**: Co-located with research post in `/src/app/research/{slug}/Prototype.tsx`
 - **Styling**: ALL styles go in `prototypes.scss` - use CSS tokens from globals.scss
 - **Display**: MUST show "Proto:" prefix in UI titles
 - **Purpose**: Interactive demos and experiments for research articles
+- **Integration**: Pass as `prototype` prop to PageResearch component
 
 ## Quick Reference
 
