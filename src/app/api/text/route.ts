@@ -34,7 +34,7 @@ export async function GET() {
         const furtherReadingYaml = frontmatter.furtherReading
           ? `furtherReading:\n${frontmatter.furtherReading
               .map(
-                (item: any) =>
+                (item: { title: string; author: string; url: string }) =>
                   `  - title: "${item.title}"\n    author: "${item.author}"\n    url: "${item.url}"`
               )
               .join("\n")}`

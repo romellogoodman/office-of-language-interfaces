@@ -313,7 +313,7 @@ export default function Prototype({}: PrototypeProps) {
       wordDataMap[cleanWord] = wordInfo;
     });
     setWordData(wordDataMap);
-  }, []);
+  }, [initialData.words]);
 
   const words = currentText.split(/\s+/).filter(word => word.length > 0);
 
@@ -323,7 +323,7 @@ export default function Prototype({}: PrototypeProps) {
       const firstWord = words[0];
       handleWordClick(firstWord);
     }
-  }, [currentText]);
+  }, [currentText, words]);
 
   const handleWordClick = (word: string) => {
     const cleanWord = word.replace(/[^\w]/g, "").toLowerCase();

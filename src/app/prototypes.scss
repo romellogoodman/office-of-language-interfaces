@@ -1,12 +1,6 @@
 /* Prototype Component Styles */
 
 /* Shared Proto Styles */
-.proto-prompt-builder,
-.proto-word-explorer,
-.proto-pause-button {
-  margin: var(--space-stack-s) 0;
-}
-
 .proto-form {
   display: flex;
   flex-direction: column;
@@ -127,7 +121,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--size-01);
-  margin: var(--space-stack-xs) 0;
+  margin: 0 0 var(--space-stack-xs) 0;
 }
 
 .proto-word {
@@ -248,7 +242,6 @@
 }
 
 .proto-poem-display {
-  margin: var(--space-stack-xs) 0;
   padding: var(--size-04);
   background: rgba(0, 0, 0, 0.02);
   border: 1px dotted rgba(0, 0, 0, 0.2);

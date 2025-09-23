@@ -125,6 +125,7 @@ body {
   font-family: var(--font-georgia);
   background-color: var(--background-color);
   color: var(--text-color);
+  max-width: 1200px;
 }
 
 /* Links */
@@ -303,13 +304,12 @@ header {
   margin-bottom: var(--space-stack-m);
   // max-width: var(--max-content-width);
   text-wrap: balance;
-  max-width: 80ch;
+  max-width: 70ch;
 
   p {
     font-size: var(--font-size-display-s);
     // font-weight: var(--font-weight-regular);
     text-wrap: balance;
-    max-width: 60ch;
 
     @media (min-width: var(--breakpoint-md)) {
       font-size: var(--font-size-display-m);
@@ -319,6 +319,7 @@ header {
 
 .research-section {
   margin-top: var(--space-stack-m);
+  max-width: 70ch;
 }
 
 .research-header {
@@ -345,7 +346,6 @@ header {
 .research-paragraph {
   font-size: var(--font-size-display-s);
   text-wrap: balance;
-  max-width: 60ch;
   line-height: 1.5;
 
   @media (min-width: var(--breakpoint-md)) {

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import ButtonGenerate from "@/components/ButtonGenerate";
 import { GENERATE_RESEARCH_TAGLINE_PROMPT } from "@/prompts/generate-research-tagline";
-import Footer from "@/components/Footer";
 
 interface Post {
   slug: string;
@@ -25,7 +24,7 @@ const initialGenerations = [
 
 const initialText = initialGenerations[0];
 
-export default function PageHome({ posts, commitHash }: PageHomeProps) {
+export default function PageHome({ posts }: PageHomeProps) {
   const { currentText, controls } = ButtonGenerate({
     initialText,
     initialGenerations,
