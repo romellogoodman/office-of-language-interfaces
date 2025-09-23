@@ -10,7 +10,7 @@ export default async function Page() {
 
   return PageResearch({
     post,
-    
+
     prototype: <Prototype />,
     commitHash,
   });

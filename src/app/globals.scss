@@ -300,21 +300,25 @@ header {
 }
 
 .homepage-intro {
-  margin-bottom: var(--space-stack-xl);
+  margin-bottom: var(--space-stack-m);
   // max-width: var(--max-content-width);
   text-wrap: balance;
-  max-width: 100ch;
+  max-width: 80ch;
 
   p {
-    font-size: var(--font-size-display-xl);
+    font-size: var(--font-size-display-s);
     // font-weight: var(--font-weight-regular);
     text-wrap: balance;
     max-width: 60ch;
+
+    @media (min-width: var(--breakpoint-md)) {
+      font-size: var(--font-size-display-m);
+    }
   }
 }
 
 .research-section {
-  margin-top: var(--space-stack-xl);
+  margin-top: var(--space-stack-m);
 }
 
 .research-header {
@@ -338,9 +342,25 @@ header {
   padding: 0;
 }
 
+.research-paragraph {
+  font-size: var(--font-size-display-s);
+  text-wrap: balance;
+  max-width: 60ch;
+  line-height: 1.5;
+
+  @media (min-width: var(--breakpoint-md)) {
+    font-size: var(--font-size-display-m);
+  }
+}
+
 .research-link {
   text-decoration: none;
-  display: block;
+  display: inline;
+  color: var(--text-color);
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .research-title {

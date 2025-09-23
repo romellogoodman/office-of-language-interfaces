@@ -2,6 +2,7 @@ import PageResearch from "@/components/PageResearch";
 import { parseResearchPostContent } from "@/lib/parseResearchPostContent";
 import { getLatestCommitHash } from "@/lib/build-info";
 import content from "./content.md";
+import Prototype from "./Prototype";
 
 export default async function Page() {
   const post = parseResearchPostContent(content);
@@ -9,7 +10,7 @@ export default async function Page() {
 
   return PageResearch({
     post,
-    
+    prototype: <Prototype />,
     commitHash,
   });
 }

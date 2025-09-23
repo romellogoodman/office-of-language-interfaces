@@ -10,7 +10,7 @@ export default async function Page() {
 
   return PageResearch({
     post,
-    
+
     prototype: <Prototype prompt="Write me a poem about digital gardens" />,
     commitHash,
   });

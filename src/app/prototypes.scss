@@ -242,3 +242,27 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Poem Generator Specific Styles */
+.proto-poem-generator {
+}
+
+.proto-poem-display {
+  margin: var(--space-stack-xs) 0;
+  padding: var(--size-04);
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px dotted rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.proto-poem-line {
+  margin: 0;
+  font-family: var(--font-georgia);
+  font-size: var(--font-size-paragraph-s);
+  line-height: 1.6;
+  margin-bottom: var(--size-01);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}

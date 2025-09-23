@@ -1,6 +1,7 @@
 ---
 # title: "Poetic 404 pages"
-title: "Poems for those who have strayed"
+# title: "Poems for those who have strayed"
+title: "Poetry in the margins"
 slug: "poetic-404"
 publishedAt: "2025-09-02"
 subhead: "Roses are red, violets are blue, the page you requested returned 404."

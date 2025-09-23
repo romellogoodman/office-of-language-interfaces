@@ -17,7 +17,8 @@ export function getResearchPosts(): ResearchPost[] {
     return [];
   }
 
-  const folders = fs.readdirSync(researchDir, { withFileTypes: true })
+  const folders = fs
+    .readdirSync(researchDir, { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name);
 
@@ -26,13 +27,15 @@ export function getResearchPosts(): ResearchPost[] {
       const post = parseResearchPost(slug);
       if (!post) return [];
 
-      return [{
-        slug,
-        title: post.frontmatter.title,
-        subhead: post.frontmatter.subhead,
-        publishedAt: post.frontmatter.publishedAt,
-        draft: post.frontmatter.draft,
-      }];
+      return [
+        {
+          slug,
+          title: post.frontmatter.title,
+          subhead: post.frontmatter.subhead,
+          publishedAt: post.frontmatter.publishedAt,
+          draft: post.frontmatter.draft,
+        },
+      ];
     })
     .filter(post => !post.draft) // Filter out drafts in production
     .sort(

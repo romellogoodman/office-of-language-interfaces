@@ -18,9 +18,9 @@ interface PageHomeProps {
 }
 
 const initialGenerations = [
-  "A research lab designing software that responds to language.",
-  "A research lab exploring conversational interfaces that reimagine how humans and machines create meaning together.",
-  "A research lab designing conversational interfaces that reimagine human-computer meaning-making.",
+  "a research lab designing software that responds to language.",
+  "a research lab exploring conversational interfaces that reimagine how humans and machines create meaning together.",
+  "a research lab designing conversational interfaces that reimagine human-computer meaning-making.",
 ];
 
 const initialText = initialGenerations[0];
@@ -36,28 +36,34 @@ export default function PageHome({ posts, commitHash }: PageHomeProps) {
     <>
       <div className="main-content">
         <div className="homepage-intro">
-          <p>{currentText}</p>
+          <p>Office of Language Interfaces is {currentText}</p>
           {controls}
         </div>
 
         <div className="research-section">
           {posts.length > 0 ? (
-            <ul className="research-list">
-              {posts.map(post => (
-                <li key={post.slug} className="research-item">
+            <p className="research-paragraph">
+              Our work includes:{" "}
+              {posts.map((post, index) => (
+                <span key={post.slug}>
                   <Link
                     href={`/research/${post.slug}`}
                     className="research-link"
                   >
-                    <span className="research-title">{post.title}</span>
+                    {post.title.charAt(0).toLowerCase() + post.title.slice(1)}
                   </Link>
-                </li>
+                  {index === posts.length - 1
+                    ? "."
+                    : index === posts.length - 2
+                      ? ", and "
+                      : ", "}
+                </span>
               ))}
-            </ul>
+            </p>
           ) : null}
         </div>
       </div>
-      <Footer commitHash={commitHash} />
+      {/* <Footer commitHash={commitHash} /> */}
     </>
   );
 }

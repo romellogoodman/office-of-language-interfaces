@@ -19,6 +19,14 @@ const nextConfig: NextConfig = {
     });
     return config;
   },
+  async rewrites() {
+    return [
+      {
+        source: "/text",
+        destination: "/api/text",
+      },
+    ];
+  },
 };
 
 const withMDX = createMDX({
