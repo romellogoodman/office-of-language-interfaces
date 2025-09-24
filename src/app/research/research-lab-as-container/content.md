@@ -1,6 +1,6 @@
 ---
 slug: "research-lab-as-container"
-title: "A research lab is a container for ideas"
+title: "A research lab is a container"
 subhead: "School is a building which has four walls with tomorrow inside. - Lon Watters"
 publishedAt: "2025-08-26"
 draft: false
