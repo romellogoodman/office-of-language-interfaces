@@ -24,14 +24,10 @@ function getAllPosts(): Post[] {
     return [];
   }
 
-  const postSlugs = [
-    "research-lab-as-container",
-    "poetic-404",
-    "collections-of-meaningless-words",
-    "prompt-prefilling",
-    "prototypes-and-projects",
-    "pausing-to-think",
-  ];
+  const postSlugs = fs
+    .readdirSync(researchDirectory, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
 
   const posts = postSlugs
     .map(slug => {
