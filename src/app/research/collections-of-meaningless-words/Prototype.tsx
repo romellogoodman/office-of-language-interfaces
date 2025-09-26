@@ -317,13 +317,13 @@ export default function Prototype({}: PrototypeProps) {
 
   const words = currentText.split(/\s+/).filter(word => word.length > 0);
 
-  // Auto-select the first word when text changes
+  // Auto-select the first word only on initial load
   useEffect(() => {
-    if (currentText && words.length > 0) {
+    if (currentText && words.length > 0 && selectedWord === null) {
       const firstWord = words[0];
       handleWordClick(firstWord);
     }
-  }, [currentText, words]);
+  }, [currentText, selectedWord]);
 
   const handleWordClick = (word: string) => {
     const cleanWord = word.replace(/[^\w]/g, "").toLowerCase();
