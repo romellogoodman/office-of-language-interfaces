@@ -5,6 +5,9 @@ publishedAt: "2025-09-14"
 subhead: "Finding space between the prompt and the response"
 draft: false
 furtherReading:
+  - title: "Hurry up, quick"
+    url: "https://aworkinglibrary.com/writing/hurry-up-quick"
+    author: "Mandy Brown"
   - title: "10-Minute Challenge"
     url: "https://www.nytimes.com/spotlight/10-minute-challenge"
     author: "The New York Times"
