@@ -25,6 +25,10 @@ const nextConfig: NextConfig = {
         source: "/text",
         destination: "/api/text",
       },
+      {
+        source: "/favicon.ico",
+        destination: "/api/favicon",
+      },
     ];
   },
 };
