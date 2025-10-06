@@ -187,6 +187,7 @@ time {
 header {
   position: relative;
   width: 100%;
+  z-index: 9999;
 }
 
 .header-content {
@@ -354,12 +355,14 @@ header {
 }
 
 .research-link {
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-style: dotted;
   display: inline;
   color: var(--text-color);
 
   &:hover {
     text-decoration: underline;
+    text-decoration-style: solid;
   }
 }
 

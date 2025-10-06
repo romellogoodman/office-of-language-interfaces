@@ -40,9 +40,17 @@ export default function PageHome({ posts }: PageHomeProps) {
         </div>
 
         <div className="research-section">
+          {/* <p className="research-paragraph">
+            Our tools:{" "}
+            <Link href="/diagram" className="research-link">
+              Diagram
+            </Link>
+            , a map for your ideas.
+          </p> */}
+
           {posts.length > 0 ? (
             <p className="research-paragraph">
-              Our work includes:{" "}
+              Our research:{" "}
               {posts.map((post, index) => (
                 <span key={post.slug}>
                   <Link

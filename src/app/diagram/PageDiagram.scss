@@ -1,0 +1,197 @@
+.page-diagram {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--color-sage);
+  font-family: var(--font-georgia);
+  color: var(--text-color);
+  overflow: hidden;
+  padding: var(--size-05);
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.diagram-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.axis-label {
+  position: absolute;
+  font-size: var(--font-size-detail-m);
+  font-weight: var(--font-weight-regular);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.axis-label-top {
+  top: 0%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.axis-label-bottom {
+  bottom: 0%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.axis-label-left {
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.axis-label-right-opposite {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.diagram-grid {
+  position: absolute;
+  top: 15%;
+  left: 5%;
+  right: 5%;
+  bottom: 15%;
+}
+
+.axis-line {
+  position: absolute;
+  background-color: var(--text-color);
+}
+
+.axis-line-horizontal {
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+.axis-line-vertical {
+  left: 50%;
+  top: -10%;
+  bottom: -10%;
+  width: 1px;
+  transform: translateX(-50%);
+}
+
+.diagram-input-form {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  cursor: default;
+  // border: 1px solid rgba(0, 0, 0, 0.1);
+  // padding: var(--space-stack-s);
+  // border-radius: var(--border-radius-s);
+  // background-color: rgba(255, 255, 255, 0.1);
+
+  .proto-form {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .proto-input-group {
+    // margin-bottom: var(--space-stack-xs);
+  }
+
+  .prompt-input {
+    min-width: 300px;
+    padding: var(--size-03);
+    border: none;
+    border-radius: 3px;
+    font-family: var(--font-body);
+    font-size: var(--font-size-detail-m);
+    background: var(--button-background);
+    padding: var(--space-stack-xs);
+
+    &:focus {
+      outline: none;
+    }
+
+    &::placeholder {
+      color: var(--button-text-color);
+    }
+  }
+
+  .button-control {
+    width: fit-content;
+  }
+}
+
+.diagram-item {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: var(--background-color);
+  border: 1px solid var(--text-color);
+  border-radius: 3px;
+  padding: var(--size-03);
+  width: 200px;
+  cursor: pointer;
+}
+
+.diagram-item-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  margin-bottom: var(--size-02);
+}
+
+.diagram-item-footer {
+  margin-top: var(--size-02);
+  padding-top: var(--size-02);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.diagram-item-coords {
+  font-size: var(--font-size-00);
+  color: var(--button-text-color);
+  font-family: var(--font-georgia);
+}
+
+.diagram-item-remove {
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  font-size: var(--font-size-3);
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: var(--size-03);
+  height: var(--size-03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.diagram-item-title {
+  font-size: var(--font-size-detail-l);
+  font-weight: var(--font-weight-medium);
+  margin: 0 0 var(--size-01) 0;
+}
+
+.diagram-item-body {
+  font-size: var(--font-size-detail-s);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.diagram-loading-indicator {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: var(--font-size-00);
+  color: var(--button-text-color);
+  font-family: var(--font-georgia);
+  pointer-events: none;
+  font-style: italic;
+}
