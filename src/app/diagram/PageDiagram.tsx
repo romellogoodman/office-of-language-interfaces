@@ -1,9 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 
 import { fetchClaude } from "@/lib/claude";
 import ButtonControl from "@/components/ButtonControl";
+import {
+  GENERATE_ITEMS_PROMPT,
+  REGENERATE_AXIS_PROMPT,
+  GENERATE_SINGLE_ITEM_PROMPT,
+} from "./prompts";
 
 import "./PageDiagram.scss";
 
@@ -42,25 +48,13 @@ export default function PageDiagram() {
     setIsLoading(true);
 
     try {
-      const prompt = `Given the concept "${inputValue}" and a 2x2 diagram with these axes:
-- Vertical axis: ${axisBottom} (bottom) to ${axisTop} (top)
-- Horizontal axis: ${axisLeft} (left) to ${axisRight} (right)
-
-Generate exactly 5 items related to "${inputValue}" that can be plotted on this diagram. For each item, provide:
-1. A short title (2-5 words)
-2. A brief description (1-2 sentences)
-3. An x coordinate from -1 to 1 (where -1 is ${axisLeft} and 1 is ${axisRight})
-4. A y coordinate from -1 to 1 (where -1 is ${axisBottom} and 1 is ${axisTop})
-
-Return ONLY a valid JSON array with this exact structure:
-[
-  {
-    "title": "Item Title",
-    "body": "Brief description.",
-    "x": 0.5,
-    "y": -0.3
-  }
-]`;
+      const prompt = GENERATE_ITEMS_PROMPT({
+        inputValue,
+        axisBottom,
+        axisTop,
+        axisLeft,
+        axisRight,
+      });
 
       const response = await fetchClaude({ prompt });
 
@@ -121,6 +115,82 @@ Return ONLY a valid JSON array with this exact structure:
     setItems(prevItems => prevItems.filter(item => item.id !== itemId));
   };
 
+  const handleRegenerateAxis = async (axis: "vertical" | "horizontal") => {
+    if (isLoading || !inputValue.trim()) return;
+
+    setIsLoading(true);
+
+    try {
+      const prompt = REGENERATE_AXIS_PROMPT({
+        inputValue,
+        axis,
+        axisTop,
+        axisBottom,
+        axisLeft,
+        axisRight,
+      });
+
+      const response = await fetchClaude({ prompt });
+
+      // Extract JSON from response
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error("No valid JSON found in response");
+      }
+
+      const newLabels = JSON.parse(jsonMatch[0]);
+
+      if (axis === "vertical") {
+        setAxisTop(newLabels.top);
+        setAxisBottom(newLabels.bottom);
+      } else {
+        setAxisLeft(newLabels.left);
+        setAxisRight(newLabels.right);
+      }
+
+      console.log(`Regenerated ${axis} axis:`, newLabels);
+
+      // Clear existing items
+      setItems([]);
+
+      // Generate new items with the updated axes
+      const generatePrompt = GENERATE_ITEMS_PROMPT({
+        inputValue,
+        axisBottom: axis === "vertical" ? newLabels.bottom : axisBottom,
+        axisTop: axis === "vertical" ? newLabels.top : axisTop,
+        axisLeft: axis === "horizontal" ? newLabels.left : axisLeft,
+        axisRight: axis === "horizontal" ? newLabels.right : axisRight,
+      });
+
+      const generateResponse = await fetchClaude({ prompt: generatePrompt });
+
+      // Extract JSON from response
+      const generateJsonMatch = generateResponse.match(/\[[\s\S]*\]/);
+      if (!generateJsonMatch) {
+        throw new Error("No valid JSON found in response");
+      }
+
+      const generatedItems = JSON.parse(generateJsonMatch[0]);
+
+      // Add IDs and zIndex to items
+      const itemsWithIds = generatedItems.map(
+        (item: Omit<DiagramItem, "id" | "zIndex">, index: number) => ({
+          ...item,
+          id: `${Date.now()}-${index}`,
+          zIndex: index + 1,
+        })
+      );
+
+      setItems(itemsWithIds);
+      setMaxZIndex(generatedItems.length);
+    } catch (error) {
+      console.error("Error regenerating axis:", error);
+      alert("Failed to regenerate axis. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handlePageClick = async (e: React.MouseEvent<HTMLDivElement>) => {
     console.log("Page clicked", e.clientX, e.clientY);
 
@@ -169,21 +239,15 @@ Return ONLY a valid JSON array with this exact structure:
     setLoadingCoords({ x, y });
 
     try {
-      const prompt = `Given the concept "${inputValue}" and a 2x2 diagram with these axes:
-- Vertical axis: ${axisBottom} (bottom) to ${axisTop} (top)
-- Horizontal axis: ${axisLeft} (left) to ${axisRight} (right)
-
-Generate exactly 1 item related to "${inputValue}" that should be placed at coordinates x=${x.toFixed(2)}, y=${y.toFixed(2)} on this diagram.
-
-For this item, provide:
-1. A short title (2-5 words)
-2. A brief description (1-2 sentences)
-
-Return ONLY a valid JSON object with this exact structure:
-{
-  "title": "Item Title",
-  "body": "Brief description."
-  }`;
+      const prompt = GENERATE_SINGLE_ITEM_PROMPT({
+        inputValue,
+        axisBottom,
+        axisTop,
+        axisLeft,
+        axisRight,
+        x,
+        y,
+      });
 
       const response = await fetchClaude({ prompt });
 
@@ -219,10 +283,38 @@ Return ONLY a valid JSON object with this exact structure:
   return (
     <div className="page-diagram" onClick={handlePageClick}>
       <div className="diagram-container">
-        <div className="axis-label axis-label-top">{axisTop}</div>
-        <div className="axis-label axis-label-left">{axisLeft}</div>
-        <div className="axis-label axis-label-bottom">{axisBottom}</div>
-        <div className="axis-label axis-label-right-opposite">{axisRight}</div>
+        <div className="axis-label axis-label-top">
+          <ButtonControl
+            onClick={() => handleRegenerateAxis("vertical")}
+            disabled={isLoading || !inputValue.trim()}
+          >
+            {axisTop}
+          </ButtonControl>
+        </div>
+        <div className="axis-label axis-label-left">
+          <ButtonControl
+            onClick={() => handleRegenerateAxis("horizontal")}
+            disabled={isLoading || !inputValue.trim()}
+          >
+            {axisLeft}
+          </ButtonControl>
+        </div>
+        <div className="axis-label axis-label-bottom">
+          <ButtonControl
+            onClick={() => handleRegenerateAxis("vertical")}
+            disabled={isLoading || !inputValue.trim()}
+          >
+            {axisBottom}
+          </ButtonControl>
+        </div>
+        <div className="axis-label axis-label-right-opposite">
+          <ButtonControl
+            onClick={() => handleRegenerateAxis("horizontal")}
+            disabled={isLoading || !inputValue.trim()}
+          >
+            {axisRight}
+          </ButtonControl>
+        </div>
 
         <div className="diagram-grid">
           <div className="axis-line axis-line-horizontal"></div>
@@ -255,6 +347,9 @@ Return ONLY a valid JSON object with this exact structure:
                 onClick={() => handleItemClick(item.id)}
               >
                 <div className="diagram-item-header">
+                  <span className="diagram-item-coords">
+                    {coordsToPercent(item.x, item.y)}
+                  </span>
                   <button
                     className="diagram-item-remove"
                     onClick={e => handleRemoveItem(item.id, e)}
@@ -265,11 +360,6 @@ Return ONLY a valid JSON object with this exact structure:
                 </div>
                 <h3 className="diagram-item-title">{item.title}</h3>
                 <p className="diagram-item-body">{item.body}</p>
-                <div className="diagram-item-footer">
-                  <span className="diagram-item-coords">
-                    {coordsToPercent(item.x, item.y)}
-                  </span>
-                </div>
               </div>
             );
           })}
@@ -285,7 +375,7 @@ Return ONLY a valid JSON object with this exact structure:
                 className="prompt-input"
                 value={inputValue}
                 onChange={e => setInputValue(e.target.value)}
-                placeholder="Enter concept..."
+                placeholder="Enter a concept to map (e.g. snacks, movies, music)"
                 disabled={isLoading}
               />
             </div>
@@ -293,6 +383,12 @@ Return ONLY a valid JSON object with this exact structure:
               {isLoading ? "Loading..." : "Submit"}
             </ButtonControl>
           </form>
+          <p className="diagram-fineprint">
+            Diagram by{" "}
+            <Link href="/" className="diagram-fineprint-link">
+              Office of Language Interfaces
+            </Link>
+          </p>
         </div>
       </div>
     </div>

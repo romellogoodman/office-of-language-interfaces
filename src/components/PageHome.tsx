@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Header from "@/components/Header";
 import ButtonGenerate from "@/components/ButtonGenerate";
 import { GENERATE_RESEARCH_TAGLINE_PROMPT } from "@/prompts/generate-research-tagline";
 
@@ -33,6 +34,7 @@ export default function PageHome({ posts }: PageHomeProps) {
 
   return (
     <>
+      <Header />
       <div className="main-content">
         <div className="homepage-intro">
           <p>Office of Language Interfaces is {currentText}</p>

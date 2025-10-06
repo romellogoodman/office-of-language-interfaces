@@ -25,6 +25,10 @@
   font-weight: var(--font-weight-regular);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+
+  .button-control {
+    width: fit-content;
+  }
 }
 
 .axis-label-top {
@@ -100,7 +104,7 @@
   }
 
   .prompt-input {
-    min-width: 300px;
+    min-width: 400px;
     padding: var(--size-03);
     border: none;
     border-radius: 3px;
@@ -123,6 +127,24 @@
   }
 }
 
+.diagram-fineprint {
+  margin-top: var(--size-02);
+  margin-bottom: 0;
+  font-size: var(--font-size-01);
+  color: var(--button-text-color);
+  font-family: var(--font-georgia);
+}
+
+.diagram-fineprint-link {
+  color: var(--button-text-color);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+
+  &:hover {
+    text-decoration-style: solid;
+  }
+}
+
 .diagram-item {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -136,19 +158,13 @@
 
 .diagram-item-header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: flex-start;
   margin-bottom: var(--size-02);
 }
 
-.diagram-item-footer {
-  margin-top: var(--size-02);
-  padding-top: var(--size-02);
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-
 .diagram-item-coords {
-  font-size: var(--font-size-00);
+  font-size: var(--font-size-01);
   color: var(--button-text-color);
   font-family: var(--font-georgia);
 }
