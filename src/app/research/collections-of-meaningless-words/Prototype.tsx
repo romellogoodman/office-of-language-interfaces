@@ -370,8 +370,6 @@ export default function Prototype({}: PrototypeProps) {
           </ButtonControl>
         </div> */}
 
-        {generateControls}
-
         {selectedWordData && (
           <div className="proto-analysis">
             <div className="proto-analysis-header">
@@ -383,6 +381,8 @@ export default function Prototype({}: PrototypeProps) {
             <p className="proto-analysis-text">{selectedWordData.analysis}</p>
           </div>
         )}
+
+        {generateControls}
       </div>
     </div>
   );

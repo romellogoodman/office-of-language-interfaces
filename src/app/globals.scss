@@ -29,6 +29,11 @@
   --button-background: rgba(0, 0, 0, 0.05);
   --button-text-color: rgba(0, 0, 0, 0.6);
 
+  /* Overlay tokens */
+  --overlay-black-10: rgba(0, 0, 0, 0.1);
+  --overlay-black-15: rgba(0, 0, 0, 0.15);
+  --overlay-white-10: rgba(255, 255, 255, 0.1);
+
   /* Fonts */
   --font-public-sans: "Public Sans", sans-serif;
   --font-georgia: Georgia, serif;
@@ -355,8 +360,7 @@ header {
 }
 
 .research-link {
-  text-decoration: underline;
-  text-decoration-style: dotted;
+  text-decoration: none;
   display: inline;
   color: var(--text-color);
 
@@ -617,10 +621,10 @@ header {
 }
 
 .prototype-item {
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--overlay-black-10);
   padding: var(--space-stack-m);
   border-radius: var(--border-radius-s);
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--overlay-white-10);
 }
 
 /* 404 Page */
@@ -694,7 +698,7 @@ code {
   color: rgba(0, 0, 0, 0.6);
   background: rgba(0, 0, 0, 0.05);
   padding: var(--size-01) var(--size-02);
-  border-radius: 3px;
+  border-radius: var(--border-radius-s);
   white-space: nowrap;
 }
 
@@ -704,7 +708,7 @@ pre {
   color: rgba(0, 0, 0, 0.6);
   background: rgba(0, 0, 0, 0.05);
   padding: var(--size-03);
-  border-radius: 3px;
+  border-radius: var(--border-radius-s);
   white-space: pre;
   overflow-x: auto;
   margin: var(--space-stack-s) 0;
@@ -746,7 +750,7 @@ pre {
   color: var(--button-text-color);
   background: var(--button-background);
   padding: var(--size-01) var(--size-02);
-  border-radius: 3px;
+  border-radius: var(--border-radius-s);
   border: none;
   cursor: pointer;
   flex-shrink: 0;
@@ -758,13 +762,13 @@ pre {
   gap: var(--size-01);
 
   &:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--overlay-black-10);
     // Override a:hover opacity styles
     opacity: 1 !important;
   }
 
   &:active {
-    background: rgba(0, 0, 0, 0.15);
+    background: var(--overlay-black-15);
   }
 
   &.generating {
@@ -794,17 +798,17 @@ pre {
   color: var(--button-text-color);
   background: var(--button-background);
   padding: var(--size-01) var(--size-02);
-  border-radius: 3px;
+  border-radius: var(--border-radius-s);
   border: none;
   cursor: pointer;
   white-space: nowrap;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--overlay-black-10);
   }
 
   &:active {
-    background: rgba(0, 0, 0, 0.15);
+    background: var(--overlay-black-15);
   }
 }
 

@@ -7,7 +7,7 @@ import { isDev } from "@/utils/env";
 import { getLatestCommitHash } from "@/lib/build-info";
 
 export const metadata: Metadata = {
-  title: "Office of Language Interfaces | Oli",
+  title: "Office of Language Interfaces",
 };
 
 interface Post {
