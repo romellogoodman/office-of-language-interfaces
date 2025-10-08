@@ -77,7 +77,7 @@ export default function Footer({
             )}
             {commitHash && (
               <ButtonLink
-                href={`https://github.com/romellogoodman/oli/commit/${commitHash}`}
+                href={`https://github.com/romellogoodman/office-of-language-interfaces/commit/${commitHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 icon={<Code size={14} />}
