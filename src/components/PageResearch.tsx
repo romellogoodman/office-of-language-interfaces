@@ -1,7 +1,5 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
-import Header from "@/components/Header";
 import CodeBlock from "@/components/CodeBlock";
-import Footer from "@/components/Footer";
 
 interface FurtherReading {
   title: string;
@@ -25,14 +23,10 @@ interface PageResearchProps {
   commitHash?: string;
 }
 
-export default function PageResearch({
-  post,
-  prototype,
-  commitHash,
-}: PageResearchProps) {
+export default function PageResearch({ post, prototype }: PageResearchProps) {
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div className="research-page-grid">
         <div className="research-content">
           <article>
@@ -87,12 +81,12 @@ export default function PageResearch({
           </div>
         )}
       </div>
-      <Footer
+      {/* <Footer
         commitHash={commitHash}
         title={post.frontmatter.title}
         subhead={post.frontmatter.subhead}
         content={post.content}
-      />
+      /> */}
     </>
   );
 }

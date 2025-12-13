@@ -258,3 +258,26 @@
     margin-bottom: 0;
   }
 }
+
+/* Tagline Generator Specific Styles */
+.proto-tagline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-s);
+  padding: var(--space-stack-m) 0;
+}
+
+.proto-tagline-text {
+  p {
+    font-size: var(--font-size-display-s);
+    text-wrap: balance;
+    margin: 0;
+
+    @media (min-width: var(--breakpoint-md)) {
+      font-size: var(--font-size-display-m);
+    }
+  }
+}
+
+.proto-tagline-controls {
+}

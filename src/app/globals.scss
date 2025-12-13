@@ -323,6 +323,27 @@ header {
   }
 }
 
+.homepage-research-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-xl);
+}
+
+.homepage-research-item {
+  // border-top: 1px solid var(--text-color);
+  // padding-top: var(--space-stack-l);
+
+  // &:first-child {
+  //   border-top: none;
+  //   padding-top: 0;
+  // }
+
+  &:last-of-type {
+    border-top: 1px solid var(--text-color);
+    padding-top: var(--space-stack-l);
+  }
+}
+
 .research-section {
   margin-top: var(--space-stack-m);
   max-width: 70ch;
