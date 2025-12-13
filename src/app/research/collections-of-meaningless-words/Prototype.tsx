@@ -4,9 +4,8 @@ import { useState, useEffect } from "react";
 import ButtonGenerate from "@/components/ButtonGenerate";
 import "../../prototypes.scss";
 
-interface PrototypeProps {
-  text?: string;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface PrototypeProps {}
 
 const initialPangrams = [
   {

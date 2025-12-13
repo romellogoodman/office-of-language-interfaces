@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import PageResearch from "@/components/PageResearch";
+import Prototype from "./Prototype";
 import { parseResearchPostContent } from "@/lib/parseResearchPostContent";
 import { getLatestCommitHash } from "@/lib/build-info";
 import { getPageMetadata } from "@/utils/metadata";
@@ -16,7 +17,7 @@ export default async function Page() {
 
   return PageResearch({
     post,
-
+    prototype: <Prototype />,
     commitHash,
   });
 }

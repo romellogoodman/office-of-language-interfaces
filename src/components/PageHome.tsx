@@ -1,15 +1,28 @@
-"use client";
-
-import Link from "next/link";
+import { MDXRemote } from "next-mdx-remote/rsc";
 import Header from "@/components/Header";
-import ButtonGenerate from "@/components/ButtonGenerate";
-import { GENERATE_RESEARCH_TAGLINE_PROMPT } from "@/prompts/generate-research-tagline";
+import Footer from "@/components/Footer";
+import CodeBlock from "@/components/CodeBlock";
+import PrototypeResearchLabAsContainer from "@/app/research/research-lab-as-container/Prototype";
+import PrototypePausingToThink from "@/app/research/pausing-to-think/Prototype";
+import PrototypeCollectionsOfMeaninglessWords from "@/app/research/collections-of-meaningless-words/Prototype";
+import PrototypePoetic404 from "@/app/research/poetic-404/Prototype";
+import PrototypePromptPrefilling from "@/app/research/prompt-prefilling/Prototype";
+
+interface FurtherReading {
+  title: string;
+  author: string;
+  url: string;
+}
 
 interface Post {
   slug: string;
-  title: string;
-  publishedAt: string;
-  draft: boolean;
+  frontmatter: {
+    title: string;
+    subhead?: string;
+    publishedAt: string;
+    furtherReading?: FurtherReading[];
+  };
+  content: string;
 }
 
 interface PageHomeProps {
@@ -17,62 +30,90 @@ interface PageHomeProps {
   commitHash?: string;
 }
 
-const initialGenerations = [
-  "a research lab designing software that responds to language.",
-  "a research lab exploring conversational interfaces that reimagine how humans and machines create meaning together.",
-  "a research lab designing conversational interfaces that reimagine human-computer meaning-making.",
-];
+// Map slugs to their prototype components
+const prototypeMap: Record<string, React.ComponentType> = {
+  "research-lab-as-container": PrototypeResearchLabAsContainer,
+  "pausing-to-think": PrototypePausingToThink,
+  "collections-of-meaningless-words": PrototypeCollectionsOfMeaninglessWords,
+  "poetic-404": PrototypePoetic404,
+  "prompt-prefilling": PrototypePromptPrefilling,
+};
 
-const initialText = initialGenerations[0];
-
-export default function PageHome({ posts }: PageHomeProps) {
-  const { currentText, controls } = ButtonGenerate({
-    initialText,
-    initialGenerations,
-    prompt: GENERATE_RESEARCH_TAGLINE_PROMPT,
-  });
-
+export default function PageHome({ posts, commitHash }: PageHomeProps) {
   return (
     <>
       <Header />
-      <div className="main-content">
-        <div className="homepage-intro">
-          <p>Office of Language Interfaces is {currentText}</p>
-          {controls}
-        </div>
 
-        <div className="research-section">
-          {/* <p className="research-paragraph">
-            Our tools:{" "}
-            <Link href="/diagram" className="research-link">
-              Diagram
-            </Link>
-            , a map for your ideas.
-          </p> */}
+      <div className="homepage-research-stack">
+        {posts.map(post => {
+          const PrototypeComponent = prototypeMap[post.slug];
 
-          {posts.length > 0 ? (
-            <p className="research-paragraph">
-              Our research:{" "}
-              {posts.map((post, index) => (
-                <span key={post.slug}>
-                  <Link
-                    href={`/research/${post.slug}`}
-                    className="research-link"
-                  >
-                    {post.title.charAt(0).toLowerCase() + post.title.slice(1)}
-                  </Link>
-                  {index === posts.length - 1
-                    ? "."
-                    : index === posts.length - 2
-                      ? ", and "
-                      : ", "}
-                </span>
-              ))}
-            </p>
-          ) : null}
-        </div>
+          return (
+            <div key={post.slug} className="homepage-research-item">
+              <div className="research-page-grid">
+                <div className="research-content">
+                  <article>
+                    <header>
+                      <h1>{post.frontmatter.title}</h1>
+                      {post.frontmatter.subhead && (
+                        <p className="research-subhead">
+                          {post.frontmatter.subhead}
+                        </p>
+                      )}
+                    </header>
+                    <main>
+                      <div className="body-section">
+                        <MDXRemote
+                          source={post.content}
+                          components={{
+                            pre: ({ children }) => (
+                              <CodeBlock>{children}</CodeBlock>
+                            ),
+                          }}
+                        />
+                      </div>
+                    </main>
+                  </article>
+                  {post.frontmatter.furtherReading &&
+                    post.frontmatter.furtherReading.length > 0 && (
+                      <div className="further-reading">
+                        <p className="further-reading-title">Further reading</p>
+                        <div className="further-reading-list">
+                          {post.frontmatter.furtherReading.map(
+                            (item, index) => (
+                              <div key={index} className="further-reading-item">
+                                <div>
+                                  <a
+                                    href={item.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    {item.title}
+                                  </a>
+                                </div>
+                                <div className="further-reading-author">
+                                  by {item.author}
+                                </div>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    )}
+                </div>
+                {PrototypeComponent && (
+                  <div className="prototype-section">
+                    <div className="prototype-item">
+                      <PrototypeComponent />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
-      {/* <Footer commitHash={commitHash} /> */}
+      <Footer commitHash={commitHash} />
     </>
   );
 }

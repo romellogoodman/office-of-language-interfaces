@@ -10,11 +10,21 @@ export const metadata: Metadata = {
   title: "Office of Language Interfaces",
 };
 
+interface FurtherReading {
+  title: string;
+  author: string;
+  url: string;
+}
+
 interface Post {
   slug: string;
-  title: string;
-  publishedAt: string;
-  draft: boolean;
+  frontmatter: {
+    title: string;
+    subhead?: string;
+    publishedAt: string;
+    furtherReading?: FurtherReading[];
+  };
+  content: string;
 }
 
 function getAllPosts(): Post[] {
@@ -24,12 +34,17 @@ function getAllPosts(): Post[] {
     return [];
   }
 
-  const postSlugs = fs
-    .readdirSync(researchDirectory, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name);
+  // Manual post order - rearrange these slugs to change the order on the homepage
+  const postOrder = [
+    "research-lab-as-container",
+    "pausing-to-think",
+    "collections-of-meaningless-words",
+    "poetic-404",
+    "reading-the-manual",
+    "prompt-prefilling",
+  ];
 
-  const posts = postSlugs
+  const posts = postOrder
     .map(slug => {
       const contentPath = path.join(researchDirectory, slug, "content.md");
 
@@ -38,18 +53,27 @@ function getAllPosts(): Post[] {
       }
 
       const fileContents = fs.readFileSync(contentPath, "utf8");
-      const { data } = matter(fileContents);
+      const { data, content } = matter(fileContents);
 
-      return {
+      // Filter out drafts in production
+      if (!isDev && data.draft) {
+        return null;
+      }
+
+      const post: Post = {
         slug,
-        title: data.title,
-        publishedAt: data.publishedAt,
-        draft: data.draft || false,
+        frontmatter: {
+          title: data.title || "",
+          subhead: data.subhead,
+          publishedAt: data.publishedAt || "",
+          furtherReading: data.furtherReading,
+        },
+        content,
       };
+
+      return post;
     })
-    .filter((post): post is Post => post !== null)
-    .filter(post => (isDev ? true : !post.draft))
-    .sort((a, b) => a.title.localeCompare(b.title));
+    .filter((post): post is Post => Boolean(post));
 
   return posts;
 }
