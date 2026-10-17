@@ -15,10 +15,11 @@ oli/
 │   │   │   │   ├── page.tsx        # Renders PageResearch
 │   │   │   │   └── Prototype.tsx   # Optional prototype component
 │   │   │   └── ...
-│   │   └── api/             # API endpoints (claude, commits)
+│   │   └── api/             # API endpoints (favicon, text)
 │   ├── components/          # React components (Page*, Button*, UI components)
-│   ├── lib/                 # Utilities (claude.ts, middleware, validation, parsing)
-│   ├── prompts/             # AI prompt templates
+│   ├── data/                # Pre-written generations (JSON)
+│   ├── lib/                 # Utilities (parsing, build info)
+│   ├── prompts/             # Prompt for the "discuss" link
 │   └── utils/               # Helper functions
 ├── public/                  # Static assets
 ├── next.config.ts           # Next.js config with raw-loader for .md files
@@ -35,14 +36,13 @@ oli/
 
 ### Utilities
 
-- **Services**: Feature-based (`claude.ts`, `rate-limiter.ts`)
-- **Middleware**: Purpose-based (`api-middleware.ts`)
-- **Validators**: Domain-based (`origin-validator.ts`)
+- **Utilities**: Feature-based (`parseResearchPostContent.js`, `build-info.ts`)
+- **Data**: Content-based JSON in `src/data/` (`error-poems.json`, `diagrams.json`)
 
 ### API Routes
 
 - **RESTful**: Use HTTP methods (`GET`, `POST`)
-- **Nested**: Group related endpoints (`api/claude/`, `api/commits/`)
+- **Nested**: Group related endpoints (`api/favicon/`, `api/text/`)
 
 ## Import Conventions
 
@@ -51,7 +51,7 @@ oli/
 Use `@/` prefix for clean imports:
 
 ```typescript
-import { fetchClaude } from "@/lib/claude";
+import { getBuildInfo } from "@/lib/build-info";
 import ButtonControl from "@/components/ButtonControl";
 import PageHome from "@/components/PageHome";
 ```
@@ -69,7 +69,7 @@ import { useState } from "react";
 import { NextRequest } from "next/server";
 import matter from "gray-matter";
 
-import { fetchClaude } from "@/lib/claude";
+import { getBuildInfo } from "@/lib/build-info";
 import ButtonControl from "@/components/ButtonControl";
 import "./styles.scss";
 ```
@@ -96,18 +96,9 @@ export default function PageHome({ posts }) {
 }
 ```
 
-### 2. API Route Security
+### 2. Pre-written Generations
 
-All API routes use middleware for consistent security. See [API Security](./api-security.md) for details.
-
-```typescript
-// Full protection for external APIs
-export async function POST(request: NextRequest) {
-  return withFullProtection(request, async ({ clientIP, body }) => {
-    // Route logic
-  });
-}
-```
+The site makes no calls to any generation API. Content that used to be generated lives in `src/data/`. See [Pre-written Content and Prompts](./prompts-and-api.md).
 
 ### 3. Component Organization
 
@@ -128,9 +119,7 @@ npx tsc --noEmit     # Type checking
 
 ### Environment Variables
 
-```bash
-ANTHROPIC_API_KEY=sk-...    # Claude API access
-```
+None required.
 
 ### Build Process
 
@@ -139,21 +128,6 @@ ANTHROPIC_API_KEY=sk-...    # Claude API access
 3. **Bundle Generation**: Next.js build with Turbopack (dev)
 4. **Markdown Processing**: raw-loader imports .md files as text
 5. **Build Info**: Git commit hash capture for footer display
-
-## Security Architecture
-
-### API Protection
-
-- **Rate Limiting**: Per-IP and global limits
-- **Origin Validation**: Whitelist allowed domains
-- **Input Validation**: Sanitize and validate requests
-- **Error Logging**: Monitor security violations
-
-### Content Security
-
-- **Prompt Filtering**: Block jailbreak attempts in [Prompts & API](./prompts-and-api.md)
-- **Model Validation**: Whitelist allowed AI models
-- **Length Limits**: Prevent oversized requests
 
 ## Development Workflow
 
@@ -167,10 +141,8 @@ ANTHROPIC_API_KEY=sk-...    # Claude API access
 
 ### 2. API Routes
 
-1. Use appropriate middleware wrapper
-2. Follow security patterns in [API Security](./api-security.md)
-3. Add proper error handling
-4. Test rate limiting behavior
+1. Keep routes read-only where possible (see [API Routes](./api-security.md))
+2. Add proper error handling
 
 ### 3. Styling
 
@@ -199,10 +171,9 @@ ANTHROPIC_API_KEY=sk-...    # Claude API access
 
 - **Static Assets**: Next.js automatic optimization
 - **API Responses**: No caching for dynamic content
-- **Rate Limits**: In-memory with automatic cleanup
 
 ## Testing Strategy
 
-- **Unit Tests**: Components, utilities, validators
-- **Integration Tests**: API routes, security middleware
-- **End-to-End Tests**: User flows, security, performance
+- **Unit Tests**: Components, utilities
+- **Integration Tests**: API routes
+- **End-to-End Tests**: User flows, performance

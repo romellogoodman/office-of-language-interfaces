@@ -2,26 +2,24 @@
 
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, RefreshCw } from "lucide-react";
-import { fetchClaude } from "@/lib/claude";
 import ButtonControl from "./ButtonControl";
 
+// Generations are written ahead of time and live in src/data/. "generate"
+// draws one the reader hasn't seen yet; once the pool runs out it starts
+// drawing from the whole pool again (never repeating the one on screen).
+const REVEAL_MS = 300;
+
 interface ButtonGenerateProps {
-  initialText: string;
-  initialGenerations?: string[];
-  generatePrompt?: (currentText: string, generations: string[]) => string;
-  prompt?: string;
-  model?: string;
+  pool: string[];
+  initialCount?: number;
 }
 
 export default function ButtonGenerate({
-  initialText,
-  initialGenerations,
-  generatePrompt,
-  prompt,
-  model = "claude-3-5-haiku-20241022",
+  pool,
+  initialCount = 1,
 }: ButtonGenerateProps) {
   const [generations, setGenerations] = useState<string[]>(
-    initialGenerations || [initialText]
+    pool.slice(0, initialCount)
   );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -30,31 +28,23 @@ export default function ButtonGenerate({
   const canGoPrevious = currentIndex > 0;
   const canGoNext = currentIndex < generations.length - 1;
 
-  const handleGenerate = async () => {
+  const handleGenerate = () => {
+    if (isGenerating) return;
+
+    const unseen = pool.filter(text => !generations.includes(text));
+    const choices = unseen.length
+      ? unseen
+      : pool.filter(text => text !== currentText);
+    const next = choices[Math.floor(Math.random() * choices.length)];
+    if (next === undefined) return;
+
     setIsGenerating(true);
-
-    try {
-      const promptText =
-        prompt ||
-        (generatePrompt ? generatePrompt(currentText, generations) : "");
-
-      if (!promptText) {
-        throw new Error("No prompt provided");
-      }
-
-      const response = await fetchClaude({
-        prompt: promptText,
-        model,
-      });
-
-      const newGenerations = [...generations, response];
+    setTimeout(() => {
+      const newGenerations = [...generations, next];
       setGenerations(newGenerations);
       setCurrentIndex(newGenerations.length - 1);
-    } catch (error) {
-      console.error("Error generating text:", error);
-    } finally {
       setIsGenerating(false);
-    }
+    }, REVEAL_MS);
   };
 
   const handlePrevious = () => {

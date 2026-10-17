@@ -1,73 +1,51 @@
 # Diagram Page
 
-An interactive 2x2 diagram mapping tool for visualizing concepts across two axes.
-
-## Overview
-
-The Diagram page allows users to map ideas, concepts, or items across a customizable 2x2 grid system. It uses AI to generate contextually relevant items based on user input and their position on the diagram.
+An interactive 2x2 diagram for mapping a concept across two axes. All content is pre-written in `src/data/diagrams.json`; the page makes no API calls.
 
 ## Features
 
-- **Custom Axes**: Default axes are ABSTRACT/CONCRETE (vertical) and SIMPLE/COMPLEX (horizontal)
-- **AI-Powered Generation**: Generate items using Claude API based on concept input
-- **Click-to-Create**: Click anywhere on the page to generate a single item at that location
-- **Bulk Generation**: Submit form to generate 5 items automatically plotted across axes
-- **Interactive Items**:
-  - Click items to bring them to the front (z-index management)
-  - Remove items with × button
-  - View coordinate position as percentages
-- **Loading States**: Visual indicator shows "Loading item..." at click coordinates during generation
+- **Pick a concept**: The input has a `<datalist>` of concept names. Submitting matches the typed value by name (trimmed, case-insensitive). A match resets both axes to their defaults and places the concept's first 5 items. No match shows a short line in the fineprint area, e.g. `No map for “x” yet. Try snacks, movies, music or programming languages.`
+- **Cycle axes**: Clicking the top/bottom label cycles to the next vertical axis option; left/right cycles horizontal. Placed items stay and move to their positions under the new axes. Axis buttons are disabled until a concept is chosen.
+- **Click to add**: Clicking empty grid space adds the not-yet-placed item nearest the click, at the item's own coordinates (not the click point). Does nothing once all items are placed.
+- **Items**: Click to bring to front (z-index), remove with ×, and show their position as `(x, y)` percentages.
 
-## Technical Architecture
+## Data (`src/data/diagrams.json`)
 
-### File Structure
+An array of concepts:
+
+```json
+{
+  "name": "snacks",
+  "vertical": [{ "top": "ABSTRACT", "bottom": "CONCRETE" }, "...3 total"],
+  "horizontal": [{ "left": "SIMPLE", "right": "COMPLEX" }, "...3 total"],
+  "items": [
+    { "title": "Potato chips", "body": "...", "y": [-0.7, -0.8, -0.6], "x": [-0.8, -0.9, -0.7] }
+  ]
+}
+```
+
+- `y[i]` is the item's position (-1 bottom to 1 top) under `vertical[i]`.
+- `x[j]` is the item's position (-1 left to 1 right) under `horizontal[j]`.
+- Index 0 of each axis list is the site default: ABSTRACT/CONCRETE and SIMPLE/COMPLEX.
+- To add a concept, append an entry with 3 vertical options, 3 horizontal options and items whose `x`/`y` arrays have one value per option. Add it to the placeholder text in `PageDiagram.tsx` too.
+
+## File Structure
 
 - `page.tsx` - Server component route handler
-- `PageDiagram.tsx` - Main client component with state management
+- `PageDiagram.tsx` - Client component with state management
 - `PageDiagram.scss` - Component-specific styles
-- `claude.md` - This documentation file
+- `CLAUDE.md` - This file
 
-### Coordinate System
+## State
 
-- Uses normalized coordinates: `-1 to 1` range
-- X-axis: `-1` (left/SIMPLE) to `1` (right/COMPLEX)
-- Y-axis: `-1` (bottom/CONCRETE) to `1` (top/ABSTRACT)
-- Converts to CSS percentages for positioning
-
-### State Management
-
-- `inputValue`: Current concept being mapped
-- `items`: Array of diagram items with coordinates and z-index
-- `isLoading`: Loading state for API calls
-- `loadingCoords`: Tracks click position during generation
-- `maxZIndex`: Manages item stacking order
-
-### AI Integration
-
-- Uses `/api/claude` endpoint via `fetchClaude()`
-- Generates JSON responses with item structure:
-  ```json
-  {
-    "title": "Item Title",
-    "body": "Brief description",
-    "x": 0.5,
-    "y": -0.3
-  }
-  ```
-
-## Usage
-
-1. Enter a concept in the input field (e.g., "snacks", "programming languages")
-2. Either:
-   - Click "Submit" to generate 5 items automatically
-   - Click anywhere on the page to create a single item at that location
-3. Click items to bring them to front
-4. Remove items using the × button
+- `concept`: The selected concept (or `null`)
+- `verticalIndex` / `horizontalIndex`: Current axis option for each axis
+- `items`: Placed items as `{ index, zIndex }`, where `index` points into `concept.items`; coordinates are derived from the current axis indices
+- `maxZIndex`: Stacking order counter
+- `message`: Fineprint line shown when a concept has no map
 
 ## Styling
 
-- Follows prototype design patterns from `prototypes.scss`
 - Uses CSS tokens from `globals.scss`
 - Full-screen absolute positioning (`100vh/100vw`)
-- Items have fixed width (200px) with responsive positioning
-- Pointer cursor indicates clickable areas
+- Items have fixed width (200px); only their `left`/`top`/`zIndex` are set inline because they are computed

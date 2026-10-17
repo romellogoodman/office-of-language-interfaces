@@ -1,39 +1,17 @@
 "use client";
 
 import ButtonGenerate from "@/components/ButtonGenerate";
-import { GENERATE_ERROR_POEM_PROMPT } from "@/prompts/generate-error-poem";
+import poems from "@/data/error-poems.json";
 import "../../prototypes.scss";
 
-const initialPoems = [
-  `In the vast digital wilderness you've found yourself wandering,
-Where broken links scatter like fallen leaves,
-And the page you sought has vanished into the ether,
-Like a whisper carried away by cyber winds.
-
-But fear not, fellow traveler of the web,
-For every path that leads nowhere
-Still teaches us something about the journey,
-And getting lost often leads to discoveries.
-
-The compass spins in this pixelated forest,
-Where 404s bloom like strange flowers,
-Each one a small reminder that
-Even the internet has its mysteries.
-
-So take a moment here in this digital clearing,
-Let this unexpected stop become a brief respite,
-Before you navigate back to familiar ground,
-With new stories to tell of the paths less traveled.`,
-];
+// Start on the poem this research post was written around.
+const pool = [...poems.slice(2), ...poems.slice(0, 2)];
 
 export default function Prototype() {
   // ButtonGenerate hook for poem generation
   const { currentText: generatedPoem, controls: generateControls } =
     ButtonGenerate({
-      initialText: initialPoems[0],
-      initialGenerations: initialPoems,
-      prompt: GENERATE_ERROR_POEM_PROMPT,
-      model: "claude-3-5-haiku-20241022",
+      pool,
     });
 
   return (

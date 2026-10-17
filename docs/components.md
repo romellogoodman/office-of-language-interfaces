@@ -80,14 +80,14 @@ Interactive button component with optional icon support.
 
 #### ButtonGenerate
 
-Complex component for text generation with navigation controls. Returns both data and UI for flexible composition.
+Reveals pre-written text from a pool, with generate/previous/next controls. No API calls: "generate" shows a random unseen pool item after a 300ms spin. Returns both data and UI for flexible composition. Pools live in `src/data/` (see [Pre-written Content and Prompts](./prompts-and-api.md)).
 
 ```typescript
+import poems from "@/data/error-poems.json";
+
 const { currentText, controls } = ButtonGenerate({
-  initialText: "Starting text",
-  prompt: "Rewrite this text in a different style",
-  // OR use generatePrompt for dynamic prompts
-  generatePrompt: (text, generations) => "Rewrite this: " + text,
+  pool: poems, // string[]
+  initialCount: 2, // items shown in history before the first generate (default 1)
 });
 ```
 
@@ -151,8 +151,7 @@ Components compose smaller components rather than inheritance.
 ```typescript
 function PageHome() {
   const { currentText, controls } = ButtonGenerate({
-    initialText: "Sample text",
-    prompt: "Generate new text",
+    pool: taglines,
   });
 
   return (
@@ -187,7 +186,7 @@ return (
 Most components use React's built-in state management.
 
 ```typescript
-const [generations, setGenerations] = useState<string[]>([initialText]);
+const [generations, setGenerations] = useState<string[]>(pool.slice(0, 1));
 const [currentIndex, setCurrentIndex] = useState(0);
 ```
 
@@ -214,12 +213,7 @@ Complex logic is extracted into reusable patterns.
 
 ```typescript
 // ButtonGenerate acts like a custom hook
-const { currentText, controls } = ButtonGenerate({
-  initialText,
-  prompt: "Generate variation",
-  // OR use generatePrompt for dynamic prompts
-  generatePrompt: (text, generations) => `Rewrite: ${text}`,
-});
+const { currentText, controls } = ButtonGenerate({ pool: taglines });
 ```
 
 ## Best Practices

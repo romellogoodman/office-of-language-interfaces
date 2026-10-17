@@ -3,86 +3,91 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
-import { fetchClaude } from "@/lib/claude";
 import ButtonControl from "@/components/ButtonControl";
-import {
-  GENERATE_ITEMS_PROMPT,
-  REGENERATE_AXIS_PROMPT,
-  GENERATE_SINGLE_ITEM_PROMPT,
-} from "./prompts";
+import diagrams from "@/data/diagrams.json";
 
 import "./PageDiagram.scss";
 
-interface DiagramItem {
-  id: string;
+interface ConceptItem {
   title: string;
   body: string;
-  x: number; // -1 to 1 (left to right)
-  y: number; // -1 to 1 (bottom to top)
+  y: number[]; // -1 to 1 (bottom to top), one per vertical axis option
+  x: number[]; // -1 to 1 (left to right), one per horizontal axis option
+}
+
+interface Concept {
+  name: string;
+  vertical: { top: string; bottom: string }[];
+  horizontal: { left: string; right: string }[];
+  items: ConceptItem[];
+}
+
+interface DiagramItem {
+  index: number; // index into the concept's items
   zIndex: number;
 }
 
+const concepts = diagrams as Concept[];
+const INITIAL_ITEM_COUNT = 5;
+
+const conceptList = (() => {
+  const names = concepts.map(concept => concept.name);
+  if (names.length < 2) return names.join("");
+  return `${names.slice(0, -1).join(", ")} or ${names[names.length - 1]}`;
+})();
+
 export default function PageDiagram() {
   const [inputValue, setInputValue] = useState("");
-  const [axisTop, setAxisTop] = useState("ABSTRACT");
-  const [axisBottom, setAxisBottom] = useState("CONCRETE");
-  const [axisLeft, setAxisLeft] = useState("SIMPLE");
-  const [axisRight, setAxisRight] = useState("COMPLEX");
+  const [concept, setConcept] = useState<Concept | null>(null);
+  const [verticalIndex, setVerticalIndex] = useState(0);
+  const [horizontalIndex, setHorizontalIndex] = useState(0);
   const [items, setItems] = useState<DiagramItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [maxZIndex, setMaxZIndex] = useState(0);
-  const [loadingCoords, setLoadingCoords] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
+  const [message, setMessage] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const vertical = concept?.vertical[verticalIndex] ?? {
+    top: "ABSTRACT",
+    bottom: "CONCRETE",
+  };
+  const horizontal = concept?.horizontal[horizontalIndex] ?? {
+    left: "SIMPLE",
+    right: "COMPLEX",
+  };
+
+  const getCoords = (item: ConceptItem) => ({
+    x: item.x[horizontalIndex],
+    y: item.y[verticalIndex],
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputValue.trim() || isLoading) return;
+    const query = inputValue.trim().toLowerCase();
+    if (!query) return;
 
-    setIsLoading(true);
-
-    try {
-      const prompt = GENERATE_ITEMS_PROMPT({
-        inputValue,
-        axisBottom,
-        axisTop,
-        axisLeft,
-        axisRight,
-      });
-
-      const response = await fetchClaude({ prompt });
-
-      // Extract JSON from response (in case Claude adds explanation text)
-      const jsonMatch = response.match(/\[[\s\S]*\]/);
-      if (!jsonMatch) {
-        throw new Error("No valid JSON found in response");
-      }
-
-      const generatedItems = JSON.parse(jsonMatch[0]);
-
-      // Add IDs and zIndex to items
-      const itemsWithIds = generatedItems.map(
-        (item: Omit<DiagramItem, "id" | "zIndex">, index: number) => ({
-          ...item,
-          id: `${Date.now()}-${index}`,
-          zIndex: maxZIndex + index + 1,
-        })
-      );
-
-      setItems(itemsWithIds);
-      setMaxZIndex(maxZIndex + generatedItems.length);
-    } catch (error) {
-      console.error("Error generating items:", error);
-      alert("Failed to generate items. Please try again.");
-    } finally {
-      setIsLoading(false);
+    const match = concepts.find(c => c.name.toLowerCase() === query);
+    if (!match) {
+      setMessage(`No map for “${inputValue.trim()}” yet. Try ${conceptList}.`);
+      return;
     }
+
+    const count = Math.min(INITIAL_ITEM_COUNT, match.items.length);
+    setConcept(match);
+    setVerticalIndex(0);
+    setHorizontalIndex(0);
+    setItems(
+      Array.from({ length: count }, (_, index) => ({
+        index,
+        zIndex: index + 1,
+      }))
+    );
+    setMaxZIndex(count);
+    setMessage("");
   };
 
   // Convert x,y coordinates (-1 to 1) to CSS percentage (0% to 100%)
@@ -96,104 +101,34 @@ export default function PageDiagram() {
   const coordsToPercent = (x: number, y: number) => {
     const xPercent = Math.round(((x + 1) / 2) * 100);
     const yPercent = Math.round(((y + 1) / 2) * 100);
-    // return `${xPercent}% / ${yPercent}%`;
-
     return `(x: ${xPercent}, y: ${yPercent})`;
   };
 
-  const handleItemClick = (itemId: string) => {
+  const handleItemClick = (index: number) => {
     setItems(prevItems =>
       prevItems.map(item =>
-        item.id === itemId ? { ...item, zIndex: maxZIndex + 1 } : item
+        item.index === index ? { ...item, zIndex: maxZIndex + 1 } : item
       )
     );
     setMaxZIndex(prev => prev + 1);
   };
 
-  const handleRemoveItem = (itemId: string, e: React.MouseEvent) => {
+  const handleRemoveItem = (index: number, e: React.MouseEvent) => {
     e.stopPropagation();
-    setItems(prevItems => prevItems.filter(item => item.id !== itemId));
+    setItems(prevItems => prevItems.filter(item => item.index !== index));
   };
 
-  const handleRegenerateAxis = async (axis: "vertical" | "horizontal") => {
-    if (isLoading || !inputValue.trim()) return;
+  const handleCycleAxis = (axis: "vertical" | "horizontal") => {
+    if (!concept) return;
 
-    setIsLoading(true);
-
-    try {
-      const prompt = REGENERATE_AXIS_PROMPT({
-        inputValue,
-        axis,
-        axisTop,
-        axisBottom,
-        axisLeft,
-        axisRight,
-      });
-
-      const response = await fetchClaude({ prompt });
-
-      // Extract JSON from response
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
-        throw new Error("No valid JSON found in response");
-      }
-
-      const newLabels = JSON.parse(jsonMatch[0]);
-
-      if (axis === "vertical") {
-        setAxisTop(newLabels.top);
-        setAxisBottom(newLabels.bottom);
-      } else {
-        setAxisLeft(newLabels.left);
-        setAxisRight(newLabels.right);
-      }
-
-      console.log(`Regenerated ${axis} axis:`, newLabels);
-
-      // Clear existing items
-      setItems([]);
-
-      // Generate new items with the updated axes
-      const generatePrompt = GENERATE_ITEMS_PROMPT({
-        inputValue,
-        axisBottom: axis === "vertical" ? newLabels.bottom : axisBottom,
-        axisTop: axis === "vertical" ? newLabels.top : axisTop,
-        axisLeft: axis === "horizontal" ? newLabels.left : axisLeft,
-        axisRight: axis === "horizontal" ? newLabels.right : axisRight,
-      });
-
-      const generateResponse = await fetchClaude({ prompt: generatePrompt });
-
-      // Extract JSON from response
-      const generateJsonMatch = generateResponse.match(/\[[\s\S]*\]/);
-      if (!generateJsonMatch) {
-        throw new Error("No valid JSON found in response");
-      }
-
-      const generatedItems = JSON.parse(generateJsonMatch[0]);
-
-      // Add IDs and zIndex to items
-      const itemsWithIds = generatedItems.map(
-        (item: Omit<DiagramItem, "id" | "zIndex">, index: number) => ({
-          ...item,
-          id: `${Date.now()}-${index}`,
-          zIndex: index + 1,
-        })
-      );
-
-      setItems(itemsWithIds);
-      setMaxZIndex(generatedItems.length);
-    } catch (error) {
-      console.error("Error regenerating axis:", error);
-      alert("Failed to regenerate axis. Please try again.");
-    } finally {
-      setIsLoading(false);
+    if (axis === "vertical") {
+      setVerticalIndex(prev => (prev + 1) % concept.vertical.length);
+    } else {
+      setHorizontalIndex(prev => (prev + 1) % concept.horizontal.length);
     }
   };
 
-  const handlePageClick = async (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log("Page clicked", e.clientX, e.clientY);
-
+  const handlePageClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Don't handle clicks on items, buttons, or form elements
     const target = e.target as HTMLElement;
     if (
@@ -202,82 +137,35 @@ export default function PageDiagram() {
       target.closest("button") ||
       target.closest("input")
     ) {
-      console.log("Click ignored - hit UI element");
       return;
     }
 
-    if (!inputValue.trim()) {
-      console.log("No input value");
-      return;
-    }
+    if (!concept || !gridRef.current) return;
 
-    if (isLoading) {
-      console.log("Already loading");
-      return;
-    }
+    const placed = new Set(items.map(item => item.index));
+    const unplaced = concept.items
+      .map((item, index) => ({ item, index }))
+      .filter(({ index }) => !placed.has(index));
+    if (unplaced.length === 0) return;
 
-    const gridElement = document.querySelector(".diagram-grid") as HTMLElement;
-    if (!gridElement) {
-      console.log("Grid element not found");
-      return;
-    }
+    const rect = gridRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const y = 1 - ((e.clientY - rect.top) / rect.height) * 2;
 
-    const rect = gridElement.getBoundingClientRect();
-    console.log("Grid bounds:", rect);
+    // Place the unplaced item nearest the click, at its own coordinates
+    const nearest = unplaced.reduce((best, candidate) => {
+      const a = getCoords(candidate.item);
+      const b = getCoords(best.item);
+      const distA = (a.x - x) ** 2 + (a.y - y) ** 2;
+      const distB = (b.x - x) ** 2 + (b.y - y) ** 2;
+      return distA < distB ? candidate : best;
+    });
 
-    // Calculate click position relative to grid (0 to 1)
-    const relativeX = (e.clientX - rect.left) / rect.width;
-    const relativeY = (e.clientY - rect.top) / rect.height;
-
-    // Convert to coordinate system (-1 to 1)
-    const x = relativeX * 2 - 1; // 0-1 -> -1 to 1
-    const y = 1 - relativeY * 2; // 0-1 -> 1 to -1 (inverted for y-axis)
-
-    console.log("Coordinates:", { x, y, relativeX, relativeY });
-
-    setIsLoading(true);
-    setLoadingCoords({ x, y });
-
-    try {
-      const prompt = GENERATE_SINGLE_ITEM_PROMPT({
-        inputValue,
-        axisBottom,
-        axisTop,
-        axisLeft,
-        axisRight,
-        x,
-        y,
-      });
-
-      const response = await fetchClaude({ prompt });
-
-      // Extract JSON from response
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
-        throw new Error("No valid JSON found in response");
-      }
-
-      const generatedItem = JSON.parse(jsonMatch[0]);
-
-      // Add the new item with coordinates and zIndex
-      const newItem: DiagramItem = {
-        ...generatedItem,
-        id: `${Date.now()}`,
-        x,
-        y,
-        zIndex: maxZIndex + 1,
-      };
-
-      setItems(prevItems => [...prevItems, newItem]);
-      setMaxZIndex(prev => prev + 1);
-      console.log("Item added successfully:", newItem);
-    } catch (error) {
-      console.error("Error generating item:", error);
-      alert("Failed to generate item. Please try again.");
-    } finally {
-      setIsLoading(false);
-      setLoadingCoords(null);
-    }
+    setItems(prevItems => [
+      ...prevItems,
+      { index: nearest.index, zIndex: maxZIndex + 1 },
+    ]);
+    setMaxZIndex(prev => prev + 1);
   };
 
   return (
@@ -285,84 +173,74 @@ export default function PageDiagram() {
       <div className="diagram-container">
         <div className="axis-label axis-label-top">
           <ButtonControl
-            onClick={() => handleRegenerateAxis("vertical")}
-            disabled={isLoading || !inputValue.trim()}
+            onClick={() => handleCycleAxis("vertical")}
+            disabled={!concept}
           >
-            {axisTop}
+            {vertical.top}
           </ButtonControl>
         </div>
         <div className="axis-label axis-label-left">
           <ButtonControl
-            onClick={() => handleRegenerateAxis("horizontal")}
-            disabled={isLoading || !inputValue.trim()}
+            onClick={() => handleCycleAxis("horizontal")}
+            disabled={!concept}
           >
-            {axisLeft}
+            {horizontal.left}
           </ButtonControl>
         </div>
         <div className="axis-label axis-label-bottom">
           <ButtonControl
-            onClick={() => handleRegenerateAxis("vertical")}
-            disabled={isLoading || !inputValue.trim()}
+            onClick={() => handleCycleAxis("vertical")}
+            disabled={!concept}
           >
-            {axisBottom}
+            {vertical.bottom}
           </ButtonControl>
         </div>
         <div className="axis-label axis-label-right-opposite">
           <ButtonControl
-            onClick={() => handleRegenerateAxis("horizontal")}
-            disabled={isLoading || !inputValue.trim()}
+            onClick={() => handleCycleAxis("horizontal")}
+            disabled={!concept}
           >
-            {axisRight}
+            {horizontal.right}
           </ButtonControl>
         </div>
 
-        <div className="diagram-grid">
+        <div className="diagram-grid" ref={gridRef}>
           <div className="axis-line axis-line-horizontal"></div>
           <div className="axis-line axis-line-vertical"></div>
 
-          {loadingCoords && (
-            <div
-              className="diagram-loading-indicator"
-              style={{
-                left: `${((loadingCoords.x + 1) / 2) * 100}%`,
-                top: `${((1 - loadingCoords.y) / 2) * 100}%`,
-                zIndex: maxZIndex + 1,
-              }}
-            >
-              Loading item...
-            </div>
-          )}
-
-          {items.map(item => {
-            const position = getItemPosition(item.x, item.y);
-            return (
-              <div
-                key={item.id}
-                className="diagram-item"
-                style={{
-                  left: position.left,
-                  top: position.top,
-                  zIndex: item.zIndex,
-                }}
-                onClick={() => handleItemClick(item.id)}
-              >
-                <div className="diagram-item-header">
-                  <span className="diagram-item-coords">
-                    {coordsToPercent(item.x, item.y)}
-                  </span>
-                  <button
-                    className="diagram-item-remove"
-                    onClick={e => handleRemoveItem(item.id, e)}
-                    aria-label="Remove item"
-                  >
-                    ×
-                  </button>
+          {concept &&
+            items.map(({ index, zIndex }) => {
+              const item = concept.items[index];
+              const { x, y } = getCoords(item);
+              const position = getItemPosition(x, y);
+              return (
+                <div
+                  key={`${concept.name}-${index}`}
+                  className="diagram-item"
+                  style={{
+                    left: position.left,
+                    top: position.top,
+                    zIndex,
+                  }}
+                  onClick={() => handleItemClick(index)}
+                >
+                  <div className="diagram-item-header">
+                    <span className="diagram-item-coords">
+                      {coordsToPercent(x, y)}
+                    </span>
+                    <button
+                      className="diagram-item-remove"
+                      onClick={e => handleRemoveItem(index, e)}
+                      aria-label="Remove item"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <h3 className="diagram-item-title">{item.title}</h3>
+                  <p className="diagram-item-body">{item.body}</p>
                 </div>
-                <h3 className="diagram-item-title">{item.title}</h3>
-                <p className="diagram-item-body">{item.body}</p>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
 
         <div className="diagram-input-form">
@@ -373,21 +251,30 @@ export default function PageDiagram() {
                 type="text"
                 id="prompt-input"
                 className="prompt-input"
+                list="diagram-concepts"
                 value={inputValue}
                 onChange={e => setInputValue(e.target.value)}
-                placeholder="Enter a concept to map (e.g. snacks, movies, music)"
-                disabled={isLoading}
+                placeholder="Pick a concept to map (snacks, movies, music, programming languages)"
               />
+              <datalist id="diagram-concepts">
+                {concepts.map(c => (
+                  <option key={c.name} value={c.name} />
+                ))}
+              </datalist>
             </div>
-            <ButtonControl onClick={() => {}} disabled={isLoading}>
-              {isLoading ? "Loading..." : "Submit"}
-            </ButtonControl>
+            <ButtonControl onClick={() => {}}>Submit</ButtonControl>
           </form>
           <p className="diagram-fineprint">
-            Diagram by{" "}
-            <Link href="/" className="diagram-fineprint-link">
-              Office of Language Interfaces
-            </Link>
+            {message ? (
+              message
+            ) : (
+              <>
+                Diagram by{" "}
+                <Link href="/" className="diagram-fineprint-link">
+                  Office of Language Interfaces
+                </Link>
+              </>
+            )}
           </p>
         </div>
       </div>

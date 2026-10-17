@@ -1,0 +1,694 @@
+[
+  {
+    "name": "snacks",
+    "vertical": [
+      {
+        "top": "ABSTRACT",
+        "bottom": "CONCRETE"
+      },
+      {
+        "top": "SWEET",
+        "bottom": "SAVORY"
+      },
+      {
+        "top": "HEALTHY",
+        "bottom": "INDULGENT"
+      }
+    ],
+    "horizontal": [
+      {
+        "left": "SIMPLE",
+        "right": "COMPLEX"
+      },
+      {
+        "left": "CRUNCHY",
+        "right": "SOFT"
+      },
+      {
+        "left": "CHEAP",
+        "right": "FANCY"
+      }
+    ],
+    "items": [
+      {
+        "title": "Potato chips",
+        "body": "Thin fried slices of potato with salt. The default crunch.",
+        "y": [
+          -0.7,
+          -0.8,
+          -0.6
+        ],
+        "x": [
+          -0.8,
+          -0.9,
+          -0.7
+        ]
+      },
+      {
+        "title": "Apple slices",
+        "body": "A whole fruit cut into something you can share.",
+        "y": [
+          -0.8,
+          0.5,
+          0.9
+        ],
+        "x": [
+          -0.9,
+          -0.5,
+          -0.6
+        ]
+      },
+      {
+        "title": "Dark chocolate",
+        "body": "A square or two after dinner, bitter enough to feel grown up.",
+        "y": [
+          -0.3,
+          0.7,
+          0.2
+        ],
+        "x": [
+          -0.2,
+          0.3,
+          0.4
+        ]
+      },
+      {
+        "title": "Charcuterie board",
+        "body": "Cured meats, cheeses and pickles arranged like a still life.",
+        "y": [
+          0.2,
+          -0.7,
+          -0.4
+        ],
+        "x": [
+          0.9,
+          0.2,
+          0.9
+        ]
+      },
+      {
+        "title": "Trail mix",
+        "body": "Nuts, seeds and raisins, with the chocolate picked out first.",
+        "y": [
+          -0.4,
+          0.2,
+          0.5
+        ],
+        "x": [
+          0.4,
+          -0.6,
+          -0.2
+        ]
+      },
+      {
+        "title": "Popcorn",
+        "body": "Kernels turned inside out by heat. Better with a movie.",
+        "y": [
+          -0.6,
+          -0.2,
+          0.3
+        ],
+        "x": [
+          -0.6,
+          -0.4,
+          -0.8
+        ]
+      },
+      {
+        "title": "Macarons",
+        "body": "Almond meringue shells with a filling, in colors that match nothing in nature.",
+        "y": [
+          0.3,
+          0.9,
+          -0.6
+        ],
+        "x": [
+          0.8,
+          0.6,
+          0.85
+        ]
+      },
+      {
+        "title": "Hummus and pita",
+        "body": "Chickpeas blended smooth, scooped with warm bread.",
+        "y": [
+          -0.5,
+          -0.6,
+          0.6
+        ],
+        "x": [
+          0.2,
+          0.7,
+          0.0
+        ]
+      },
+      {
+        "title": "Gummy bears",
+        "body": "Chewy fruit-flavored bears, eaten by the handful.",
+        "y": [
+          0.1,
+          0.95,
+          -0.8
+        ],
+        "x": [
+          -0.5,
+          0.9,
+          -0.6
+        ]
+      },
+      {
+        "title": "Midnight cereal",
+        "body": "Whatever is in the cupboard, eaten standing up. A snack as a mood more than a food.",
+        "y": [
+          0.8,
+          0.4,
+          -0.5
+        ],
+        "x": [
+          -0.7,
+          0.1,
+          -0.9
+        ]
+      }
+    ]
+  },
+  {
+    "name": "movies",
+    "vertical": [
+      {
+        "top": "ABSTRACT",
+        "bottom": "CONCRETE"
+      },
+      {
+        "top": "POPULAR",
+        "bottom": "OBSCURE"
+      },
+      {
+        "top": "HAPPY",
+        "bottom": "SAD"
+      }
+    ],
+    "horizontal": [
+      {
+        "left": "SIMPLE",
+        "right": "COMPLEX"
+      },
+      {
+        "left": "ACTION",
+        "right": "DRAMA"
+      },
+      {
+        "left": "OLD",
+        "right": "NEW"
+      }
+    ],
+    "items": [
+      {
+        "title": "Superhero sequel",
+        "body": "Costumes, a city in peril and a post-credits scene promising more.",
+        "y": [
+          -0.6,
+          0.95,
+          0.4
+        ],
+        "x": [
+          -0.4,
+          -0.9,
+          0.8
+        ]
+      },
+      {
+        "title": "Silent slapstick",
+        "body": "Pratfalls and chases told entirely through timing.",
+        "y": [
+          -0.4,
+          -0.2,
+          0.8
+        ],
+        "x": [
+          -0.8,
+          -0.5,
+          -0.95
+        ]
+      },
+      {
+        "title": "Arthouse dream film",
+        "body": "Long takes, few words, a plot you assemble on the walk home.",
+        "y": [
+          0.9,
+          -0.8,
+          -0.3
+        ],
+        "x": [
+          0.9,
+          0.7,
+          0.2
+        ]
+      },
+      {
+        "title": "Heist thriller",
+        "body": "A crew, a vault and a plan that goes wrong in the right ways.",
+        "y": [
+          -0.5,
+          0.6,
+          0.3
+        ],
+        "x": [
+          0.5,
+          -0.6,
+          0.1
+        ]
+      },
+      {
+        "title": "Nature documentary",
+        "body": "Patient footage of animals doing remarkable things, with calm narration.",
+        "y": [
+          -0.9,
+          0.2,
+          0.2
+        ],
+        "x": [
+          -0.2,
+          0.4,
+          0.5
+        ]
+      },
+      {
+        "title": "Tearjerker romance",
+        "body": "Two people, one obstacle and a box of tissues on standby.",
+        "y": [
+          -0.1,
+          0.5,
+          -0.9
+        ],
+        "x": [
+          -0.5,
+          0.9,
+          0.0
+        ]
+      },
+      {
+        "title": "Time-loop puzzle",
+        "body": "The same day again and again until the rules make sense.",
+        "y": [
+          0.6,
+          0.3,
+          0.0
+        ],
+        "x": [
+          0.95,
+          -0.1,
+          0.6
+        ]
+      },
+      {
+        "title": "Animated musical",
+        "body": "Songs, a sidekick and a lesson about being yourself.",
+        "y": [
+          -0.2,
+          0.9,
+          0.9
+        ],
+        "x": [
+          -0.6,
+          0.3,
+          0.4
+        ]
+      },
+      {
+        "title": "Black-and-white noir",
+        "body": "Rain, shadows and a detective who trusts nobody.",
+        "y": [
+          0.2,
+          -0.3,
+          -0.6
+        ],
+        "x": [
+          0.4,
+          0.5,
+          -0.85
+        ]
+      },
+      {
+        "title": "Experimental short",
+        "body": "Twelve minutes of images that refuse to become a story.",
+        "y": [
+          0.95,
+          -0.95,
+          -0.1
+        ],
+        "x": [
+          0.7,
+          0.2,
+          0.9
+        ]
+      }
+    ]
+  },
+  {
+    "name": "music",
+    "vertical": [
+      {
+        "top": "ABSTRACT",
+        "bottom": "CONCRETE"
+      },
+      {
+        "top": "LOUD",
+        "bottom": "QUIET"
+      },
+      {
+        "top": "HAPPY",
+        "bottom": "SAD"
+      }
+    ],
+    "horizontal": [
+      {
+        "left": "SIMPLE",
+        "right": "COMPLEX"
+      },
+      {
+        "left": "ACOUSTIC",
+        "right": "ELECTRONIC"
+      },
+      {
+        "left": "OLD",
+        "right": "NEW"
+      }
+    ],
+    "items": [
+      {
+        "title": "Campfire folk song",
+        "body": "Three chords, a story and everyone joining in on the chorus.",
+        "y": [
+          -0.7,
+          -0.5,
+          0.4
+        ],
+        "x": [
+          -0.9,
+          -0.9,
+          -0.6
+        ]
+      },
+      {
+        "title": "Ambient drone",
+        "body": "Sound that changes so slowly it feels like weather.",
+        "y": [
+          0.95,
+          -0.9,
+          -0.2
+        ],
+        "x": [
+          -0.3,
+          0.8,
+          0.5
+        ]
+      },
+      {
+        "title": "Punk single",
+        "body": "Two minutes, fast and loud, recorded in one take.",
+        "y": [
+          -0.6,
+          0.95,
+          0.3
+        ],
+        "x": [
+          -0.85,
+          -0.3,
+          -0.2
+        ]
+      },
+      {
+        "title": "Symphony",
+        "body": "A full orchestra working through themes over four movements.",
+        "y": [
+          0.5,
+          0.4,
+          0.0
+        ],
+        "x": [
+          0.95,
+          -0.95,
+          -0.9
+        ]
+      },
+      {
+        "title": "Pop chart hit",
+        "body": "A hook you know by the second chorus and can't forget by the third.",
+        "y": [
+          -0.8,
+          0.6,
+          0.8
+        ],
+        "x": [
+          -0.4,
+          0.6,
+          0.9
+        ]
+      },
+      {
+        "title": "Free jazz",
+        "body": "Improvisers listening hard and refusing the expected next note.",
+        "y": [
+          0.8,
+          0.5,
+          0.1
+        ],
+        "x": [
+          0.95,
+          -0.7,
+          -0.4
+        ]
+      },
+      {
+        "title": "Lullaby",
+        "body": "A few soft notes, repeated until someone falls asleep.",
+        "y": [
+          -0.3,
+          -0.95,
+          0.5
+        ],
+        "x": [
+          -0.95,
+          -0.8,
+          -0.8
+        ]
+      },
+      {
+        "title": "Blues standard",
+        "body": "Twelve bars about trouble, sung so it hurts a little less.",
+        "y": [
+          -0.4,
+          0.0,
+          -0.8
+        ],
+        "x": [
+          -0.3,
+          -0.6,
+          -0.7
+        ]
+      },
+      {
+        "title": "Club techno",
+        "body": "A steady kick drum for dancing until the lights come on.",
+        "y": [
+          0.3,
+          0.9,
+          0.6
+        ],
+        "x": [
+          0.2,
+          0.95,
+          0.6
+        ]
+      },
+      {
+        "title": "Field recording",
+        "body": "Birds, traffic and rain captured where they happened.",
+        "y": [
+          -0.95,
+          -0.6,
+          0.0
+        ],
+        "x": [
+          -0.6,
+          -0.2,
+          0.7
+        ]
+      }
+    ]
+  },
+  {
+    "name": "programming languages",
+    "vertical": [
+      {
+        "top": "ABSTRACT",
+        "bottom": "CONCRETE"
+      },
+      {
+        "top": "FAST",
+        "bottom": "SLOW"
+      },
+      {
+        "top": "NEW",
+        "bottom": "OLD"
+      }
+    ],
+    "horizontal": [
+      {
+        "left": "SIMPLE",
+        "right": "COMPLEX"
+      },
+      {
+        "left": "STRICT",
+        "right": "LOOSE"
+      },
+      {
+        "left": "NICHE",
+        "right": "POPULAR"
+      }
+    ],
+    "items": [
+      {
+        "title": "Assembly",
+        "body": "Instructions for the processor itself, one register at a time.",
+        "y": [
+          -0.95,
+          0.95,
+          -0.9
+        ],
+        "x": [
+          0.3,
+          0.6,
+          -0.7
+        ]
+      },
+      {
+        "title": "Python",
+        "body": "Readable, batteries included, and everywhere from scripts to science.",
+        "y": [
+          0.2,
+          -0.6,
+          -0.1
+        ],
+        "x": [
+          -0.8,
+          0.6,
+          0.95
+        ]
+      },
+      {
+        "title": "Haskell",
+        "body": "Pure functions and a type system that proves things about your code.",
+        "y": [
+          0.95,
+          0.1,
+          -0.2
+        ],
+        "x": [
+          0.8,
+          -0.95,
+          -0.4
+        ]
+      },
+      {
+        "title": "C",
+        "body": "Close to the metal and the foundation under most other languages.",
+        "y": [
+          -0.7,
+          0.9,
+          -0.8
+        ],
+        "x": [
+          -0.1,
+          0.2,
+          0.7
+        ]
+      },
+      {
+        "title": "Rust",
+        "body": "Memory safety without a garbage collector, enforced by the compiler.",
+        "y": [
+          -0.1,
+          0.9,
+          0.7
+        ],
+        "x": [
+          0.8,
+          -0.9,
+          0.4
+        ]
+      },
+      {
+        "title": "JavaScript",
+        "body": "The language of the browser, now running nearly everywhere else.",
+        "y": [
+          0.0,
+          -0.1,
+          0.0
+        ],
+        "x": [
+          -0.2,
+          0.9,
+          0.95
+        ]
+      },
+      {
+        "title": "Lisp",
+        "body": "Code made of lists, so programs can write programs.",
+        "y": [
+          0.8,
+          -0.2,
+          -0.95
+        ],
+        "x": [
+          -0.6,
+          0.4,
+          -0.6
+        ]
+      },
+      {
+        "title": "SQL",
+        "body": "Describe the data you want and let the database work out how.",
+        "y": [
+          0.5,
+          0.3,
+          -0.6
+        ],
+        "x": [
+          -0.5,
+          -0.3,
+          0.8
+        ]
+      },
+      {
+        "title": "Scratch",
+        "body": "Snap colorful blocks together to make games and animations.",
+        "y": [
+          -0.4,
+          -0.9,
+          0.3
+        ],
+        "x": [
+          -0.95,
+          0.5,
+          0.3
+        ]
+      },
+      {
+        "title": "Prolog",
+        "body": "State facts and rules, then ask questions and let it search.",
+        "y": [
+          0.9,
+          -0.6,
+          -0.85
+        ],
+        "x": [
+          0.4,
+          -0.2,
+          -0.9
+        ]
+      }
+    ]
+  }
+]

@@ -62,9 +62,15 @@ npx tsc --noEmit
 import { useState } from "react";
 import { NextRequest } from "next/server";
 
-import { fetchClaude } from "@/lib/claude";
+import { getBuildInfo } from "@/lib/build-info";
 import ButtonControl from "@/components/ButtonControl";
 ```
+
+## Pre-written Generations (REQUIRED)
+
+- The site makes **no calls to any generation API**. There is no Anthropic SDK, API key or `/api/claude` route.
+- Content that looks generated (404 poems, taglines, pangrams, diagram maps) is written ahead of time in `src/data/*.json` and imported directly.
+- `ButtonGenerate` takes a `pool: string[]` and reveals unseen items; see [docs/prompts-and-api.md](docs/prompts-and-api.md)
 
 ## Research Content Structure (REQUIRED)
 
@@ -90,17 +96,17 @@ import ButtonControl from "@/components/ButtonControl";
 - **Architecture details**: See [docs/components.md](docs/components.md)
 - **Styling system**: See [docs/styling-system.md](docs/styling-system.md)
 - **File organization**: See [docs/project-structure.md](docs/project-structure.md)
-- **AI prompts**: See [docs/prompts-and-api.md](docs/prompts-and-api.md)
-- **Security patterns**: See [docs/api-security.md](docs/api-security.md)
+- **Pre-written content**: See [docs/prompts-and-api.md](docs/prompts-and-api.md)
+- **API routes**: See [docs/api-security.md](docs/api-security.md)
 
 ## Documentation Maintenance
 
 **When to Update Documentation:**
 
 - Adding new components or changing component patterns
-- Modifying security middleware or API routes
+- Modifying API routes
 - Changing styling conventions or design tokens
-- Adding new AI prompts or API integrations
+- Adding or reshaping pre-written data in `src/data/`
 - Updating development workflows
 
 **Process:**
@@ -114,3 +120,13 @@ import ButtonControl from "@/components/ButtonControl";
 ---
 
 _For detailed implementation guides, patterns, and examples, refer to the comprehensive documentation in the `docs/` folder._
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

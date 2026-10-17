@@ -201,13 +201,3 @@
   margin: 0;
   line-height: 1.4;
 }
-
-.diagram-loading-indicator {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  font-size: var(--font-size-00);
-  color: var(--button-text-color);
-  font-family: var(--font-georgia);
-  pointer-events: none;
-  font-style: italic;
-}

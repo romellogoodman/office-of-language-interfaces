@@ -4,10 +4,10 @@ Welcome to the Oli website documentation. This folder contains detailed technica
 
 ## Documents
 
-- **[API Security & Middleware](./api-security.md)** - Security implementation, rate limiting, and middleware usage
+- **[API Routes](./api-security.md)** - The remaining read-only API routes (favicon, text)
 - **[Component Architecture](./components.md)** - Page components, reusable UI components, and conventions
 - **[Project Structure](./project-structure.md)** - File organization and development patterns
-- **[Prompts and API](./prompts-and-api.md)** - AI prompt system and API integration patterns
+- **[Pre-written Content and Prompts](./prompts-and-api.md)** - Pre-written generations in `src/data/` and the discuss-link prompt
 - **[Styling System](./styling-system.md)** - Design system, SCSS architecture, and styling conventions
 
 ## Quick Links
