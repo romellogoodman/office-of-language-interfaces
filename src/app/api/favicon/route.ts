@@ -1,8 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const DEFAULT_COLOR = "#85c7a3";
+const DEFAULT_SIZE = 16;
+const MAX_SIZE = 512;
+const COLOR_PATTERN = /^#[0-9a-f]{3,8}$/i;
+
+const sanitizeColor = (color: string) =>
+  COLOR_PATTERN.test(color) ? color : DEFAULT_COLOR;
+
+const sanitizeSize = (size: string | null) => {
+  const parsed = parseInt(size || String(DEFAULT_SIZE), 10);
+
+  if (Number.isNaN(parsed)) {
+    return DEFAULT_SIZE;
+  }
+
+  return Math.min(Math.max(parsed, 1), MAX_SIZE);
+};
+
 const generateFavicon = (
-  color: string | string[] = "#85c7a3",
-  size: number = 16
+  color: string | string[] = DEFAULT_COLOR,
+  size: number = DEFAULT_SIZE
 ) => {
   const svgContent = Array.isArray(color)
     ? `
@@ -29,8 +47,10 @@ const generateFavicon = (
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const color = searchParams.get("color") || "#85c7a3";
-  const size = parseInt(searchParams.get("size") || "16", 10);
+  const colorParam = searchParams.get("color") || DEFAULT_COLOR;
+  const colors = colorParam.split(",").map(sanitizeColor);
+  const color = colors.length > 1 ? colors : colors[0];
+  const size = sanitizeSize(searchParams.get("size"));
 
   const svg = generateFavicon(color, size);
 
@@ -38,6 +58,9 @@ export async function GET(request: NextRequest) {
     headers: {
       "Content-Type": "image/svg+xml",
       "Cache-Control": "public, max-age=3600, immutable",
+      "Content-Security-Policy":
+        "default-src 'none'; style-src 'unsafe-inline'",
+      "X-Content-Type-Options": "nosniff",
     },
   });
 }
